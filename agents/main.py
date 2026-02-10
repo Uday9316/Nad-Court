@@ -252,6 +252,8 @@ def demo_three_tier():
     print("\n" + "="*80)
     print("🏛️  NAD COURT - 3-TIER JUDICIAL SYSTEM DEMO")
     print("="*80)
+    print("⏰ RATE LIMIT: Only 1 case allowed per 24 hours")
+    print("="*80)
     
     court = NADCourtSystem()
     
@@ -266,11 +268,43 @@ def demo_three_tier():
         reporter="moderator_bot"
     )
     
+    if result1 == -1 or not result1:
+        print("⏳ Cannot file case - 24 hour cooldown active")
+        return
+    
     print(f"\n✅ Result: Defendant {result1['result']['defendant']}")
     print(f"   Verdict: {result1['judgment']['verdict'].upper()}")
     print(f"   Punishment: {result1['result']['punishment']['type']}")
     print(f"   AI Calls Used: {court.ai_calls_total}")
     
+    # Check if we can file another case (for demo purposes, skip if rate limited)
+    print("\n" + "="*80)
+    print("⏰ RATE LIMIT: Skipping additional cases (24h cooldown)")
+    print("="*80)
+    print("   In production, next case would be available in 24 hours")
+    print("   This prevents spam and ensures quality over quantity")
+    
+    # For demo, show what would happen without actually filing
+    print("\n📋 SCENARIO 2 & 3: Abuse and Malicious cases")
+    print("   (Would be processed after 24 hour cooldown)")
+    
+    # Early return for demo - only 1 case per day
+    print("\n" + "="*80)
+    print("📊 SYSTEM SUMMARY")
+    print("="*80)
+    
+    stats = court.get_stats()
+    print(f"\nCases Filed Today: {stats['total_cases']} (Max: 1 per 24h)")
+    print(f"Total AI Calls: {stats['total_ai_calls']}")
+    print(f"Estimated Cost: ${stats['estimated_cost_usd']:.2f}")
+    
+    print(f"\n{'='*80}")
+    print("💡 RATE LIMITING: Ensures sustainable, high-quality justice")
+    print("   Prevents spam and manages AI API costs effectively")
+    print(f"{'='*80}")
+    return
+    
+    # Original multi-case demo below (disabled for rate limiting)
     # ============ SCENARIO 2: Abuse case with appeal ============
     print("\n" + "="*80)
     print("📋 SCENARIO 2: Abuse Case → Local Court → HIGH COURT APPEAL")

@@ -114,11 +114,13 @@ contract AgentCourt {
     address public owner;
     uint256 public caseCounter;
     uint256 public appealCounter;
+    uint256 public lastCaseTime;
     
     uint256 public constant JURY_SIZE = 5;
     uint256 public constant APPEAL_STAKE = 10 ether; // 10 MON
     uint256 public constant JURY_VOTING_PERIOD = 1 hours;
     uint256 public constant APPEAL_PERIOD = 3 days;
+    uint256 public constant CASE_COOLDOWN = 24 hours; // 1 case per day
     
     mapping(address => Agent) public agents;
     mapping(uint256 => Case) public cases;
@@ -200,9 +202,11 @@ contract AgentCourt {
     ) external onlyLevel(AgentLevel.Reporter) returns (uint256) {
         require(agents[_defendant].agentAddress != address(0), "Defendant not registered");
         require(_defendant != msg.sender, "Cannot report yourself");
+        require(block.timestamp >= lastCaseTime + CASE_COOLDOWN, "Only 1 case per 24 hours allowed");
         
         caseCounter++;
         uint256 caseId = caseCounter;
+        lastCaseTime = block.timestamp;
         
         Case storage newCase = cases[caseId];
         newCase.id = caseId;

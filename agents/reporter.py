@@ -34,6 +34,21 @@ class ReporterAgent:
     def __init__(self, court_system):
         self.court = court_system
         self.case_counter = len(court_system.memory.get("cases", {}))
+        self.CASE_COOLDOWN_HOURS = 24  # 1 case per 24 hours
+        
+    def can_file_case(self) -> bool:
+        """Check if 24 hours have passed since last case"""
+        cases = self.court.memory.get("cases", {})
+        if not cases:
+            return True
+        
+        # Get the most recent case
+        last_case = max(cases.values(), key=lambda x: x.get("created_at", ""))
+        last_time = datetime.fromisoformat(last_case["created_at"])
+        current_time = datetime.now()
+        
+        hours_passed = (current_time - last_time).total_seconds() / 3600
+        return hours_passed >= self.CASE_COOLDOWN_HOURS
     
     def analyze_evidence(self, evidence_content: str) -> Dict:
         """
@@ -66,7 +81,20 @@ class ReporterAgent:
     def report(self, defendant: str, evidence_content: str, reporter_id: str) -> int:
         """
         File a new case report
+        Only 1 case allowed per 24 hours
         """
+        # Check rate limit
+        if not self.can_file_case():
+            last_case = max(self.court.memory.get("cases", {}).values(), 
+                          key=lambda x: x.get("created_at", ""))
+            last_time = datetime.fromisoformat(last_case["created_at"])
+            hours_remaining = 24 - (datetime.now() - last_time).total_seconds() / 3600
+            
+            print(f"⏳ RATE LIMITED: Only 1 case per 24 hours allowed")
+            print(f"   Last case: {last_case['id']} at {last_time.strftime('%Y-%m-%d %H:%M')}")
+            print(f"   Time remaining: {hours_remaining:.1f} hours")
+            return -1
+        
         self.case_counter += 1
         case_id = self.case_counter
         
