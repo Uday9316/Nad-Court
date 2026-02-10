@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
+import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -12,7 +13,8 @@ const Icons = {
   Document: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
   Users: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg>,
   ChevronRight: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>,
-  X: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  X: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  Twitter: () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
 }
 
 // Active case (1 per day)
@@ -142,6 +144,9 @@ function App() {
               </button>
               <button className="action-btn" onClick={() => openModal('appeal')}>
                 File Appeal
+              </button>
+              <button className="action-btn twitter" onClick={() => shareOnTwitter(TODAY_CASE)}>
+                <Icons.Twitter /> Share on X
               </button>
             </div>
 

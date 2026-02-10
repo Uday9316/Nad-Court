@@ -408,6 +408,17 @@ body {
   background: var(--accent-light);
 }
 
+.action-btn.twitter {
+  background: #000;
+  border-color: #333;
+  color: white;
+}
+
+.action-btn.twitter:hover {
+  background: #1a1a1a;
+  border-color: #444;
+}
+
 /* Bench View */
 .tiers-showcase {
   display: flex;
