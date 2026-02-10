@@ -7,18 +7,21 @@ export const COMMUNITY_CASES = [
     plaintiff: {
       username: "Bitlover082",
       id: 138,
-      description: "A long time OG member of the Monad Community, creating his own lore of Banana Milk. Accidentally purged by JWRK once but is a SURVIVOR!!"
+      description: "A long time OG member of the Monad Community, creating his own lore of Banana Milk. Accidentally purged by JWRK once but is a SURVIVOR!!",
+      argument: "I've been building Banana Milk lore since day one. 0xCoha keeps undermining my contributions in the Vietnads chat and spreading rumors that I'm not a 'real' community member. I've survived purges, created content, and stayed loyal. The disrespect needs to end."
     },
     defendant: {
       username: "0xCoha", 
       id: 747,
-      description: "Contributing to the Nads and the Vietnads through different bots and a Nadlist"
+      description: "Contributing to the Nads and the Vietnads through different bots and a Nadlist",
+      argument: "I run bots that actually help the community - Nadlist tracks important metrics. Bitlover082 constantly attacks my work claiming it's 'useless' just because he doesn't understand tech. He's the one starting drama, not me."
     },
-    summary: "@Bitlover082 and @0xCoha have been engaged in an ongoing beef. The court must determine who is in the right and resolve the conflict.",
+    summary: "Bitlover082 and 0xCoha have been engaged in an ongoing beef. The court must determine who is in the right and resolve the conflict.",
     evidence: [
       "Plaintiff was previously purged but survived",
       "Defendant contributes via bots and Nadlist",
-      "Both are active community members"
+      "Both are active community members",
+      "Discord message history shows ongoing tension"
     ],
     status: "pending"
   },
@@ -29,18 +32,21 @@ export const COMMUNITY_CASES = [
     plaintiff: {
       username: "_gvan",
       id: 1,
-      description: "Top Nadtard in house of molandak, helped found the Vans"
+      description: "Top Nadtard in house of molandak, helped found the Vans",
+      argument: "I founded the Vans. We built this community from nothing. Anubiss29 created Bikes specifically to undermine us and has been poaching our members. The 'Fock the Vans' campaign is toxic and divisive. They need to respect OG communities."
     },
     defendant: {
       username: "Anubiss29",
       id: 99,
-      description: "frequently saying Fock the Vans and also apart of the Bikes, which spawned to take down the Vans. Apart of the growing Spanish Chad Nads"
+      description: "frequently saying Fock the Vans and also apart of the Bikes, which spawned to take down the Vans. Apart of the growing Spanish Chad Nads",
+      argument: "Vans act like they own Monad. The Bikes formed because _gvan and crew gatekeep everything. 'Fock the Vans' is just a meme - they can't take a joke. Spanish Chad Nads deserve representation too, not just Vans elitism."
     },
-    summary: "@_gvan (Vans cult) and @Anubiss29 (Bikes) are in conflict over community resources and influence.",
+    summary: "_gvan (Vans cult) and Anubiss29 (Bikes) are in conflict over community resources and influence.",
     evidence: [
       "Plaintiff founded the Vans community",
       "Defendant leads Bikes which opposes Vans",
-      "Dispute over community privileges"
+      "Social media posts with 'Fock the Vans' hashtag",
+      "Member migration patterns between communities"
     ],
     status: "pending"
   },
@@ -51,18 +57,21 @@ export const COMMUNITY_CASES = [
     plaintiff: {
       username: "0xOlivia",
       id: 62,
-      description: "Leader of the Benelux Nads and founding member of Birbie, one of the great MonAnimals"
+      description: "Leader of the Benelux Nads and founding member of Birbie, one of the great MonAnimals",
+      argument: "I founded Benelux Nads AND Birbie. My track record speaks for itself. xEfscarpmint just shows up recently, starts yapping on Kaito, and claims leadership? I've been organizing IRL meetups and building infrastructure since day one."
     },
     defendant: {
       username: "xEfscarpmint",
       id: 779,
-      description: "On the Kaito leaderboard as a top yappper in Monad, meeting the India Nads irl soon"
+      description: "On the Kaito leaderboard as a top yappper in Monad, meeting the India Nads irl soon",
+      argument: "Kaito leaderboard doesn't lie - I'm top 10 for engagement. The community vibes with me. 0xOlivia hasn't been active lately and is coasting on old reputation. Leadership should go to who actually engages with the community daily."
     },
     summary: "Both claim to be the leader of Benelux Nads. The court must determine who has the legitimate claim to leadership.",
     evidence: [
       "Plaintiff founded Benelux Nads and Birbie",
       "Defendant is top yapper on Kaito leaderboard",
-      "Both claim leadership role"
+      "Both claim leadership role",
+      "Community engagement metrics available"
     ],
     status: "pending"
   },
@@ -73,18 +82,21 @@ export const COMMUNITY_CASES = [
     plaintiff: {
       username: "1Cilineth",
       id: 73,
-      description: "Creating insanely degenerate memes and art of JWRK, in the Nads OG chat, and a great member of the VietNads community"
+      description: "Creating insanely degenerate memes and art of JWRK, in the Nads OG chat, and a great member of the VietNads community",
+      argument: "I've been making JWRK art for months. My style is distinctive - the proportions, the colors, the 'degenerate' aesthetic. NikkiSixx_9's banner is a clear ripoff of my work. They even used the same pose I created. I never gave permission."
     },
     defendant: {
       username: "NikkiSixx_9",
       id: 451,
-      description: "Rocking a really funny banner on twitter featuring the awkward meme, myself, JWRK and tunez. Apart of the growing TurkNads"
+      description: "Rocking a really funny banner on twitter featuring the awkward meme, myself, JWRK and tunez. Apart of the growing TurkNads",
+      argument: "My banner is original work - I commissioned it from a TurkNads artist. Just because 1Cilineth also draws JWRK doesn't mean they own the concept. JWRK is public domain in the community. This is a frivolous claim."
     },
     summary: "Plaintiff claims defendant stole their art concept for a community project. The court must determine the rightful owner.",
     evidence: [
       "Plaintiff is OG artist creating JWRK memes",
       "Defendant has banner with similar aesthetic",
-      "Dispute over creative ownership"
+      "Side-by-side comparison of art styles",
+      "Timeline of creation dates"
     ],
     status: "pending"
   },
@@ -95,18 +107,21 @@ export const COMMUNITY_CASES = [
     plaintiff: {
       username: "BlurCrypto",
       id: 140,
-      description: "once purged but made it back out of the trenches"
+      description: "once purged but made it back out of the trenches",
+      argument: "The purge was unjustified. I was active, contributing, and following rules. monadbull has a personal vendetta against me and abused their mod powers. I survived the trenches once and I'll do it again. The community wants me back."
     },
     defendant: {
       username: "monadbull",
       id: 938,
-      description: "in the OG telegram and a long time member of the community"
+      description: "in the OG telegram and a long time member of the community",
+      argument: "BlurCrypto was warned multiple times about spam and off-topic posts. The purge followed established rules after 3 strikes. They're playing victim but the logs don't lie. OG chat needs quality control."
     },
     summary: "Plaintiff claims they were wrongfully purged from OG telegram chat. Court must determine if purge was justified.",
     evidence: [
       "Plaintiff was purged but survived",
       "Defendant is OG chat member",
-      "Question of purge legitimacy"
+      "Warning message history",
+      "Moderation logs and strike records"
     ],
     status: "pending"
   }

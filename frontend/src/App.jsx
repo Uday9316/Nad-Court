@@ -129,6 +129,27 @@ function App() {
                   ))}
                 </ul>
               </div>
+
+              {/* Arguments Section */}
+              <div className="case-arguments">
+                <h3>Arguments & Pleadings</h3>
+                <div className="arguments-grid">
+                  <div className="argument-card plaintiff-arg">
+                    <div className="arg-header">
+                      <span className="arg-party">Plaintiff's Argument</span>
+                      <span className="arg-username">{TODAY_CASE.plaintiff.username}</span>
+                    </div>
+                    <p className="arg-text">{TODAY_CASE.plaintiff.argument}</p>
+                  </div>
+                  <div className="argument-card defendant-arg">
+                    <div className="arg-header">
+                      <span className="arg-party">Defendant's Argument</span>
+                      <span className="arg-username">{TODAY_CASE.defendant.username}</span>
+                    </div>
+                    <p className="arg-text">{TODAY_CASE.defendant.argument}</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Action Bar */}
