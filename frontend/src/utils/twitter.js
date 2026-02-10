@@ -1,15 +1,15 @@
 // Twitter sharing utilities (no API needed for manual share)
 import { getTodayCase } from '../data/cases.js'
 
-// Generate tweet text for today's case
+// Generate tweet text for today's case (no @ mentions)
 export function generateTweetText(case_) {
   return encodeURIComponent(
     `⚖️ NAD COURT - DAY ${case_.day}\n\n` +
     `Case: ${case_.id}\n` +
     `Type: ${case_.type}\n\n` +
-    `Plaintiff: @${case_.plaintiff.username}\n` +
+    `Plaintiff: ${case_.plaintiff.username}\n` +
     `VS\n` +
-    `Defendant: @${case_.defendant.username}\n\n` +
+    `Defendant: ${case_.defendant.username}\n\n` +
     `📋 ${case_.summary.slice(0, 80)}...\n\n` +
     `🗳️ Vote now:\n` +
     `${window.location.origin}\n\n` +

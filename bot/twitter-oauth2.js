@@ -80,7 +80,7 @@ async function postTweet(text) {
   }
 }
 
-// Format case for Twitter
+// Format case for Twitter (no @ mentions)
 function formatCaseTweet(case_) {
   const lines = [
     `⚖️ NAD COURT - DAY ${case_.day}`,
@@ -88,9 +88,9 @@ function formatCaseTweet(case_) {
     `Case: ${case_.id}`,
     `Type: ${case_.type}`,
     ``,
-    `Plaintiff: @${case_.plaintiff.username}`,
+    `Plaintiff: ${case_.plaintiff.username}`,
     `VS`,
-    `Defendant: @${case_.defendant.username}`,
+    `Defendant: ${case_.defendant.username}`,
     ``,
     `📋 ${case_.summary.slice(0, 90)}...`,
     ``,
@@ -123,14 +123,14 @@ export async function postTodaysCase() {
   }
 }
 
-// Post verdict
+// Post verdict (no @ mentions)
 export async function postVerdict(caseId, winner, verdict) {
   const tweet = [
     `⚖️ NAD COURT - VERDICT`,
     ``,
     `Case ${caseId}: ${verdict}`,
     ``,
-    `Winner: @${winner}`,
+    `Winner: ${winner}`,
     ``,
     `Full details: https://nad-court.vercel.app`,
     ``,
