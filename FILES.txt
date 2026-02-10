@@ -1,0 +1,84 @@
+========================================
+  AGENT COURT - ALL PROJECT FILES
+========================================
+
+📦 ARCHIVE: /home/ubuntu/.openclaw/workspace/AGENT_COURT_COMPLETE.tar.gz
+
+📁 COMPLETE FILE LISTING:
+--------------------------
+
+README.md                          # Main documentation
+deploy.sh                          # One-click deploy script
+foundry.toml                       # Foundry config
+requirements.txt                   # Python dependencies
+
+contracts/
+└── AgentCourt.sol                 # Smart contract (Monada)
+
+frontend/
+├── package.json                   # NPM dependencies
+├── vercel.json                    # Vercel deployment config
+├── index.html                     # HTML template
+└── src/
+    ├── App.jsx                    # Main React app (gamified UI)
+    └── App.css                    # Phoenix Wright-style theme
+
+agents/
+├── main.py                        # 3-tier court orchestrator
+├── reporter.py                    # Level 1: Reporter Agent
+├── judge_kimi.py                  # Level 2: Judge Agent (AI×1)
+├── jury.py                        # Level 3: Jury Agents
+├── execution.py                   # Level 4: Execution Agent
+├── appeal.py                      # Level 5: Appeal Agent
+└── courts/
+    ├── local_court.py             # Tier 1: Local Court
+    ├── high_court.py              # Tier 2: High Court  
+    └── supreme_court.py           # Tier 3: Supreme Court
+
+========================================
+  DEPLOYMENT INSTRUCTIONS
+========================================
+
+1. EXTRACT ARCHIVE:
+   tar -xzf AGENT_COURT_COMPLETE.tar.gz
+
+2. SMART CONTRACT (Monad Mainnet):
+   cd AGENT_COURT_COMPLETE/contracts
+   forge build --via-ir
+   forge create AgentCourt --rpc-url https://rpc.monad.xyz --private-key $PK --via-ir --broadcast
+
+3. FRONTEND (Vercel):
+   cd AGENT_COURT_COMPLETE/frontend
+   npm install
+   npm run build
+   npx vercel --prod
+
+4. PYTHON AGENTS:
+   cd AGENT_COURT_COMPLETE
+   pip install -r requirements.txt
+   python agents/main.py
+
+========================================
+  CONTRACT DETAILS
+========================================
+
+Deployed: 0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458
+Network: Monad Mainnet (Chain 143)
+RPC: https://rpc.monad.xyz
+Explorer: https://monadvision.com
+
+========================================
+  FEATURES
+========================================
+
+✅ 3-Tier Judicial Hierarchy (Local/High/Supreme)
+✅ 1 AI Call Per Case (95% Python, 5% AI)
+✅ Staking-Based Appeals (5/15/50 MON)
+✅ Precedent System (Supreme Court)
+✅ Gamified Phoenix Wright-Style Frontend
+✅ Mobile Responsive Design
+✅ Monad Mainnet Deployment Ready
+
+========================================
+  BUILT FOR MOLTIVERSE HACKATHON
+========================================

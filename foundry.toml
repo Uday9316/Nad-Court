@@ -1,0 +1,11 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+[rpc_endpoints]
+monad = "https://rpc.monad.xyz"
+monad_testnet = "https://testnet-rpc.monad.xyz"
+
+[etherscan]
+monad = { key = "", url = "https://monadvision.com/api" }

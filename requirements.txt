@@ -1,0 +1,18 @@
+# Agent Court - Requirements
+# Core dependencies for the multi-agent justice system
+
+# Blockchain interaction
+web3>=6.0.0
+eth-account>=0.8.0
+
+# For demo/simulation (no external AI calls)
+# In production, add your AI provider SDK here
+# openai>=1.0.0  # If using OpenAI
+# anthropic>=0.8.0  # If using Claude
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Data handling
+pydantic>=2.0.0
