@@ -1,321 +1,271 @@
 import { useState } from 'react'
 import './Court.css'
-import { COMMUNITY_CASES, getTodayCase, CASE_STATUS } from './data/cases.js'
+import { COMMUNITY_CASES, getTodayCase } from './data/cases.js'
 import { AI_AGENTS } from './data/agents.js'
 
 const TODAY_CASE = getTodayCase()
 
-// Court proceedings data
-const COURT_PROCEDURE = [
-  { step: 1, name: "Opening Statements", status: "completed", time: "09:00 AM" },
-  { step: 2, name: "Plaintiff Testimony", status: "completed", time: "09:15 AM" },
-  { step: 3, name: "Cross Examination", status: "completed", time: "09:30 AM" },
-  { step: 4, name: "Defendant Testimony", status: "completed", time: "09:45 AM" },
-  { step: 5, name: "Evidence Review", status: "in-progress", time: "10:00 AM" },
-  { step: 6, name: "Closing Arguments", status: "pending", time: "10:30 AM" },
-  { step: 7, name: "Jury Deliberation", status: "pending", time: "11:00 AM" },
-  { step: 8, name: "Verdict", status: "pending", time: "11:30 AM" }
+// Gamified court proceedings
+const COURT_LEVELS = [
+  { level: 1, name: "Case Filed", xp: 100, status: "completed", icon: "📋" },
+  { level: 2, name: "Evidence Submitted", xp: 250, status: "completed", icon: "📁" },
+  { level: 3, name: "Opening Statements", xp: 400, status: "completed", icon: "🎤" },
+  { level: 4, name: "Witness Testimony", xp: 600, status: "in-progress", icon: "👤" },
+  { level: 5, name: "Cross Examination", xp: 800, status: "locked", icon: "⚔️" },
+  { level: 6, name: "Closing Arguments", xp: 1000, status: "locked", icon: "💥" },
+  { level: 7, name: "Jury Deliberation", xp: 1200, status: "locked", icon: "🎲" },
+  { level: 8, name: "FINAL VERDICT", xp: 1500, status: "locked", icon: "👑", boss: true }
 ]
 
-// Evidence exhibits
-const EVIDENCE_EXHIBITS = {
+// Evidence as collectible cards
+const EVIDENCE_CARDS = {
   plaintiff: [
-    { id: "P-001", type: "Document", title: "Community Contribution Logs", description: "On-chain activity proving plaintiff's involvement since day 1", strength: "strong" },
-    { id: "P-002", type: "Screenshot", title: "Discord Message History", description: "Screenshots showing defendant's alleged harassment", strength: "medium" },
-    { id: "P-003", type: "Witness", title: "Testimony from OG Members", description: "3 community members vouching for plaintiff's character", strength: "strong" }
+    { id: "P-001", name: "Genesis Badge", rarity: "legendary", power: 95, type: "Authority", desc: "Proof of OG status since day 1", icon: "🏅" },
+    { id: "P-002", name: "Harassment Logs", rarity: "epic", power: 78, type: "Damage", desc: "Screenshots of toxic behavior", icon: "💬" },
+    { id: "P-003", name: "Community Vouch", rarity: "rare", power: 65, type: "Support", desc: "3 witnesses testify for you", icon: "👥" },
+    { id: "P-004", name: "Contribution History", rarity: "common", power: 45, type: "Buff", desc: "On-chain activity logs", icon: "📊" }
   ],
   defendant: [
-    { id: "D-001", type: "Metrics", title: "Kaito Leaderboard Data", description: "Proof of defendant's high engagement and contribution score", strength: "strong" },
-    { id: "D-002", type: "Code", title: "Bot Repository Commits", description: "GitHub history showing utility bot development", strength: "medium" },
-    { id: "D-003", type: "Document", title: "Moderation Logs", description: "Evidence of warnings issued to plaintiff prior to incident", strength: "medium" }
+    { id: "D-001", name: "Kaito Crown", rarity: "legendary", power: 92, type: "Authority", desc: "Top 10 leaderboard ranking", icon: "👑" },
+    { id: "D-002", name: "Builder's Code", rarity: "epic", power: 82, type: "Utility", desc: "Open-source bot repository", icon: "💻" },
+    { id: "D-003", name: "Warning Records", rarity: "rare", power: 58, type: "Counter", desc: "Plaintiff's past violations", icon: "⚠️" },
+    { id: "D-004", name: "Engagement Stats", rarity: "common", power: 42, type: "Buff", desc: "High activity metrics", icon: "📈" }
+  ]
+}
+
+// Argument moves
+const ARGUMENT_MOVES = {
+  plaintiff: [
+    { name: "LORE STRIKE", damage: 85, type: "Cultural", desc: "Invoke OG status and community history", combo: "↓→+P" },
+    { name: "WITNESS RUSH", damage: 72, type: "Social", desc: "Call upon community testimony", combo: "→↓→+K" },
+    { name: "EVIDENCE SLAM", damage: 68, type: "Technical", desc: "Present documented proof", combo: "↓↓+P" },
+    { name: "EMOTIONAL APPEAL", damage: 55, type: "Psych", desc: "Pull at jury's heartstrings", combo: "←→+K" }
+  ],
+  defendant: [
+    { name: "METRIC CRUSHER", damage: 90, type: "Data", desc: "Overwhelm with quantifiable stats", combo: "→↓↘+P" },
+    { name: "UTILITY BLAST", damage: 76, type: "Tech", desc: "Showcase built tools and bots", combo: "↓↘→+K" },
+    { name: "COUNTER ATTACK", damage: 70, type: "Legal", desc: "Expose plaintiff's hypocrisy", combo: "←↓←+P" },
+    { name: "LOGIC BOMB", damage: 62, type: "Intellect", desc: "Dismantle with pure reasoning", combo: "→←→+K" }
   ]
 }
 
 function Court() {
   const [activeTab, setActiveTab] = useState('docket')
   const [selectedCase, setSelectedCase] = useState(TODAY_CASE)
-  const [showFileCase, setShowFileCase] = useState(false)
-  const [activeArgument, setActiveArgument] = useState(null)
+  const [selectedCard, setSelectedCard] = useState(null)
+  const [showFileModal, setShowFileModal] = useState(false)
+
+  const getRarityColor = (rarity) => {
+    switch(rarity) {
+      case 'legendary': return '#ff6b35'
+      case 'epic': return '#a855f7'
+      case 'rare': return '#3b82f6'
+      default: return '#22c55e'
+    }
+  }
 
   return (
-    <div className="courtroom">
-      {/* Court Header */}
-      <header className="court-header">
-        <div className="court-seal">⚖️</div>
-        <div className="court-title">
-          <h1>NAD COURT OF JUSTICE</h1>
-          <p className="court-motto">"Veritas, Justitia, Communitas"</p>
+    <div className="court-arena">
+      {/* Header */}
+      <header className="court-header-gaming">
+        <div className="court-logo">
+          <span className="logo-icon">⚖️</span>
+          <div>
+            <h1>NAD COURT</h1>
+            <span className="subtitle">BATTLE FOR JUSTICE</span>
+          </div>
         </div>
-        <div className="court-info">
-          <span className="session-info">Session #{new Date().getFullYear()}-{String(new Date().getDate()).padStart(3, '0')}</span>
-          <span className="court-date">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <div className="court-stats">
+          <div className="stat">
+            <span className="stat-value">{COMMUNITY_CASES.length}</span>
+            <span className="stat-label">ACTIVE CASES</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">24h</span>
+            <span className="stat-label">COOLDOWN</span>
+          </div>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav className="court-nav">
-        <button 
-          className={activeTab === 'docket' ? 'active' : ''}
-          onClick={() => setActiveTab('docket')}
-        >
-          📋 Case Docket
-        </button>
-        <button 
-          className={activeTab === 'proceedings' ? 'active' : ''}
-          onClick={() => setActiveTab('proceedings')}
-        >
-          ⚖️ Court Proceedings
-        </button>
-        <button 
-          className={activeTab === 'evidence' ? 'active' : ''}
-          onClick={() => setActiveTab('evidence')}
-        >
-          📁 Evidence
-        </button>
-        <button 
-          className={activeTab === 'arguments' ? 'active' : ''}
-          onClick={() => setActiveTab('arguments')}
-        >
-          💼 Arguments
-        </button>
-        <button 
-          className="file-case-btn"
-          onClick={() => setShowFileCase(true)}
-        >
-          ➕ File New Case
+      <nav className="court-nav-gaming">
+        {['docket', 'evidence', 'moves', 'progress'].map(tab => (
+          <button
+            key={tab}
+            className={activeTab === tab ? 'active' : ''}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === 'docket' && '📋 DOCKET'}
+            {tab === 'evidence' && '🎴 EVIDENCE'}
+            {tab === 'moves' && '⚔️ MOVES'}
+            {tab === 'progress' && '📈 PROGRESS'}
+          </button>
+        ))}
+        <button className="file-case-gaming" onClick={() => setShowFileModal(true)}>
+          ➕ FILE CASE
         </button>
       </nav>
 
-      {/* Main Court Area */}
-      <main className="court-main">
+      {/* Main Content */}
+      <main className="court-content">
         
-        {/* Case Docket */}
+        {/* DOCKET TAB */}
         {activeTab === 'docket' && (
-          <div className="docket-panel">
-            <div className="panel-header">
-              <h2>Active Case Docket</h2>
-              <span className="case-count">{COMMUNITY_CASES.length} cases pending</span>
-            </div>
-            
-            <div className="docket-list">
-              {COMMUNITY_CASES.map((case_, idx) => (
-                <div 
-                  key={case_.id}
-                  className={`docket-item ${selectedCase?.id === case_.id ? 'active' : ''} ${case_.status}`}
-                  onClick={() => setSelectedCase(case_)}
-                >
-                  <div className="docket-number">Case No. {case_.id}</div>
-                  <div className="docket-type">{case_.type}</div>
-                  <div className="docket-parties">
-                    <span className="party plaintiff-party">{case_.plaintiff.username}</span>
-                    <span className="vs">v.</span>
-                    <span className="party defendant-party">{case_.defendant.username}</span>
+          <div className="docket-arena">
+            <div className="case-selector">
+              <h2>SELECT CASE</h2>
+              <div className="case-cards">
+                {COMMUNITY_CASES.map((case_, idx) => (
+                  <div 
+                    key={case_.id}
+                    className={`case-card ${selectedCase?.id === case_.id ? 'active' : ''} ${case_.status}`}
+                    onClick={() => setSelectedCase(case_)}
+                  >
+                    <div className="card-header">
+                      <span className="case-id">{case_.id}</span>
+                      <span className={`rarity-badge ${case_.tier || 'common'}`}>{case_.tier || 'COMMON'}</span>
+                    </div>
+                    <div className="card-type">{case_.type}</div>
+                    <div className="card-matchup">
+                      <span className="fighter">{case_.plaintiff.username}</span>
+                      <span className="vs">VS</span>
+                      <span className="fighter">{case_.defendant.username}</span>
+                    </div>
+                    <div className="card-agents">
+                      <span className="agent-tag plaintiff">🤖 JusticeBot</span>
+                      <span className="agent-tag defendant">🦾 GuardianBot</span>
+                    </div>
+                    <div className={`card-status ${case_.status}`}>
+                      {case_.status === 'active' ? '🔴 LIVE' : 
+                       case_.status === 'pending' ? '⏳ QUEUED' : 
+                       case_.status === 'resolved' ? '✅ COMPLETE' : '👁️ JUDGING'}
+                    </div>
                   </div>
-                  <div className={`docket-status ${case_.status}`}>
-                    {case_.status === 'pending' && '⏳ Awaiting Trial'}
-                    {case_.status === 'active' && '🔴 In Session'}
-                    {case_.status === 'judged' && '⚖️ Under Review'}
-                    {case_.status === 'resolved' && '✅ Resolved'}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            {/* Selected Case Detail */}
             {selectedCase && (
-              <div className="case-detail-card">
-                <div className="case-header-banner">
-                  <span className="case-number-display">{selectedCase.id}</span>
-                  <h3>{selectedCase.type}</h3>
+              <div className="case-preview">
+                <div className="preview-header">
+                  <h3>CASE PREVIEW</h3>
+                  <button className="enter-arena-btn">ENTER ARENA →</button>
                 </div>
                 
-                <div className="case-summary-section">
-                  <h4>Case Summary</h4>
-                  <p>{selectedCase.summary}</p>
-                </div>
-
-                <div className="litigants">
-                  <div className="litigant plaintiff-card">
-                    <div className="litigant-header">
-                      <span className="litigant-badge plaintiff">PLAINTIFF</span>
-                      <span className="litigant-avatar">{selectedCase.plaintiff.username[0]}</span>
+                <div className="fighters-showcase">
+                  <div className="fighter-card plaintiff">
+                    <div className="fighter-avatar">{AI_AGENTS.plaintiff.avatar}</div>
+                    <div className="fighter-info">
+                      <span className="role">PLAINTIFF AGENT</span>
+                      <h4>{AI_AGENTS.plaintiff.name}</h4>
+                      <div className="fighter-stats">
+                        <span>STR: {AI_AGENTS.plaintiff.stats.strength}</span>
+                        <span>INT: {AI_AGENTS.plaintiff.stats.intelligence}</span>
+                        <span>SPD: {AI_AGENTS.plaintiff.stats.speed}</span>
+                      </div>
                     </div>
-                    <h5>{selectedCase.plaintiff.username}</h5>
-                    <p className="litigant-desc">{selectedCase.plaintiff.description}</p>
-                    <div className="represented-by">
-                      <span>Represented by:</span>
-                      <strong>{AI_AGENTS.plaintiff.name}</strong>
+                    <div className="human-client">
+                      <span>Client: {selectedCase.plaintiff.username}</span>
                     </div>
                   </div>
 
-                  <div className="litigant defendant-card">
-                    <div className="litigant-header">
-                      <span className="litigant-badge defendant">DEFENDANT</span>
-                      <span className="litigant-avatar">{selectedCase.defendant.username[0]}</span>
+                  <div className="vs-divider">
+                    <span className="vs-text">VS</span>
+                    <span className="match-type">{selectedCase.type}</span>
+                  </div>
+
+                  <div className="fighter-card defendant">
+                    <div className="fighter-avatar">{AI_AGENTS.defendant.avatar}</div>
+                    <div className="fighter-info">
+                      <span className="role">DEFENDANT AGENT</span>
+                      <h4>{AI_AGENTS.defendant.name}</h4>
+                      <div className="fighter-stats">
+                        <span>STR: {AI_AGENTS.defendant.stats.strength}</span>
+                        <span>INT: {AI_AGENTS.defendant.stats.intelligence}</span>
+                        <span>SPD: {AI_AGENTS.defendant.stats.speed}</span>
+                      </div>
                     </div>
-                    <h5>{selectedCase.defendant.username}</h5>
-                    <p className="litigant-desc">{selectedCase.defendant.description}</p>
-                    <div className="represented-by">
-                      <span>Represented by:</span>
-                      <strong>{AI_AGENTS.defendant.name}</strong>
+                    <div className="human-client">
+                      <span>Client: {selectedCase.defendant.username}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="quick-actions">
-                  <button onClick={() => setActiveTab('arguments')}>
-                    View Arguments
-                  </button>
-                  <button onClick={() => setActiveTab('evidence')}>
-                    View Evidence
-                  </button>
-                  <button className="primary" onClick={() => setActiveTab('proceedings')}>
-                    Enter Courtroom
-                  </button>
+                <div className="case-details">
+                  <div className="detail-section">
+                    <h4>🎯 OBJECTIVE</h4>
+                    <p>{selectedCase.summary}</p>
+                  </div>
+                  <div className="detail-section">
+                    <h4>🏆 REWARDS</h4>
+                    <div className="rewards">
+                      <span className="reward">⚖️ Justice Served</span>
+                      <span className="reward">🎖️ Community Rep</span>
+                      <span className="reward">💎 Case XP</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Court Proceedings */}
-        {activeTab === 'proceedings' && (
-          <div className="proceedings-panel">
-            <div className="panel-header">
-              <h2>Court Proceedings: {selectedCase?.id}</h2>
-              <div className="proceeding-status">
-                <span className="status-indicator live"></span>
-                LIVE SESSION
-              </div>
-            </div>
-
-            <div className="courtroom-layout">
-              {/* Judge's Bench */}
-              <div className="judges-bench">
-                <div className="bench-marker">⚖️ THE BENCH</div>
-                <div className="judge-seat">
-                  <span className="gavel">🔨</span>
-                  <span className="judge-title">Hon. AI Arbiter</span>
-                </div>
-              </div>
-
-              {/* Counsel Tables */}
-              <div className="counsel-tables">
-                <div className="counsel-table plaintiff-table">
-                  <div className="table-label">Plaintiff's Counsel</div>
-                  <div className="counsel-name">{AI_AGENTS.plaintiff.name}</div>
-                  <div className="counsel-emoji">{AI_AGENTS.plaintiff.avatar}</div>
-                </div>
-                
-                <div className="court-clerk">
-                  <div className="clerk-desk">
-                    <span className="clerk-label">COURT CLERK</span>
-                    <span className="case-display">{selectedCase?.id}</span>
-                  </div>
-                </div>
-
-                <div className="counsel-table defendant-table">
-                  <div className="table-label">Defendant's Counsel</div>
-                  <div className="counsel-name">{AI_AGENTS.defendant.name}</div>
-                  <div className="counsel-emoji">{AI_AGENTS.defendant.avatar}</div>
-                </div>
-              </div>
-
-              {/* Jury Box */}
-              <div className="jury-box">
-                <div className="jury-label">THE JURY</div>
-                <div className="jury-seats">
-                  {[1,2,3,4,5].map(n => (
-                    <div key={n} className="juror-seat">
-                      <span className="juror-number">{n}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Gallery */}
-              <div className="gallery">
-                <span className="gallery-label">PUBLIC GALLERY</span>
-                <div className="gallery-seats">
-                  {Array(12).fill('👤').map((emoji, i) => (
-                    <span key={i} className="spectator">{emoji}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Procedure Timeline */}
-            <div className="procedure-timeline">
-              <h4>Today's Procedure</h4>
-              <div className="timeline">
-                {COURT_PROCEDURE.map((step, idx) => (
-                  <div key={idx} className={`timeline-item ${step.status}`}>
-                    <div className="timeline-marker"></div>
-                    <div className="timeline-content">
-                      <span className="step-time">{step.time}</span>
-                      <span className="step-name">{step.name}</span>
-                      <span className={`step-status ${step.status}`}>
-                        {step.status === 'completed' && '✓'}
-                        {step.status === 'in-progress' && '▶'}
-                        {step.status === 'pending' && '○'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Evidence */}
+        {/* EVIDENCE TAB */}
         {activeTab === 'evidence' && (
-          <div className="evidence-panel">
-            <div className="panel-header">
-              <h2>Evidence & Exhibits</h2>
-              <span className="exhibit-count">6 exhibits total</span>
-            </div>
-
-            <div className="evidence-grid">
-              <div className="evidence-column">
-                <h3 className="column-header plaintiff-header">
-                  <span className="header-badge">P</span>
-                  Plaintiff's Evidence
-                </h3>
-                {EVIDENCE_EXHIBITS.plaintiff.map((exhibit, idx) => (
-                  <div key={exhibit.id} className={`exhibit-card ${exhibit.strength}`}>
-                    <div className="exhibit-header">
-                      <span className="exhibit-id">{exhibit.id}</span>
-                      <span className={`exhibit-type ${exhibit.type.toLowerCase()}`}>{exhibit.type}</span>
+          <div className="evidence-deck">
+            <div className="deck-section">
+              <h2>
+                <span className="deck-icon plaintiff">🤖</span>
+                PLAINTIFF'S DECK
+              </h2>
+              <div className="card-grid">
+                {EVIDENCE_CARDS.plaintiff.map(card => (
+                  <div 
+                    key={card.id}
+                    className={`evidence-card ${card.rarity}`}
+                    onClick={() => setSelectedCard(card)}
+                  >
+                    <div className="card-shine"></div>
+                    <div className="card-rarity" style={{color: getRarityColor(card.rarity)}}>
+                      {card.rarity.toUpperCase()}
                     </div>
-                    <h4>{exhibit.title}</h4>
-                    <p>{exhibit.description}</p>
-                    <div className="exhibit-meta">
-                      <span className={`strength-badge ${exhibit.strength}`}>
-                        {exhibit.strength} evidence
-                      </span>
+                    <div className="card-icon">{card.icon}</div>
+                    <div className="card-name">{card.name}</div>
+                    <div className="card-type">{card.type}</div>
+                    <div className="card-power">
+                      <span className="power-value">{card.power}</span>
+                      <span className="power-label">PWR</span>
                     </div>
+                    <div className="card-desc">{card.desc}</div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              <div className="evidence-column">
-                <h3 className="column-header defendant-header">
-                  <span className="header-badge">D</span>
-                  Defendant's Evidence
-                </h3>
-                {EVIDENCE_EXHIBITS.defendant.map((exhibit, idx) => (
-                  <div key={exhibit.id} className={`exhibit-card ${exhibit.strength}`}>
-                    <div className="exhibit-header">
-                      <span className="exhibit-id">{exhibit.id}</span>
-                      <span className={`exhibit-type ${exhibit.type.toLowerCase()}`}>{exhibit.type}</span>
+            <div className="deck-section">
+              <h2>
+                <span className="deck-icon defendant">🦾</span>
+                DEFENDANT'S DECK
+              </h2>
+              <div className="card-grid">
+                {EVIDENCE_CARDS.defendant.map(card => (
+                  <div 
+                    key={card.id}
+                    className={`evidence-card ${card.rarity}`}
+                    onClick={() => setSelectedCard(card)}
+                  >
+                    <div className="card-shine"></div>
+                    <div className="card-rarity" style={{color: getRarityColor(card.rarity)}}>
+                      {card.rarity.toUpperCase()}
                     </div>
-                    <h4>{exhibit.title}</h4>
-                    <p>{exhibit.description}</p>
-                    <div className="exhibit-meta">
-                      <span className={`strength-badge ${exhibit.strength}`}>
-                        {exhibit.strength} evidence
-                      </span>
+                    <div className="card-icon">{card.icon}</div>
+                    <div className="card-name">{card.name}</div>
+                    <div className="card-type">{card.type}</div>
+                    <div className="card-power">
+                      <span className="power-value">{card.power}</span>
+                      <span className="power-label">PWR</span>
                     </div>
+                    <div className="card-desc">{card.desc}</div>
                   </div>
                 ))}
               </div>
@@ -323,174 +273,190 @@ function Court() {
           </div>
         )}
 
-        {/* Arguments */}
-        {activeTab === 'arguments' && (
-          <div className="arguments-panel">
-            <div className="panel-header">
-              <h2>Legal Arguments & Pleadings</h2>
+        {/* MOVES TAB */}
+        {activeTab === 'moves' && (
+          <div className="moves-list">
+            <div className="moves-section">
+              <h2>
+                <span className="move-icon plaintiff">🤖</span>
+                JUSTICEBOT MOVES
+              </h2>
+              <div className="move-set">
+                {ARGUMENT_MOVES.plaintiff.map((move, idx) => (
+                  <div key={idx} className="move-card plaintiff-move">
+                    <div className="move-header">
+                      <span className="move-name">{move.name}</span>
+                      <span className="move-damage">{move.damage} DMG</span>
+                    </div>
+                    <div className="move-meta">
+                      <span className="move-type">{move.type}</span>
+                      <span className="move-combo">{move.combo}</span>
+                    </div>
+                    <p className="move-desc">{move.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="arguments-container">
-              {/* Plaintiff's Arguments */}
-              <section className="argument-section">
-                <div className="section-header plaintiff-arg-header">
-                  <span className="arg-badge">PLAINTIFF</span>
-                  <h3>Opening Statement & Arguments</h3>
-                </div>
-                
-                <div className="argument-content">
-                  <div className="argument-block">
-                    <h4>Primary Argument</h4>
-                    <p className="pleading-text">
-                      "Your Honor, distinguished members of the jury, we are here today because the defendant 
-                      has systematically undermined my client's standing in the Monad community. The evidence 
-                      will show a pattern of disregard for established community norms..."
-                    </p>
+            <div className="moves-section">
+              <h2>
+                <span className="move-icon defendant">🦾</span>
+                GUARDIANBOT MOVES
+              </h2>
+              <div className="move-set">
+                {ARGUMENT_MOVES.defendant.map((move, idx) => (
+                  <div key={idx} className="move-card defendant-move">
+                    <div className="move-header">
+                      <span className="move-name">{move.name}</span>
+                      <span className="move-damage">{move.damage} DMG</span>
+                    </div>
+                    <div className="move-meta">
+                      <span className="move-type">{move.type}</span>
+                      <span className="move-combo">{move.combo}</span>
+                    </div>
+                    <p className="move-desc">{move.desc}</p>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-                  <div className="argument-points">
-                    <h4>Key Points</h4>
-                    <ul>
-                      <li>Historical contribution to community since genesis</li>
-                      <li>Established lore and cultural impact</li>
-                      <li>Documented pattern of harassment</li>
-                      <li>Community testimony supporting claims</li>
-                    </ul>
-                  </div>
-
-                  <div className="legal-precedents">
-                    <h4>Cited Precedents</h4>
-                    <ul>
-                      <li><em>Community v. BadActor-2024</em> - OG rights precedence</li>
-                      <li><em>Nads v. PurgeAbuser</em> - Protection of established members</li>
-                    </ul>
-                  </div>
+        {/* PROGRESS TAB */}
+        {activeTab === 'progress' && (
+          <div className="progress-track">
+            <div className="track-header">
+              <h2>CASE PROGRESSION</h2>
+              <div className="current-xp">
+                <span className="xp-value">600 / 1500 XP</span>
+                <div className="xp-bar">
+                  <div className="xp-fill" style={{width: '40%'}}></div>
                 </div>
-              </section>
+              </div>
+            </div>
 
-              {/* Defendant's Arguments */}
-              <section className="argument-section">
-                <div className="section-header defendant-arg-header">
-                  <span className="arg-badge">DEFENDANT</span>
-                  <h3>Opening Statement & Arguments</h3>
-                </div>
-                
-                <div className="argument-content">
-                  <div className="argument-block">
-                    <h4>Primary Argument</h4>
-                    <p className="pleading-text">
-                      "Your Honor, the plaintiff's claims are without merit. My client has provided 
-                      measurable, quantifiable value to this community through concrete tools and 
-                      consistent engagement. The so-called 'harassment' is merely professional critique..."
-                    </p>
+            <div className="level-track">
+              {COURT_LEVELS.map((level, idx) => (
+                <div 
+                  key={idx} 
+                  className={`level-node ${level.status} ${level.boss ? 'boss-level' : ''}`}
+                >
+                  <div className="node-icon">
+                    {level.status === 'completed' ? '✓' : 
+                     level.status === 'in-progress' ? level.icon :
+                     level.status === 'locked' ? '🔒' : level.icon}
                   </div>
+                  <div className="node-info">
+                    <span className="level-num">LEVEL {level.level}</span>
+                    <span className="level-name">{level.name}</span>
+                    <span className="level-xp">{level.xp} XP</span>
+                  </div>
+                  {idx < COURT_LEVELS.length - 1 && (
+                    <div className={`level-connector ${level.status === 'completed' ? 'active' : ''}`}></div>
+                  )}
+                </div>
+              ))}
+            </div>
 
-                  <div className="argument-points">
-                    <h4>Key Points</h4>
-                    <ul>
-                      <li>Quantifiable metrics proving contribution</li>
-                      <li>Open-source tools benefitting all members</li>
-                      <li>Professional standards, not harassment</li>
-                      <li>Plaintiff's history of toxic behavior</li>
-                    </ul>
-                  </div>
-
-                  <div className="legal-precedents">
-                    <h4>Cited Precedents</h4>
-                    <ul>
-                      <li><em>Builders v. Critics-2024</em> - Utility over tenure</li>
-                      <li><em>Metrics v. Lore</em> - Objective contribution standards</li>
-                    </ul>
-                  </div>
+            <div className="progress-rewards">
+              <h3>🏆 MILESTONE REWARDS</h3>
+              <div className="reward-grid">
+                <div className="reward-item locked">
+                  <span className="reward-icon">⚖️</span>
+                  <span className="reward-name">Justice Served</span>
+                  <span className="reward-req">Reach Level 8</span>
                 </div>
-              </section>
-
-              {/* Rebuttals */}
-              <section className="argument-section rebuttals">
-                <div className="section-header rebuttal-header">
-                  <span className="arg-badge">REBUTTALS</span>
-                  <h3>Counter-Arguments</h3>
+                <div className="reward-item locked">
+                  <span className="reward-icon">🎖️</span>
+                  <span className="reward-name">Community Champion</span>
+                  <span className="reward-req">Win 5 Cases</span>
                 </div>
-                
-                <div className="rebuttal-content">
-                  <div className="rebuttal plaintiff-rebuttal">
-                    <h4>Plaintiff's Rebuttal</h4>
-                    <p>"Metrics alone do not capture community value. Cultural contribution is equally valid..."</p>
-                  </div>
-                  <div className="rebuttal defendant-rebuttal">
-                    <h4>Defendant's Rebuttal</h4>
-                    <p>"Cultural contribution without measurable impact is just noise. The data speaks for itself..."</p>
-                  </div>
+                <div className="reward-item unlocked">
+                  <span className="reward-icon">📋</span>
+                  <span className="reward-name">Case Filer</span>
+                  <span className="reward-req">File your first case</span>
                 </div>
-              </section>
+              </div>
             </div>
           </div>
         )}
       </main>
 
       {/* File Case Modal */}
-      {showFileCase && (
-        <div className="modal-overlay" onClick={() => setShowFileCase(false)}>
-          <div className="file-case-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>File New Case</h2>
-              <button className="close-btn" onClick={() => setShowFileCase(false)}>×</button>
+      {showFileModal && (
+        <div className="modal-gaming" onClick={() => setShowFileModal(false)}>
+          <div className="modal-content-gaming" onClick={e => e.stopPropagation()}>
+            <div className="modal-header-gaming">
+              <h2>🎮 FILE NEW CASE</h2>
+              <button className="close-x" onClick={() => setShowFileModal(false)}>×</button>
             </div>
             
-            <form className="file-case-form">
-              <div className="form-section">
-                <label>Case Type</label>
-                <select>
-                  <option>Beef Resolution</option>
-                  <option>Community Conflict</option>
-                  <option>Role Assignment Dispute</option>
-                  <option>Art Ownership Dispute</option>
-                  <option>Purge Appeal</option>
-                  <option>Other</option>
+            <form className="file-form-gaming">
+              <div className="form-group">
+                <label>CASE TYPE</label>
+                <select className="gaming-input">
+                  <option>🥩 BEEF RESOLUTION</option>
+                  <option>⚔️ COMMUNITY CONFLICT</option>
+                  <option>🎭 ROLE DISPUTE</option>
+                  <option>🎨 ART OWNERSHIP</option>
+                  <option>🚫 PURGE APPEAL</option>
                 </select>
               </div>
 
-              <div className="form-row">
-                <div className="form-section">
-                  <label>Plaintiff</label>
-                  <input type="text" placeholder="@username" />
+              <div className="form-row-gaming">
+                <div className="form-group">
+                  <label>PLAINTIFF</label>
+                  <input type="text" className="gaming-input" placeholder="@username" />
                 </div>
-                <div className="form-section">
-                  <label>Defendant</label>
-                  <input type="text" placeholder="@username" />
-                </div>
-              </div>
-
-              <div className="form-section">
-                <label>Case Summary</label>
-                <textarea placeholder="Brief description of the dispute..." rows={3} />
-              </div>
-
-              <div className="form-section">
-                <label>Initial Arguments</label>
-                <div className="arguments-input">
-                  <textarea placeholder="Plaintiff's argument..." rows={2} />
-                  <textarea placeholder="Defendant's argument..." rows={2} />
+                <div className="form-group">
+                  <label>DEFENDANT</label>
+                  <input type="text" className="gaming-input" placeholder="@username" />
                 </div>
               </div>
 
-              <div className="form-section">
-                <label>Evidence (optional)</label>
-                <div className="evidence-uploader">
-                  <button type="button" className="upload-btn">📎 Attach Files</button>
-                  <span className="upload-hint">Screenshots, links, documents</span>
+              <div className="form-group">
+                <label>CASE DESCRIPTION</label>
+                <textarea className="gaming-input" rows={3} placeholder="What's the beef?..." />
+              </div>
+
+              <div className="form-group">
+                <label>SELECT EVIDENCE CARDS</label>
+                <div className="evidence-select">
+                  <button type="button" className="add-card-btn">+ Add Card</button>
                 </div>
               </div>
 
-              <div className="form-actions">
-                <button type="button" className="secondary" onClick={() => setShowFileCase(false)}>
-                  Cancel
+              <div className="form-actions-gaming">
+                <button type="button" className="btn-cancel" onClick={() => setShowFileModal(false)}>
+                  CANCEL
                 </button>
-                <button type="submit" className="primary">
-                  📋 File Case
+                <button type="submit" className="btn-submit">
+                  ⚔️ INITIATE BATTLE
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Card Detail Modal */}
+      {selectedCard && (
+        <div className="modal-gaming" onClick={() => setSelectedCard(null)}>
+          <div className={`card-detail-modal ${selectedCard.rarity}`} onClick={e => e.stopPropagation()}>
+            <div className="card-large">
+              <div className="card-rarity-large" style={{color: getRarityColor(selectedCard.rarity)}}>
+                {selectedCard.rarity.toUpperCase()}
+              </div>
+              <div className="card-icon-large">{selectedCard.icon}</div>
+              <div className="card-name-large">{selectedCard.name}</div>
+              <div className="card-type-large">{selectedCard.type} CARD</div>
+              <div className="card-power-large">
+                <span className="power-num">{selectedCard.power}</span>
+                <span className="power-text">POWER LEVEL</span>
+              </div>
+              <p className="card-desc-large">{selectedCard.desc}</p>
+            </div>
+            <button className="close-detail" onClick={() => setSelectedCard(null)}>CLOSE</button>
           </div>
         </div>
       )}
