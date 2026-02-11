@@ -29,9 +29,10 @@
 /* Upcoming Cases Grid */
 .cases-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 24px;
-  margin-bottom: 32px;
+  max-width: 1200px;
+  margin: 0 auto 32px;
 }
 
 .case-card {
