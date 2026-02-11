@@ -1,0 +1,796 @@
+/* Court Proceedings - Clean, Professional, Gamified Aesthetic */
+
+.court-proceedings {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0a0f 0%, #111118 50%, #0a0a0f 100%);
+  color: #eaeaea;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Header */
+.proceedings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 2px solid #ffd700;
+}
+
+.court-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.seal {
+  font-size: 36px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(255,215,0,0.1), transparent);
+  border: 2px solid #ffd700;
+  border-radius: 50%;
+}
+
+.court-title h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffd700;
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.case-meta {
+  text-align: right;
+}
+
+.case-id {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+
+.case-type {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Navigation */
+.proceedings-nav {
+  display: flex;
+  gap: 4px;
+  padding: 0 40px;
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.proceedings-nav button {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.proceedings-nav button:hover {
+  color: #eaeaea;
+  background: rgba(255,255,255,0.03);
+}
+
+.proceedings-nav button.active {
+  color: #ffd700;
+  border-bottom-color: #ffd700;
+  background: rgba(255,215,0,0.05);
+}
+
+/* Main Content */
+.proceedings-content {
+  padding: 32px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Overview Panel */
+.overview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.parties-showcase {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.party-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+}
+
+.party-card.plaintiff {
+  border-left: 4px solid #22c55e;
+}
+
+.party-card.defendant {
+  border-left: 4px solid #ef4444;
+}
+
+.party-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.plaintiff .party-badge {
+  background: rgba(34,197,94,0.2);
+  color: #22c55e;
+}
+
+.defendant .party-badge {
+  background: rgba(239,68,68,0.2);
+  color: #ef4444;
+}
+
+.party-card h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.party-desc {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.represented-by {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.represented-by span {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.represented-by strong {
+  font-size: 16px;
+  color: #ffd700;
+}
+
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-divider span {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255,215,0,0.3);
+}
+
+/* Case Summary */
+.case-summary-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.case-summary-box h3 {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.case-summary-box p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #eaeaea;
+}
+
+/* Action Bar */
+.action-bar {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn-primary, .btn-accent {
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: rgba(255,255,255,0.1);
+  color: #eaeaea;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-primary:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #000;
+}
+
+.btn-accent:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255,215,0,0.3);
+}
+
+.btn-accent:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.btn-accent.large {
+  padding: 18px 48px;
+  font-size: 16px;
+}
+
+/* Facts Panel */
+.facts-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.facts-panel h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+
+.evidence-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.evidence-section h4 {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.evidence-list {
+  list-style: none;
+  padding: 0;
+}
+
+.evidence-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px;
+}
+
+.evidence-list li:last-child {
+  border-bottom: none;
+}
+
+.evidence-list strong {
+  color: #ffd700;
+}
+
+.established-facts {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.established-facts h4 {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #22c55e;
+  margin-bottom: 16px;
+}
+
+.established-facts ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.established-facts li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #aaa;
+}
+
+/* Arguments Panel */
+.arguments-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.arguments-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.argument-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.plaintiff-arg {
+  border-top: 4px solid #22c55e;
+}
+
+.defendant-arg {
+  border-top: 4px solid #ef4444;
+}
+
+.arg-header {
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.arg-party {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.arg-header h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.arg-agent {
+  font-size: 12px;
+  color: #888;
+}
+
+.argument-body {
+  padding: 24px;
+}
+
+.argument-body p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #aaa;
+  margin-bottom: 16px;
+}
+
+.opening-line {
+  font-style: italic;
+  color: #ffd700;
+}
+
+.closing-line {
+  font-weight: 600;
+  color: #eaeaea;
+}
+
+/* Counter Arguments */
+.counter-arguments {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.counter-arguments h4 {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.rebuttal {
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.plaintiff-rebuttal {
+  background: rgba(34,197,94,0.05);
+  border-left: 3px solid #22c55e;
+}
+
+.defendant-rebuttal {
+  background: rgba(239,68,68,0.05);
+  border-left: 3px solid #ef4444;
+}
+
+.rebuttal strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.rebuttal p {
+  font-size: 14px;
+  font-style: italic;
+  color: #aaa;
+}
+
+/* Jury Panel */
+.jury-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.jury-panel h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.jury-instructions {
+  font-size: 14px;
+  color: #888;
+  margin-top: -24px;
+}
+
+.jury-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.juror-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.juror-card:hover {
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-4px);
+}
+
+.juror-avatar {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.juror-card h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.juror-role {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.juror-bias {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(255,215,0,0.1);
+  border-radius: 12px;
+  font-size: 11px;
+  color: #ffd700;
+  margin-bottom: 12px;
+}
+
+.catchphrase {
+  font-size: 13px;
+  font-style: italic;
+  color: #666;
+}
+
+.deliberation-rules {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.deliberation-rules h4 {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.deliberation-rules ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.deliberation-rules li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.start-deliberation {
+  text-align: center;
+  padding: 40px;
+}
+
+/* Deliberating Animation */
+.deliberating {
+  text-align: center;
+  padding: 60px;
+}
+
+.deliberating h2 {
+  font-size: 24px;
+  color: #ffd700;
+  margin-bottom: 32px;
+  animation: pulse 2s infinite;
+}
+
+.judges-deliberating {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.deliberating-judge {
+  text-align: center;
+}
+
+.deliberating-judge span {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 8px;
+  animation: bounce 1s infinite;
+}
+
+.deliberating-judge small {
+  font-size: 12px;
+  color: #888;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Verdict Panel */
+.verdict-panel {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.verdict-rendered {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.verdict-banner {
+  text-align: center;
+  padding: 40px;
+  border-radius: 16px;
+}
+
+.verdict-banner.plaintiff {
+  background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
+  border: 2px solid #22c55e;
+}
+
+.verdict-banner.defendant {
+  background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05));
+  border: 2px solid #ef4444;
+}
+
+.verdict-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.verdict-banner h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+
+.verdict-sub {
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+/* Vote Tally */
+.vote-tally {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.tally-bar {
+  display: flex;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tally-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  transition: width 0.5s;
+}
+
+.tally-fill.plaintiff {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.tally-fill.defendant {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+/* Individual Verdicts */
+.individual-verdicts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.individual-verdicts h4 {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.judge-verdict {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.judge-verdict.plaintiff {
+  border-left: 3px solid #22c55e;
+}
+
+.judge-verdict.defendant {
+  border-left: 3px solid #ef4444;
+}
+
+.jv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.jv-name {
+  font-weight: 600;
+}
+
+.jv-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.jv-badge.plaintiff {
+  background: rgba(34,197,94,0.2);
+  color: #22c55e;
+}
+
+.jv-badge.defendant {
+  background: rgba(239,68,68,0.2);
+  color: #ef4444;
+}
+
+.jv-reasoning {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.jv-confidence {
+  font-size: 12px;
+  color: #666;
+}
+
+/* No Verdict */
+.no-verdict {
+  text-align: center;
+  padding: 60px;
+}
+
+.no-verdict p {
+  color: #888;
+  margin-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .parties-showcase {
+    grid-template-columns: 1fr;
+  }
+  
+  .vs-divider {
+    padding: 20px;
+  }
+  
+  .arguments-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .jury-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .proceedings-nav {
+    flex-wrap: wrap;
+    padding: 8px 20px;
+  }
+  
+  .proceedings-content {
+    padding: 20px;
+  }
+}

@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
-import Arena from './Arena.jsx'
+import CourtProceedings from './CourtProceedings.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -67,7 +67,7 @@ function App() {
         
         <div className="nav-links">
           <button className={currentView === 'cases' ? 'active' : ''} onClick={() => setCurrentView('cases')}>📋 Cases</button>
-          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')}>⚔️ Battle Arena</button>
+          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')}>⚖️ Court</button>
           <button className={currentView === 'leaderboard' ? 'active' : ''} onClick={() => setCurrentView('leaderboard')}>🏆 Leaderboard</button>
           <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>ℹ️ How It Works</button>
         </div>
@@ -191,8 +191,8 @@ function App() {
           </div>
         )}
 
-        {/* Battle Arena View */}
-        {currentView === 'arena' && <Arena />}
+        {/* Court Proceedings View */}
+        {currentView === 'arena' && <CourtProceedings />}
 
         {/* Leaderboard View - Stats & Rankings */}
         {currentView === 'leaderboard' && (
