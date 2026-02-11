@@ -4,6 +4,7 @@ import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import Arena from './Arena.jsx'
+import Court from './Court.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -70,6 +71,7 @@ function App() {
           <button className={currentView === 'bench' ? 'active' : ''} onClick={() => setCurrentView('bench')}>The Bench</button>
           <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>About</button>
           <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')} style={{color: '#ffd700'}}>⚔️ Arena</button>
+          <button className={currentView === 'court' ? 'active' : ''} onClick={() => setCurrentView('court')} style={{color: '#22c55e'}}>⚖️ Court</button>
         </div>
         
         <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>
@@ -284,6 +286,9 @@ function App() {
 
         {/* Arena View */}
         {currentView === 'arena' && <Arena />}
+
+        {/* Court View */}
+        {currentView === 'court' && <Court />}
       </main>
 
       {/* Modal */}
