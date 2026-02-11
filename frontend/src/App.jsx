@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
+import Arena from './Arena.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -68,6 +69,7 @@ function App() {
           <button className={currentView === 'docket' ? 'active' : ''} onClick={() => setCurrentView('docket')}>Docket</button>
           <button className={currentView === 'bench' ? 'active' : ''} onClick={() => setCurrentView('bench')}>The Bench</button>
           <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>About</button>
+          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')} style={{color: '#ffd700'}}>⚔️ Arena</button>
         </div>
         
         <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>
@@ -279,6 +281,9 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* Arena View */}
+        {currentView === 'arena' && <Arena />}
       </main>
 
       {/* Modal */}

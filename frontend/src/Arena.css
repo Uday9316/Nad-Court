@@ -1,0 +1,846 @@
+/* Tekken-Style Fighting Game CSS for Nad Court Arena */
+
+:root {
+  --arena-bg: #0a0a0f;
+  --arena-surface: #15151a;
+  --arena-elevated: #1f1f28;
+  
+  --plaintiff-color: #00ff88;
+  --plaintiff-glow: rgba(0, 255, 136, 0.5);
+  --defendant-color: #ff3366;
+  --defendant-glow: rgba(255, 51, 102, 0.5);
+  
+  --accent-gold: #ffd700;
+  --accent-blue: #00ccff;
+  --accent-purple: #9933ff;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #888899;
+  --text-muted: #555566;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.arena {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a0a1a 50%, #0f0a1a 100%);
+  color: var(--text-primary);
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background grid */
+.arena::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 51, 102, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+
+/* Music Indicator */
+.music-indicator {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--accent-gold);
+  z-index: 100;
+}
+
+.beat {
+  animation: pulse 0.5s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+.music-text {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+}
+
+/* Header */
+.arena-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+  position: relative;
+  z-index: 10;
+}
+
+.arena-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  font-size: 32px;
+}
+
+.arena-title h1 {
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--plaintiff-color), var(--defendant-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 4px;
+  font-weight: 700;
+}
+
+.wallet-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent-gold), #ffaa00);
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wallet-btn.connected {
+  background: var(--arena-surface);
+  border: 1px solid var(--text-muted);
+  color: var(--text-secondary);
+}
+
+/* Main Stage */
+.stage {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+  padding: 40px;
+}
+
+/* VS Screen */
+.vs-screen {
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.vs-fighters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.fighter {
+  text-align: center;
+  animation: slideUp 0.8s ease backwards;
+}
+
+.fighter.plaintiff { animation-delay: 0.2s; }
+.fighter.defendant { animation-delay: 0.4s; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fighter-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 900;
+  margin: 0 auto 20px;
+  border: 4px solid;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.plaintiff .fighter-avatar {
+  background: linear-gradient(135deg, var(--plaintiff-color), #00aa66);
+  border-color: var(--plaintiff-color);
+  box-shadow: 0 0 40px var(--plaintiff-glow);
+}
+
+.defendant .fighter-avatar {
+  background: linear-gradient(135deg, var(--defendant-color), #cc0044);
+  border-color: var(--defendant-color);
+  box-shadow: 0 0 40px var(--defendant-glow);
+}
+
+.fighter h2 {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.fighter-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 200px;
+  line-height: 1.4;
+}
+
+.vs-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.vs-text {
+  font-size: 80px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent-gold), #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 60px rgba(255, 215, 0, 0.5);
+  animation: vsPulse 1.5s ease infinite;
+}
+
+@keyframes vsPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.case-type {
+  padding: 8px 20px;
+  background: var(--arena-elevated);
+  border: 2px solid var(--accent-gold);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+}
+
+/* Fight Button */
+.fight-btn {
+  position: relative;
+  padding: 24px 60px;
+  background: linear-gradient(135deg, var(--accent-gold), #ff6600);
+  border: none;
+  border-radius: 8px;
+  font-size: 28px;
+  font-weight: 900;
+  color: #000;
+  cursor: pointer;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  animation: fightPulse 2s ease infinite;
+}
+
+@keyframes fightPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+  50% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.8); }
+}
+
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Battle Arena */
+.battle-arena {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Health Bars */
+.health-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 20px 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  border: 2px solid var(--text-muted);
+}
+
+.health-bar {
+  flex: 1;
+}
+
+.fighter-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.plaintiff-bar .fighter-name { color: var(--plaintiff-color); }
+.defendant-bar .fighter-name { color: var(--defendant-color); text-align: right; }
+
+.bar-container {
+  height: 40px;
+  background: var(--arena-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid var(--text-muted);
+}
+
+.bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.plaintiff-fill {
+  background: linear-gradient(90deg, var(--plaintiff-color), #00cc66);
+  box-shadow: 0 0 20px var(--plaintiff-glow);
+}
+
+.defendant-fill {
+  background: linear-gradient(90deg, var(--defendant-color), #cc0044);
+  margin-left: auto;
+  box-shadow: 0 0 20px var(--defendant-glow);
+}
+
+.bar-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+}
+
+.hp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+
+.shake {
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.round-counter {
+  text-align: center;
+  padding: 0 30px;
+}
+
+.round-num {
+  display: block;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--accent-gold);
+}
+
+.max-round {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.combo {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  background: var(--accent-gold);
+  color: #000;
+  font-size: 12px;
+  font-weight: 900;
+  border-radius: 4px;
+  animation: comboPop 0.3s ease;
+}
+
+.defender-combo {
+  float: right;
+}
+
+@keyframes comboPop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Fighters Display */
+.fighters-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  min-height: 300px;
+}
+
+.fighter-sprite {
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.sprite-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 900;
+  margin: 0 auto 20px;
+  border: 4px solid;
+}
+
+.plaintiff-sprite .sprite-avatar {
+  background: linear-gradient(135deg, var(--plaintiff-color), #00aa66);
+  border-color: var(--plaintiff-color);
+  box-shadow: 0 0 30px var(--plaintiff-glow);
+}
+
+.defendant-sprite .sprite-avatar {
+  background: linear-gradient(135deg, var(--defendant-color), #cc0044);
+  border-color: var(--defendant-color);
+  box-shadow: 0 0 30px var(--defendant-glow);
+}
+
+.hit {
+  animation: hitFlash 0.3s ease;
+}
+
+@keyframes hitFlash {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50% { opacity: 0.5; filter: brightness(2) sepia(1) hue-rotate(-50deg) saturate(5); }
+}
+
+.attacking {
+  animation: attackLunge 0.3s ease;
+}
+
+@keyframes attackLunge {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(var(--direction, 50px)) scale(1.1); }
+  100% { transform: translateX(0); }
+}
+
+.plaintiff-sprite.attacking { --direction: 100px; }
+.defendant-sprite.attacking { --direction: -100px; }
+
+.fighter-stats {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.stat {
+  padding: 6px 12px;
+  background: var(--arena-surface);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* Battle Center */
+.battle-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.move-effect {
+  text-align: center;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid;
+  border-radius: 8px;
+  animation: moveImpact 0.5s ease;
+}
+
+@keyframes moveImpact {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(5deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.plaintiff-effect {
+  border-color: var(--plaintiff-color);
+  box-shadow: 0 0 40px var(--plaintiff-glow);
+}
+
+.defendant-effect {
+  border-color: var(--defendant-color);
+  box-shadow: 0 0 40px var(--defendant-glow);
+}
+
+.move-icon {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.move-name {
+  display: block;
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.damage {
+  display: block;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent-gold);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+/* Move Controls */
+.move-controls {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.control-side {
+  flex: 1;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  border: 2px solid var(--text-muted);
+}
+
+.control-side h3 {
+  text-align: center;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--text-muted);
+}
+
+.plaintiff-controls h3 { color: var(--plaintiff-color); border-color: var(--plaintiff-color); }
+.defendant-controls h3 { color: var(--defendant-color); border-color: var(--defendant-color); }
+
+.moves-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.move-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--arena-surface);
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.move-btn:hover:not(:disabled) {
+  background: var(--arena-elevated);
+  transform: translateX(5px);
+}
+
+.move-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.move-btn .move-icon {
+  font-size: 24px;
+  margin: 0;
+}
+
+.move-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.move-info .move-name {
+  font-size: 13px;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.move-damage {
+  font-size: 11px;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.defendant-move:hover:not(:disabled) {
+  transform: translateX(-5px);
+}
+
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+/* Verdict Screen */
+.verdict-screen {
+  text-align: center;
+  animation: verdictReveal 1s ease;
+}
+
+@keyframes verdictReveal {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.winner-display {
+  margin-bottom: 40px;
+}
+
+.winner-trophy {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  color: var(--accent-gold);
+  filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+  animation: trophyBounce 1s ease infinite;
+}
+
+@keyframes trophyBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.winner-trophy svg {
+  width: 100%;
+  height: 100%;
+}
+
+.winner-text {
+  font-size: 48px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--accent-gold), #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.verdict-label {
+  font-size: 20px;
+  letter-spacing: 8px;
+  color: var(--text-secondary);
+}
+
+.final-stats {
+  max-width: 500px;
+  margin: 0 auto 40px;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  border: 2px solid var(--text-muted);
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-label {
+  width: 120px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.final-bar {
+  flex: 1;
+  height: 24px;
+  background: var(--arena-surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.final-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--plaintiff-color), #00cc66);
+  transition: width 1s ease;
+}
+
+.final-fill.defendant {
+  background: linear-gradient(90deg, var(--defendant-color), #cc0044);
+}
+
+.stat-value {
+  width: 50px;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.verdict-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.action-btn {
+  padding: 16px 32px;
+  background: var(--arena-surface);
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: var(--arena-elevated);
+  border-color: var(--text-secondary);
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, var(--accent-gold), #ff6600);
+  border-color: var(--accent-gold);
+  color: #000;
+}
+
+/* Footer */
+.arena-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 40px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+}
+
+.case-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.case-id {
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.divider {
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .vs-fighters {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .health-bars {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .fighters-display {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .move-controls {
+    flex-direction: column;
+  }
+  
+  .vs-divider {
+    display: none;
+  }
+  
+  .winner-text {
+    font-size: 32px;
+  }
+}
