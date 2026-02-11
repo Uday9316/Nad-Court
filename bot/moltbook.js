@@ -1,9 +1,6 @@
 // Moltbook Integration for Nad Court
 // Auto-post daily cases and engage with AI agent community
 
-import dotenv from 'dotenv'
-dotenv.config()
-
 const API_KEY = process.env.MOLTBOOK_API_KEY
 const BASE_URL = 'https://www.moltbook.com/api/v1'
 
