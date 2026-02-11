@@ -4,7 +4,6 @@ import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import Arena from './Arena.jsx'
-import Court from './Court.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -68,9 +67,8 @@ function App() {
         
         <div className="nav-links">
           <button className={currentView === 'cases' ? 'active' : ''} onClick={() => setCurrentView('cases')}>📋 Cases</button>
-          <button className={currentView === 'battle' ? 'active' : ''} onClick={() => setCurrentView('battle')}>⚔️ Battle Arena</button>
+          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')}>⚔️ Battle Arena</button>
           <button className={currentView === 'leaderboard' ? 'active' : ''} onClick={() => setCurrentView('leaderboard')}>🏆 Leaderboard</button>
-          <button className={currentView === 'submit' ? 'active' : ''} onClick={() => setCurrentView('submit')}>➕ Submit Case</button>
           <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>ℹ️ How It Works</button>
         </div>
         
@@ -193,8 +191,8 @@ function App() {
           </div>
         )}
 
-        {/* Battle View - Arena fighting */}
-        {currentView === 'battle' && <Arena />}
+        {/* Battle Arena View */}
+        {currentView === 'arena' && <Arena />}
 
         {/* Leaderboard View - Stats & Rankings */}
         {currentView === 'leaderboard' && (
@@ -418,40 +416,150 @@ function App() {
           </div>
         )}
 
-        {/* About View */}
+        {/* About View - How It Works */}
         {currentView === 'about' && (
           <div className="about-view">
             <header className="view-header centered">
-              <h1>Decentralized Justice</h1>
-              <p className="subtitle">For the Monad community</p>
+              <h1>⚖️ How Nad Court Works</h1>
+              <p className="subtitle">AI-powered justice for the Monad community</p>
             </header>
 
             <div className="about-content">
-              <section className="about-section">
-                <h2>How It Works</h2>
-                <div className="process-steps">
-                  <div className="step"><span className="step-num">01</span><h3>Report</h3><p>Community files disputes</p></div>
-                  <div className="step"><span className="step-num">02</span><h3>Judge</h3><p>AI analyzes (1 call/day)</p></div>
-                  <div className="step"><span className="step-num">03</span><h3>Vote</h3><p>Jury of community members</p></div>
-                  <div className="step"><span className="step-num">04</span><h3>Resolve</h3><p>Verdict executed on-chain</p></div>
+              {/* System Overview */}
+              <section className="about-section system-overview">
+                <h2>🎮 The System</h2>
+                <div className="system-cards">
+                  <div className="sys-card">
+                    <span className="sys-icon">📋</span>
+                    <h3>1. Submit Case</h3>
+                    <p>Community members file disputes with evidence and arguments</p>
+                  </div>
+                  <div className="sys-card">
+                    <span className="sys-icon">⚔️</span>
+                    <h3>2. AI Agents Battle</h3>
+                    <p>JusticeBot vs GuardianBot fight in the arena using evidence as moves</p>
+                  </div>
+                  <div className="sys-card">
+                    <span className="sys-icon">🗳️</span>
+                    <h3>3. Community Votes</h3>
+                    <p>Jurors review the battle and vote on the outcome</p>
+                  </div>
+                  <div className="sys-card">
+                    <span className="sys-icon">✅</span>
+                    <h3>4. Verdict Executed</h3>
+                    <p>Winner declared, stake distributed, precedent set</p>
+                  </div>
                 </div>
               </section>
 
-              <section className="about-section">
-                <h2>Why One Case Per Day?</h2>
-                <p className="about-text">
-                  The court enforces strict rate limiting to ensure quality over quantity, 
-                  prevent spam, and keep AI costs sustainable at roughly $0.02 per case.
-                  Each case receives full attention from judges and jury.
-                </p>
+              {/* Key Rules */}
+              <section className="about-section key-rules">
+                <h2>📋 Key Rules</h2>
+                <div className="rules-grid">
+                  <div className="rule-item">
+                    <span className="rule-icon">⏰</span>
+                    <h4>1 Case Per Day</h4>
+                    <p>Strict rate limiting ensures quality and keeps AI costs at ~$0.02/day</p>
+                  </div>
+                  <div className="rule-item">
+                    <span className="rule-icon">💰</span>
+                    <h4>Staking Required</h4>
+                    <p>Local: 5 MON | High: 15 MON | Supreme: 50 MON</p>
+                  </div>
+                  <div className="rule-item">
+                    <span className="rule-icon">🤖</span>
+                    <h4>AI Agents Represent You</h4>
+                    <p>JusticeBot (Plaintiff) and GuardianBot (Defendant) fight on your behalf</p>
+                  </div>
+                  <div className="rule-item">
+                    <span className="rule-icon">🔗</span>
+                    <h4>On-Chain Records</h4>
+                    <p>All verdicts stored permanently on Monad blockchain</p>
+                  </div>
+                </div>
               </section>
 
+              {/* Court Tiers */}
+              <section className="about-section tiers-section">
+                <h2>⚖️ Three Court Tiers</h2>
+                <div className="tiers-showcase-v2">
+                  <div className="tier-detail local">
+                    <div className="tier-badge">TIER I</div>
+                    <h3>Local Court</h3>
+                    <ul>
+                      <li><strong>Stake:</strong> 5 MON</li>
+                      <li><strong>Jurors:</strong> 5 community members</li>
+                      <li><strong>Threshold:</strong> 50% majority</li>
+                      <li><strong>Duration:</strong> 24 hours</li>
+                      <li><strong>Appeal:</strong> Allowed to High Court</li>
+                    </ul>
+                    <p className="tier-use">Best for: Simple disputes, first-time offenses</p>
+                  </div>
+
+                  <div className="tier-detail high">
+                    <div className="tier-badge">TIER II</div>
+                    <h3>High Court</h3>
+                    <ul>
+                      <li><strong>Stake:</strong> 15 MON</li>
+                      <li><strong>Jurors:</strong> 9 community members</li>
+                      <li><strong>Threshold:</strong> 66% supermajority</li>
+                      <li><strong>Duration:</strong> 48 hours</li>
+                      <li><strong>Appeal:</strong> Allowed to Supreme</li>
+                    </ul>
+                    <p className="tier-use">Best for: Appeals, complex cases</p>
+                  </div>
+
+                  <div className="tier-detail supreme">
+                    <div className="tier-badge">TIER III</div>
+                    <h3>Supreme Court</h3>
+                    <ul>
+                      <li><strong>Stake:</strong> 50 MON</li>
+                      <li><strong>Jurors:</strong> 15 community members</li>
+                      <li><strong>Threshold:</strong> 75% supermajority</li>
+                      <li><strong>Duration:</strong> 72 hours</li>
+                      <li><strong>Appeal:</strong> None - Final verdict</li>
+                    </ul>
+                    <p className="tier-use">Best for: Precedent-setting cases</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Economics */}
+              <section className="about-section economics">
+                <h2>💰 Economics</h2>
+                <div className="economy-cards">
+                  <div className="econ-card">
+                    <h4>Winner Gets</h4>
+                    <p>Both stakes minus 2% protocol fee</p>
+                    <span className="econ-example">Example: Win Local = 9.8 MON</span>
+                  </div>
+                  <div className="econ-card">
+                    <h4>Jurors Get</h4>
+                    <p>1% of total stake for voting</p>
+                    <span className="econ-example">Example: 5 jurors split 0.1 MON</span>
+                  </div>
+                  <div className="econ-card">
+                    <h4>Protocol Fee</h4>
+                    <p>1% to treasury, 1% to development</p>
+                    <span className="econ-example">Sustainable at $0.02/day</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Contract */}
               <section className="about-section contract-info">
-                <h2>Contract</h2>
-                <code className="contract-address">{CONTRACT_ADDRESS}</code>
-                <a href={`https://monadvision.com/address/${CONTRACT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="explorer-link">
-                  View on MonadVision →
-                </a>
+                <h2>🔗 Smart Contract</h2>
+                <div className="contract-box">
+                  <code className="contract-address">{CONTRACT_ADDRESS}</code>
+                  <div className="contract-actions">
+                    <a href={`https://monadvision.com/address/${CONTRACT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="explorer-link">
+                      View on MonadVision →
+                    </a>
+                    <a href={`https://github.com/Uday9316/Nad-Court`} target="_blank" rel="noopener noreferrer" className="github-link">
+                      View Source Code →
+                    </a>
+                  </div>
+                </div>
               </section>
             </div>
           </div>
