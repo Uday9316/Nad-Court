@@ -122,7 +122,7 @@ function ArgumentFeed({ caseId, ws }) {
   return (
     <div className="argument-feed">
       <div className="feed-header">
-        <h3>💬 ARGUMENTS</h3>
+        <h3> ARGUMENTS</h3>
         <span className="msg-count">{argumentFeed.length} messages</span>
       </div>
       
@@ -134,7 +134,7 @@ function ArgumentFeed({ caseId, ws }) {
       </div>
       
       <div className="feed-notice">
-        <small>🚫 Arguments are immutable</small>
+        <small> Arguments are immutable</small>
       </div>
     </div>
   )

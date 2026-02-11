@@ -10,7 +10,7 @@
   --defendant-color: #ff3366;
   --defendant-glow: rgba(255, 51, 102, 0.5);
   
-  --accent-gold: #ffd700;
+  --accent-gold: #7c3aed;
   --accent-blue: #00ccff;
   --accent-purple: #9933ff;
   
@@ -123,10 +123,10 @@
 
 .wallet-btn {
   padding: 10px 20px;
-  background: linear-gradient(135deg, var(--accent-gold), #ffaa00);
+  background: linear-gradient(135deg, var(--accent-gold), #a855f7);
   border: none;
   border-radius: 4px;
-  color: #000;
+  color: #ffffff;
   font-weight: 900;
   font-size: 12px;
   cursor: pointer;

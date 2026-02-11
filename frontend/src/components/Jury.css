@@ -23,7 +23,7 @@
 .jury-chamber h2 {
   font-size: 24px;
   letter-spacing: 4px;
-  color: #ffd700;
+  color: var(--accent);
   margin-bottom: 40px;
   animation: pulse 2s infinite;
 }
@@ -106,7 +106,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff6b35, #ffd700);
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
   animation: progress 1.5s ease-in-out forwards;
 }
 
@@ -122,7 +122,7 @@
   gap: 20px;
   padding: 24px 40px;
   background: rgba(0,0,0,0.3);
-  border-bottom: 2px solid rgba(255,215,0,0.3);
+  border-bottom: 2px solid rgba(124,58,237,0.5);
 }
 
 .court-seal {
@@ -132,8 +132,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, rgba(255,215,0,0.1), transparent);
-  border: 2px solid #ffd700;
+  background: radial-gradient(circle, rgba(124,58,237,0.15), transparent);
+  border: 2px solid var(--accent);
   border-radius: 50%;
 }
 
@@ -177,7 +177,7 @@
   display: block;
   font-size: 18px;
   font-weight: 700;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .verdict-sub {
@@ -212,9 +212,9 @@
 }
 
 .jury-nav button.active {
-  background: rgba(255,215,0,0.2);
-  border-color: #ffd700;
-  color: #ffd700;
+  background: rgba(124,58,237,0.2);
+  border-color: var(--accent);
+  color: #f5f5f7;
 }
 
 /* Overview */
@@ -263,11 +263,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,215,0,0.2);
+  background: rgba(124,58,237,0.18);
   border-radius: 50%;
   font-size: 12px;
   font-weight: 700;
-  color: #ffd700;
+  color: #f5f5f7;
   flex-shrink: 0;
 }
 
@@ -358,7 +358,7 @@
 
 .read-more:hover {
   background: rgba(255,255,255,0.1);
-  border-color: #ffd700;
+  border-color: var(--accent);
 }
 
 /* Jury Panel Preview */
@@ -528,7 +528,7 @@
 }
 
 .tally-meta .unanimous {
-  color: #ffd700;
+  color: var(--accent-light);
 }
 
 /* Arguments Full View */
@@ -696,7 +696,7 @@
 
 .conf-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ff6b35);
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
   transition: width 0.5s;
 }
 
@@ -705,7 +705,7 @@
   text-align: right;
   font-size: 12px;
   font-weight: 600;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .reasoning-box {
@@ -764,7 +764,7 @@
 
 .judge-modal-content {
   background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
-  border: 2px solid rgba(255,215,0,0.3);
+  border: 2px solid rgba(124,58,237,0.5);
   border-radius: 16px;
   padding: 40px;
   max-width: 400px;
@@ -818,12 +818,12 @@
 .catchphrase {
   font-size: 14px;
   font-style: italic;
-  color: #ffd700;
+  color: var(--accent-light);
   margin-bottom: 24px;
   padding: 16px;
-  background: rgba(255,215,0,0.05);
+  background: rgba(124,58,237,0.15);
   border-radius: 8px;
-  border-left: 3px solid #ffd700;
+  border-left: 3px solid var(--accent);
 }
 
 .profile-stats {

@@ -67,10 +67,10 @@ function App() {
         </div>
         
         <div className="nav-links">
-          <button className={currentView === 'live' ? 'active' : ''} onClick={() => setCurrentView('live')}>🔴 Live Court</button>
-          <button className={currentView === 'upcoming' ? 'active' : ''} onClick={() => setCurrentView('upcoming')}>📅 Upcoming</button>
-          <button className={currentView === 'resolved' ? 'active' : ''} onClick={() => setCurrentView('resolved')}>📁 Resolved</button>
-          <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>ℹ️ How It Works</button>
+          <button className={currentView === 'live' ? 'active' : ''} onClick={() => setCurrentView('live')}> Live Court</button>
+          <button className={currentView === 'upcoming' ? 'active' : ''} onClick={() => setCurrentView('upcoming')}> Upcoming</button>
+          <button className={currentView === 'resolved' ? 'active' : ''} onClick={() => setCurrentView('resolved')}> Resolved</button>
+          <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}> How It Works</button>
         </div>
         
         <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>

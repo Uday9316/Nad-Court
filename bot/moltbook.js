@@ -204,10 +204,10 @@ export async function commentOnPost(postId, content) {
     })
     
     const data = await response.json()
-    console.log('💬 Commented on:', postId)
+    console.log(' Commented on:', postId)
     return data
   } catch (error) {
-    console.error('❌ Comment failed:', error.message)
+    console.error(' Comment failed:', error.message)
     return null
   }
 }
@@ -219,7 +219,7 @@ export async function heartbeat() {
   // Check status
   const status = await checkStatus()
   if (!status || status.status !== 'claimed') {
-    console.log('⏳ Waiting for human to claim agent...')
+    console.log(' Waiting for human to claim agent...')
     return { action: 'waiting_for_claim' }
   }
   
@@ -233,7 +233,7 @@ export async function heartbeat() {
     }
   }
   
-  console.log('✅ Heartbeat complete')
+  console.log(' Heartbeat complete')
   return { action: 'engaged', postsChecked: posts.length }
 }
 

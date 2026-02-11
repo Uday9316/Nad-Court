@@ -27,17 +27,17 @@
 
 .logo-icon {
   font-size: 48px;
-  filter: drop-shadow(0 0 20px rgba(255,107,53,0.5));
+  filter: drop-shadow(0 0 20px rgba(124,58,237,0.6));
 }
 
 .court-logo h1 {
   font-size: 32px;
   font-weight: 900;
   letter-spacing: 4px;
-  background: linear-gradient(135deg, #ff6b35, #ffd700);
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(255,107,53,0.3);
+  text-shadow: 0 0 30px rgba(124,58,237,0.5);
 }
 
 .subtitle {
@@ -61,8 +61,8 @@
   display: block;
   font-size: 28px;
   font-weight: 700;
-  color: #ffd700;
-  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  color: #f5f5f7;
+  text-shadow: 0 0 20px rgba(124,58,237,0.4);
 }
 
 .stat-label {
@@ -375,7 +375,7 @@
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 12px;
-  background: linear-gradient(135deg, #ff6b35, #ffd700);
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -397,7 +397,7 @@
 }
 
 .human-client span {
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .vs-divider {
@@ -454,11 +454,11 @@
 
 .reward {
   padding: 8px 14px;
-  background: rgba(255,215,0,0.1);
-  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(124,58,237,0.5);
   border-radius: 20px;
   font-size: 12px;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 /* EVIDENCE TAB */
@@ -587,7 +587,7 @@
 .power-value {
   font-size: 28px;
   font-weight: 900;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .power-label {
@@ -674,7 +674,7 @@
 .move-damage {
   font-size: 14px;
   font-weight: 700;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .move-meta {
@@ -728,7 +728,7 @@
 .xp-value {
   display: block;
   font-size: 14px;
-  color: #ffd700;
+  color: #f5f5f7;
   margin-bottom: 8px;
 }
 
@@ -742,7 +742,7 @@
 
 .xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff6b35, #ffd700);
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
   transition: width 0.5s;
 }
 
@@ -1089,7 +1089,7 @@
   display: block;
   font-size: 64px;
   font-weight: 900;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .power-text {
@@ -1137,7 +1137,7 @@
 .arguments-header h2 {
   font-size: 24px;
   letter-spacing: 3px;
-  background: linear-gradient(135deg, #ff6b35, #ffd700);
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
@@ -1261,7 +1261,7 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: #ffd700;
+  color: var(--accent-light);
   font-weight: bold;
 }
 
@@ -1273,7 +1273,7 @@
 }
 
 .precedents em {
-  color: #ffd700;
+  color: var(--accent-light);
   font-style: italic;
 }
 

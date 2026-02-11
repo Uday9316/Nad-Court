@@ -14,7 +14,7 @@
   justify-content: space-between;
   padding: 24px 40px;
   background: rgba(0,0,0,0.4);
-  border-bottom: 2px solid #ffd700;
+  border-bottom: 2px solid var(--accent);
 }
 
 .court-title {
@@ -30,8 +30,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, rgba(255,215,0,0.1), transparent);
-  border: 2px solid #ffd700;
+  background: radial-gradient(circle, rgba(124,58,237,0.15), transparent);
+  border: 2px solid var(--accent);
   border-radius: 50%;
 }
 
@@ -39,7 +39,7 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #ffd700;
+  color: #f5f5f7;
   margin-bottom: 2px;
 }
 
@@ -57,7 +57,7 @@
   display: block;
   font-family: 'Courier New', monospace;
   font-size: 14px;
-  color: #ffd700;
+  color: #f5f5f7;
   margin-bottom: 4px;
 }
 
@@ -96,16 +96,17 @@
 }
 
 .proceedings-nav button.active {
-  color: #ffd700;
-  border-bottom-color: #ffd700;
-  background: rgba(255,215,0,0.05);
+  color: var(--accent-light);
+  border-bottom-color: var(--accent-light);
+  background: rgba(124,58,237,0.12);
 }
 
 /* Main Content */
 .proceedings-content {
-  padding: 32px 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 32px 40px; 
+  max-width: none;
+  width: 100%;
+  margin: 0;
 }
 
 /* Overview Panel */
@@ -126,7 +127,7 @@
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
-  padding: 32px;
+  padding: 24px;
   text-align: center;
 }
 
@@ -159,7 +160,7 @@
 }
 
 .party-card h2 {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   margin-bottom: 12px;
 }
@@ -186,7 +187,7 @@
 
 .represented-by strong {
   font-size: 16px;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .vs-divider {
@@ -198,8 +199,8 @@
 .vs-divider span {
   font-size: 20px;
   font-weight: 900;
-  color: #ffd700;
-  text-shadow: 0 0 20px rgba(255,215,0,0.3);
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(124,58,237,0.5);
 }
 
 /* Case Summary */
@@ -252,8 +253,8 @@
 }
 
 .btn-accent {
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  color: #000;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #f5f5f7;
 }
 
 .btn-accent:hover:not(:disabled) {
@@ -281,7 +282,7 @@
 .facts-panel h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #ffd700;
+  color: var(--accent-light);
   margin-bottom: 8px;
 }
 

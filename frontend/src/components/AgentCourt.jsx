@@ -120,7 +120,7 @@ function AgentCourt() {
           <div>
             <h1>NAD COURT</h1>
             <span className="case-live">
-              {isLive ? '🔴 LIVE' : '⏸️ PAUSED'} • Case {ACTIVE_CASE.id}
+              {isLive ? ' LIVE' : ' PAUSED'} • Case {ACTIVE_CASE.id}
             </span>
           </div>
         </div>
@@ -135,7 +135,7 @@ function AgentCourt() {
         {/* LEFT PANEL - Argument Feed (Chat Room) */}
         <section className="argument-feed">
           <div className="feed-header">
-            <h3>💬 ARGUMENT FEED</h3>
+            <h3> ARGUMENT FEED</h3>
             <span className="feed-status">{argumentFeed.length} messages</span>
           </div>
           
@@ -166,7 +166,7 @@ function AgentCourt() {
           </div>
 
           <div className="feed-notice">
-            <small>🚫 Arguments are immutable once posted</small>
+            <small> Arguments are immutable once posted</small>
           </div>
         </section>
 
