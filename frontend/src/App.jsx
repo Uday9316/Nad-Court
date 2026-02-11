@@ -3,7 +3,8 @@ import { ethers } from 'ethers'
 import './App.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
-import CourtProceedings from './CourtProceedings.jsx'
+import AgentCourt from './components/AgentCourt.jsx'
+import CaseArchives from './components/CaseArchives.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -23,7 +24,7 @@ const TODAY_CASE = getTodayCase()
 
 function App() {
   const [account, setAccount] = useState(null)
-  const [currentView, setCurrentView] = useState('cases')
+  const [currentView, setCurrentView] = useState('live')
   const [selectedCase, setSelectedCase] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalType, setModalType] = useState(null)
@@ -66,9 +67,9 @@ function App() {
         </div>
         
         <div className="nav-links">
-          <button className={currentView === 'cases' ? 'active' : ''} onClick={() => setCurrentView('cases')}>📋 Cases</button>
-          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')}>⚖️ Court</button>
-          <button className={currentView === 'leaderboard' ? 'active' : ''} onClick={() => setCurrentView('leaderboard')}>🏆 Leaderboard</button>
+          <button className={currentView === 'live' ? 'active' : ''} onClick={() => setCurrentView('live')}>🔴 Live Court</button>
+          <button className={currentView === 'upcoming' ? 'active' : ''} onClick={() => setCurrentView('upcoming')}>📅 Upcoming</button>
+          <button className={currentView === 'resolved' ? 'active' : ''} onClick={() => setCurrentView('resolved')}>📁 Resolved</button>
           <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>ℹ️ How It Works</button>
         </div>
         
@@ -191,8 +192,14 @@ function App() {
           </div>
         )}
 
-        {/* Court Proceedings View */}
-        {currentView === 'arena' && <CourtProceedings />}
+        {/* Live Agent Court */}
+        {currentView === 'live' && <AgentCourt />}
+
+        {/* Upcoming Cases */}
+        {currentView === 'upcoming' && <CaseArchives view="upcoming" />}
+
+        {/* Resolved Cases */}
+        {currentView === 'resolved' && <CaseArchives view="resolved" />}
 
         {/* Leaderboard View - Stats & Rankings */}
         {currentView === 'leaderboard' && (
