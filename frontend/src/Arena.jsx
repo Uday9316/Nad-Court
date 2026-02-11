@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { ethers } from 'ethers'
 import './Arena.css'
 import { AI_AGENTS, AGENT_MOVES, ACTIVE_CASE, BATTLE_COMMENTARY } from './data/agents.js'
+import Jury from './components/Jury.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 
 function Arena() {
-  const [gameState, setGameState] = useState('intro') // intro, fighting, verdict
+  const [gameState, setGameState] = useState('intro') // intro, fighting, verdict, jury
   const [plaintiffHP, setPlaintiffHP] = useState(100)
   const [defendantHP, setDefendantHP] = useState(100)
   const [currentRound, setCurrentRound] = useState(0)
@@ -358,11 +359,16 @@ function Arena() {
               <button className="cyber-btn secondary" onClick={resetGame}>
                 🔄 NEW_BATTLE.exe
               </button>
-              <a href="/" className="cyber-btn primary">
-                📋 VIEW_CASE_FILE
-              </a>
+              <button className="cyber-btn primary" onClick={() => setGameState('jury')}>
+                👥 VIEW_JURY_VERDICT
+              </button>
             </div>
           </div>
+        )}
+
+        {/* Jury Deliberation */}
+        {gameState === 'jury' && (
+          <Jury caseData={ACTIVE_CASE} />
         )}
       </main>
     </div>
