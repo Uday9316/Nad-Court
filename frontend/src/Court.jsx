@@ -89,13 +89,14 @@ function Court() {
 
       {/* Navigation */}
       <nav className="court-nav-gaming">
-        {['docket', 'evidence', 'moves', 'progress'].map(tab => (
+        {['docket', 'arguments', 'evidence', 'moves', 'progress'].map(tab => (
           <button
             key={tab}
             className={activeTab === tab ? 'active' : ''}
             onClick={() => setActiveTab(tab)}
           >
             {tab === 'docket' && '📋 DOCKET'}
+            {tab === 'arguments' && '💬 ARGUMENTS'}
             {tab === 'evidence' && '🎴 EVIDENCE'}
             {tab === 'moves' && '⚔️ MOVES'}
             {tab === 'progress' && '📈 PROGRESS'}
@@ -207,6 +208,112 @@ function Court() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ARGUMENTS TAB - Shows both sides side by side */}
+        {activeTab === 'arguments' && selectedCase && (
+          <div className="arguments-battle">
+            <div className="arguments-header">
+              <h2>💬 LEGAL ARGUMENTS</h2>
+              <p>Both sides present their case</p>
+            </div>
+            
+            <div className="arguments-arena">
+              {/* PLAINTIFF SIDE */}
+              <div className="argument-side plaintiff-side">
+                <div className="side-header plaintiff-header">
+                  <span className="side-icon">🤖</span>
+                  <div>
+                    <span className="side-role">PLAINTIFF</span>
+                    <h3>{selectedCase.plaintiff.username}</h3>
+                    <span className="agent-name">via {AI_AGENTS.plaintiff.name}</span>
+                  </div>
+                </div>
+                
+                <div className="argument-content-box">
+                  <div className="arg-section">
+                    <h4>🎯 MAIN ARGUMENT</h4>
+                    <p className="argument-text">{selectedCase.plaintiff.argument}</p>
+                  </div>
+                  
+                  <div className="arg-section">
+                    <h4>📋 KEY POINTS</h4>
+                    <ul className="key-points">
+                      <li>Historical contribution to community</li>
+                      <li>Established lore and cultural impact</li>
+                      <li>Documented pattern of grievances</li>
+                      <li>Community support and testimony</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="arg-section">
+                    <h4>⚖️ PRECEDENTS CITED</h4>
+                    <ul className="precedents">
+                      <li><em>Community v. BadActor-2024</em></li>
+                      <li><em>Nads v. PurgeAbuser</em></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* VS DIVIDER */}
+              <div className="vs-center">
+                <span className="vs-badge">VS</span>
+              </div>
+
+              {/* DEFENDANT SIDE */}
+              <div className="argument-side defendant-side">
+                <div className="side-header defendant-header">
+                  <span className="side-icon">🦾</span>
+                  <div>
+                    <span className="side-role">DEFENDANT</span>
+                    <h3>{selectedCase.defendant.username}</h3>
+                    <span className="agent-name">via {AI_AGENTS.defendant.name}</span>
+                  </div>
+                </div>
+                
+                <div className="argument-content-box">
+                  <div className="arg-section">
+                    <h4>🎯 MAIN ARGUMENT</h4>
+                    <p className="argument-text">{selectedCase.defendant.argument}</p>
+                  </div>
+                  
+                  <div className="arg-section">
+                    <h4>📋 KEY POINTS</h4>
+                    <ul className="key-points">
+                      <li>Quantifiable metrics and contributions</li>
+                      <li>Open-source tools built for community</li>
+                      <li>Professional standards, not harassment</li>
+                      <li>Plaintiff's history of violations</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="arg-section">
+                    <h4>⚖️ PRECEDENTS CITED</h4>
+                    <ul className="precedents">
+                      <li><em>Builders v. Critics-2024</em></li>
+                      <li><em>Metrics v. Lore</em></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* REBUTTALS */}
+            <div className="rebuttals-section">
+              <h3>🔄 COUNTER ARGUMENTS</h3>
+              <div className="rebuttal-pair">
+                <div className="rebuttal plaintiff-rebuttal">
+                  <span className="rebuttal-label">Plaintiff Rebuts:</span>
+                  <p>"Metrics alone don't capture community value. Cultural contribution is equally valid and should be recognized."</p>
+                </div>
+                <div className="rebuttal defendant-rebuttal">
+                  <span className="rebuttal-label">Defendant Rebuts:</span>
+                  <p>"Cultural contribution without measurable impact is just noise. The data speaks for itself - utility over tenure."</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

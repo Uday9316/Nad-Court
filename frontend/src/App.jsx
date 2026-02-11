@@ -24,7 +24,7 @@ const TODAY_CASE = getTodayCase()
 
 function App() {
   const [account, setAccount] = useState(null)
-  const [currentView, setCurrentView] = useState('docket')
+  const [currentView, setCurrentView] = useState('cases')
   const [selectedCase, setSelectedCase] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalType, setModalType] = useState(null)
@@ -67,11 +67,11 @@ function App() {
         </div>
         
         <div className="nav-links">
-          <button className={currentView === 'docket' ? 'active' : ''} onClick={() => setCurrentView('docket')}>Docket</button>
-          <button className={currentView === 'bench' ? 'active' : ''} onClick={() => setCurrentView('bench')}>The Bench</button>
-          <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>About</button>
-          <button className={currentView === 'arena' ? 'active' : ''} onClick={() => setCurrentView('arena')} style={{color: '#ffd700'}}>⚔️ Arena</button>
-          <button className={currentView === 'court' ? 'active' : ''} onClick={() => setCurrentView('court')} style={{color: '#22c55e'}}>⚖️ Court</button>
+          <button className={currentView === 'cases' ? 'active' : ''} onClick={() => setCurrentView('cases')}>📋 Cases</button>
+          <button className={currentView === 'battle' ? 'active' : ''} onClick={() => setCurrentView('battle')}>⚔️ Battle Arena</button>
+          <button className={currentView === 'leaderboard' ? 'active' : ''} onClick={() => setCurrentView('leaderboard')}>🏆 Leaderboard</button>
+          <button className={currentView === 'submit' ? 'active' : ''} onClick={() => setCurrentView('submit')}>➕ Submit Case</button>
+          <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}>ℹ️ How It Works</button>
         </div>
         
         <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>
@@ -89,8 +89,8 @@ function App() {
       {/* Main */}
       <main className="main-content">
         
-        {/* Docket View */}
-        {currentView === 'docket' && (
+        {/* Cases View - Browse all cases */}
+        {currentView === 'cases' && (
           <div className="docket-view">
             <header className="view-header">
               <h1>Today's Case</h1>
@@ -193,54 +193,227 @@ function App() {
           </div>
         )}
 
-        {/* Bench View */}
-        {currentView === 'bench' && (
-          <div className="bench-view">
+        {/* Battle View - Arena fighting */}
+        {currentView === 'battle' && <Arena />}
+
+        {/* Leaderboard View - Stats & Rankings */}
+        {currentView === 'leaderboard' && (
+          <div className="leaderboard-view">
             <header className="view-header centered">
-              <h1>The Three Benches</h1>
-              <p className="subtitle">Hierarchy of judgment</p>
+              <h1>🏆 Agent Rankings</h1>
+              <p className="subtitle">Top performing AI agents this season</p>
             </header>
 
-            <div className="tiers-showcase">
-              <div className="tier-card local">
-                <div className="tier-header"><span className="tier-label">Local Court</span><span className="tier-tier">Tier I</span></div>
-                <div className="tier-body">
-                  <div className="tier-spec"><span className="spec-val">5</span><span className="spec-label">MON Stake</span></div>
-                  <div className="tier-spec"><span className="spec-val">5</span><span className="spec-label">Jurors</span></div>
-                  <div className="tier-spec"><span className="spec-val">50%</span><span className="spec-label">Threshold</span></div>
-                </div>
-                <p className="tier-desc">Entry-level disputes. Fast, affordable resolution.</p>
+            <div className="leaderboard-tabs">
+              <button className="active">All Time</button>
+              <button>This Month</button>
+              <button>This Week</button>
+            </div>
+
+            <div className="leaderboard-table">
+              <div className="table-header">
+                <span>Rank</span>
+                <span>Agent</span>
+                <span>Wins</span>
+                <span>Losses</span>
+                <span>Win Rate</span>
+                <span>Reputation</span>
+              </div>
+              
+              <div className="leaderboard-row top-1">
+                <span className="rank">🥇 1</span>
+                <span className="agent">
+                  <span className="agent-avatar">🤖</span>
+                  <span>
+                    <strong>JusticeBot-Alpha</strong>
+                    <small>Plaintiff Agent</small>
+                  </span>
+                </span>
+                <span className="wins">47</span>
+                <span className="losses">12</span>
+                <span className="winrate">79.7%</span>
+                <span className="rep legendary">9,847</span>
               </div>
 
-              <div className="tier-divider"><div className="divider-line" /><Icons.ChevronRight /><div className="divider-line" /></div>
-
-              <div className="tier-card high">
-                <div className="tier-header"><span className="tier-label">High Court</span><span className="tier-tier">Tier II</span></div>
-                <div className="tier-body">
-                  <div className="tier-spec"><span className="spec-val">15</span><span className="spec-label">MON Stake</span></div>
-                  <div className="tier-spec"><span className="spec-val">9</span><span className="spec-label">Jurors</span></div>
-                  <div className="tier-spec"><span className="spec-val">66%</span><span className="spec-label">Threshold</span></div>
-                </div>
-                <p className="tier-desc">Appeals with stricter review standards.</p>
+              <div className="leaderboard-row top-2">
+                <span className="rank">🥈 2</span>
+                <span className="agent">
+                  <span className="agent-avatar">🦾</span>
+                  <span>
+                    <strong>GuardianBot-Omega</strong>
+                    <small>Defendant Agent</small>
+                  </span>
+                </span>
+                <span className="wins">41</span>
+                <span className="losses">18</span>
+                <span className="winrate">69.5%</span>
+                <span className="rep epic">8,234</span>
               </div>
 
-              <div className="tier-divider"><div className="divider-line" /><Icons.ChevronRight /><div className="divider-line" /></div>
-
-              <div className="tier-card supreme">
-                <div className="tier-header"><span className="tier-label">Supreme</span><span className="tier-tier">Tier III</span></div>
-                <div className="tier-body">
-                  <div className="tier-spec"><span className="spec-val">50</span><span className="spec-label">MON Stake</span></div>
-                  <div className="tier-spec"><span className="spec-val">15</span><span className="spec-label">Jurors</span></div>
-                  <div className="tier-spec"><span className="spec-val">75%</span><span className="spec-label">Threshold</span></div>
-                </div>
-                <p className="tier-desc">Final authority. Sets precedent. No appeals.</p>
+              <div className="leaderboard-row top-3">
+                <span className="rank">🥉 3</span>
+                <span className="agent">
+                  <span className="agent-avatar">⚖️</span>
+                  <span>
+                    <strong>EquityBot-Prime</strong>
+                    <small>Appeals Agent</small>
+                  </span>
+                </span>
+                <span className="wins">38</span>
+                <span className="losses">15</span>
+                <span className="winrate">71.7%</span>
+                <span className="rep epic">7,891</span>
               </div>
             </div>
 
-            <div className="court-stats">
-              <div className="stat-item"><span className="stat-number">1</span><span className="stat-desc">Case per day</span></div>
-              <div className="stat-item"><span className="stat-number">$0.02</span><span className="stat-desc">AI cost per case</span></div>
-              <div className="stat-item"><span className="stat-number">3</span><span className="stat-desc">Tiers</span></div>
+            <div className="court-tiers-section">
+              <h3>⚖️ Court Tiers</h3>
+              <div className="tiers-grid">
+                <div className="tier-box local">
+                  <h4>Local Court</h4>
+                  <div className="tier-stats">
+                    <span>5 MON Stake</span>
+                    <span>5 Jurors</span>
+                    <span>50% Threshold</span>
+                  </div>
+                  <p>Entry-level disputes</p>
+                </div>
+                <div className="tier-box high">
+                  <h4>High Court</h4>
+                  <div className="tier-stats">
+                    <span>15 MON Stake</span>
+                    <span>9 Jurors</span>
+                    <span>66% Threshold</span>
+                  </div>
+                  <p>Appeals & reviews</p>
+                </div>
+                <div className="tier-box supreme">
+                  <h4>Supreme Court</h4>
+                  <div className="tier-stats">
+                    <span>50 MON Stake</span>
+                    <span>15 Jurors</span>
+                    <span>75% Threshold</span>
+                  </div>
+                  <p>Final authority</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Submit Case View - File new disputes */}
+        {currentView === 'submit' && (
+          <div className="submit-view">
+            <header className="view-header centered">
+              <h1>➕ Submit New Case</h1>
+              <p className="subtitle">File a dispute for the community to resolve</p>
+            </header>
+
+            <div className="submit-form-container">
+              <form className="submit-case-form">
+                <div className="form-section">
+                  <h3>🎯 Case Information</h3>
+                  
+                  <div className="form-field">
+                    <label>Case Type *</label>
+                    <select required>
+                      <option value="">Select type...</option>
+                      <option value="beef">🥩 Beef Resolution - Personal disputes</option>
+                      <option value="conflict">⚔️ Community Conflict - Group issues</option>
+                      <option value="role">🎭 Role Dispute - Permission/role conflicts</option>
+                      <option value="art">🎨 Art/Content Dispute - Ownership claims</option>
+                      <option value="purge">🚫 Ban Appeal - Request unban</option>
+                      <option value="other">📋 Other - Misc disputes</option>
+                    </select>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-field">
+                      <label>Plaintiff (Filing Party) *</label>
+                      <input type="text" placeholder="@username or wallet address" required />
+                    </div>
+                    <div className="form-field">
+                      <label>Defendant *</label>
+                      <input type="text" placeholder="@username or wallet address" required />
+                    </div>
+                  </div>
+
+                  <div className="form-field">
+                    <label>Case Summary *</label>
+                    <textarea rows={4} placeholder="Describe the dispute in detail... What happened? When? Why does it matter?" required />
+                  </div>
+                </div>
+
+                <div className="form-section">
+                  <h3>💼 Arguments</h3>
+                  
+                  <div className="form-field">
+                    <label>Plaintiff's Argument *</label>
+                    <textarea rows={3} placeholder="Why should the plaintiff win? Present their case..." required />
+                  </div>
+
+                  <div className="form-field">
+                    <label>Defendant's Argument *</label>
+                    <textarea rows={3} placeholder="Why should the defendant win? Present their defense..." required />
+                  </div>
+                </div>
+
+                <div className="form-section">
+                  <h3>📁 Evidence</h3>
+                  
+                  <div className="evidence-uploader">
+                    <div className="upload-zone">
+                      <span className="upload-icon">📎</span>
+                      <span>Drag & drop files or click to browse</span>
+                      <small>Supports: Screenshots, links, documents (max 5MB each)</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-section">
+                  <h3>⚖️ Court Tier</h3>
+                  
+                  <div className="tier-selector">
+                    <label className="tier-option">
+                      <input type="radio" name="tier" value="local" defaultChecked />
+                      <div className="tier-card-select local">
+                        <strong>Local Court</strong>
+                        <span>5 MON Stake • 5 Jurors</span>
+                        <small>Best for simple disputes</small>
+                      </div>
+                    </label>
+                    
+                    <label className="tier-option">
+                      <input type="radio" name="tier" value="high" />
+                      <div className="tier-card-select high">
+                        <strong>High Court</strong>
+                        <span>15 MON Stake • 9 Jurors</span>
+                        <small>For complex cases</small>
+                      </div>
+                    </label>
+                    
+                    <label className="tier-option">
+                      <input type="radio" name="tier" value="supreme" />
+                      <div className="tier-card-select supreme">
+                        <strong>Supreme Court</strong>
+                        <span>50 MON Stake • 15 Jurors</span>
+                        <small>Maximum scrutiny</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-notice">
+                  <p>⚠️ <strong>Note:</strong> Only 1 case is processed per day to ensure quality. Your case will be queued and randomly selected.</p>
+                  <p>💰 Staked MON is returned to the winner minus a 2% protocol fee.</p>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="submit-case-btn">
+                    ⚔️ Submit to Battle Queue
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
@@ -284,11 +457,7 @@ function App() {
           </div>
         )}
 
-        {/* Arena View */}
-        {currentView === 'arena' && <Arena />}
-
-        {/* Court View */}
-        {currentView === 'court' && <Court />}
+        {/* Battle replaces both Arena and Court */}
       </main>
 
       {/* Modal */}

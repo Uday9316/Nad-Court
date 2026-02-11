@@ -1123,6 +1123,240 @@
   background: rgba(255,255,255,0.2);
 }
 
+/* ARGUMENTS TAB - Side by Side */
+.arguments-battle {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.arguments-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.arguments-header h2 {
+  font-size: 24px;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #ff6b35, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.arguments-header p {
+  color: #888;
+  font-size: 14px;
+}
+
+.arguments-arena {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.argument-side {
+  background: rgba(255,255,255,0.03);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.plaintiff-side {
+  border: 2px solid rgba(34, 197, 94, 0.3);
+}
+
+.defendant-side {
+  border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.side-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.plaintiff-header {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent);
+}
+
+.defendant-header {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+}
+
+.side-icon {
+  font-size: 40px;
+}
+
+.side-role {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #888;
+}
+
+.side-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.agent-name {
+  font-size: 12px;
+  color: #666;
+}
+
+.argument-content-box {
+  padding: 24px;
+}
+
+.arg-section {
+  margin-bottom: 24px;
+}
+
+.arg-section:last-child {
+  margin-bottom: 0;
+}
+
+.arg-section h4 {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.argument-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #eaeaea;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border-left: 3px solid rgba(255, 215, 0, 0.3);
+}
+
+.key-points, .precedents {
+  list-style: none;
+  padding: 0;
+}
+
+.key-points li, .precedents li {
+  padding: 10px 0;
+  padding-left: 24px;
+  position: relative;
+  font-size: 14px;
+  color: #aaa;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.key-points li:last-child, .precedents li:last-child {
+  border-bottom: none;
+}
+
+.key-points li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.precedents li::before {
+  content: '⚖️';
+  position: absolute;
+  left: 0;
+  font-size: 12px;
+}
+
+.precedents em {
+  color: #ffd700;
+  font-style: italic;
+}
+
+/* VS Center */
+.vs-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b35, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+}
+
+/* Rebuttals Section */
+.rebuttals-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.rebuttals-section h3 {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.rebuttal-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.rebuttal {
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.plaintiff-rebuttal {
+  background: rgba(34, 197, 94, 0.05);
+  border-left: 3px solid rgba(34, 197, 94, 0.5);
+}
+
+.defendant-rebuttal {
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 3px solid rgba(239, 68, 68, 0.5);
+}
+
+.rebuttal-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.plaintiff-rebuttal .rebuttal-label {
+  color: #22c55e;
+}
+
+.defendant-rebuttal .rebuttal-label {
+  color: #ef4444;
+}
+
+.rebuttal p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #aaa;
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
   .docket-arena {
@@ -1150,6 +1384,19 @@
   }
   
   .form-row-gaming {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Arguments responsive */
+  .arguments-arena {
+    grid-template-columns: 1fr;
+  }
+  
+  .vs-center {
+    padding: 20px 0;
+  }
+  
+  .rebuttal-pair {
     grid-template-columns: 1fr;
   }
 }
