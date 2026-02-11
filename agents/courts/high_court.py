@@ -1,5 +1,5 @@
 """
-Tier 2 - High Agent Court
+Tier 2 - High Nad Court
 Triggered on appeal from Local Court
 Larger jury, stricter rules, medium stake
 """
@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 
 class HighAgentCourt:
     """
-    TIER 2: High Agent Court
+    TIER 2: High Nad Court
     - Triggered by appeals from Local Court
     - Larger jury (9 members)
     - Stricter voting thresholds (66% to convict)
@@ -220,7 +220,7 @@ class HighAgentCourt:
                            appellant: str, stake: float, re_analyze: bool = False) -> Dict:
         """Complete High Court appeal process"""
         print(f"\n{'='*60}")
-        print(f"🏛️  TIER 2 - HIGH AGENT COURT (APPEAL)")
+        print(f"🏛️  TIER 2 - HIGH NAD COURT (APPEAL)")
         print(f"{'='*60}")
         
         # 1. File appeal

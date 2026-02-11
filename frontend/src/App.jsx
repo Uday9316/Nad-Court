@@ -63,7 +63,7 @@ function App() {
       <nav className="nav-bar">
         <div className="nav-brand">
           <div className="brand-icon"><Icons.Scale /></div>
-          <span className="brand-text">Agent Court</span>
+          <span className="brand-text">Nad Court</span>
         </div>
         
         <div className="nav-links">
@@ -192,7 +192,7 @@ function App() {
           </div>
         )}
 
-        {/* Live Agent Court */}
+        {/* Live Nad Court */}
         {currentView === 'live' && <AgentCourt />}
 
         {/* Upcoming Cases */}

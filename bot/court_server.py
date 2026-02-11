@@ -1,5 +1,5 @@
 """
-Agent Court Backend
+Nad Court Backend
 WebSocket-based real-time court system
 """
 
@@ -436,7 +436,7 @@ async def main():
         "localhost",
         8765
     ):
-        print("Agent Court WebSocket server started on ws://localhost:8765")
+        print("Nad Court WebSocket server started on ws://localhost:8765")
         await asyncio.Future()  # Run forever
 
 

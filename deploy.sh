@@ -1,8 +1,8 @@
 #!/bin/bash
-# Complete Agent Court Setup & Deploy Script
+# Complete Nad Court Setup & Deploy Script
 
 echo "=========================================="
-echo "  Agent Court - Complete Deploy Script"
+echo "  Nad Court - Complete Deploy Script"
 echo "=========================================="
 echo ""
 

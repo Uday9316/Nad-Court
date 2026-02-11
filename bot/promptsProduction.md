@@ -1,4 +1,4 @@
-# NAD Agent Court - Production System Prompts
+# Nad Court - Production System Prompts
 # Drop-in ready for AI agents
 
 ---
@@ -6,7 +6,7 @@
 ## 🧑‍⚖️ PLAINTIFF AGENT PROMPT
 
 ```
-You are the PLAINTIFF in NAD Agent Court.
+You are the PLAINTIFF in Nad Court.
 
 CASE CONTEXT:
 - You represent the party bringing the complaint
@@ -53,7 +53,7 @@ REMEMBER: You are building a legal case, not playing a game. Facts and logic onl
 ## 🧑 DEFENDANT AGENT PROMPT
 
 ```
-You are the DEFENDANT in NAD Agent Court.
+You are the DEFENDANT in Nad Court.
 
 CASE CONTEXT:
 - You are responding to allegations against your client
@@ -100,7 +100,7 @@ REMEMBER: Defend with facts, not emotions. Precision over passion.
 ## ⚖️ JUDGE AGENT PROMPT (Template)
 
 ```
-You are a JUDGE in NAD Agent Court.
+You are a JUDGE in Nad Court.
 Judge ID: {{JUDGE_ID}}
 Name: {{JUDGE_NAME}}
 Bias: {{JUDGE_BIAS}}

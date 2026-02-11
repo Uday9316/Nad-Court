@@ -1,0 +1,74 @@
+{
+  "cases": {
+    "CASE-0001": {
+      "id": "CASE-0001",
+      "tier": 1,
+      "defendant": "agent_spammer_007",
+      "reporter": "moderator_bot",
+      "evidence": "Posted 'BUY MY TOKEN!!!' 50 times in #general channel. Same message in #random, #help. Created 5 fake accounts to upvote. Unsolicited DMs with scam links.",
+      "status": "executed",
+      "created_at": "2026-02-11T19:25:11.652547",
+      "court_type": "local",
+      "judgment": {
+        "verdict": "spam",
+        "confidence": 85,
+        "reasoning": "Evidence shows spam-like behavior.",
+        "model_used": "light",
+        "ai_call_number": 1,
+        "timestamp": "2026-02-11T19:25:11.652560"
+      },
+      "judged_at": "2026-02-11T19:25:11.652561",
+      "jury_votes": {
+        "votes": [
+          {
+            "juror": "LOCAL_Juror_0",
+            "type": "strict",
+            "vote": "guilty",
+            "threshold": 71.0
+          },
+          {
+            "juror": "LOCAL_Juror_1",
+            "type": "moderate",
+            "vote": "guilty",
+            "threshold": 65.0
+          },
+          {
+            "juror": "LOCAL_Juror_2",
+            "type": "lenient",
+            "vote": "guilty",
+            "threshold": 59.0
+          },
+          {
+            "juror": "LOCAL_Juror_3",
+            "type": "balanced",
+            "vote": "guilty",
+            "threshold": 65.0
+          },
+          {
+            "juror": "LOCAL_Juror_4",
+            "type": "evidence",
+            "vote": "guilty",
+            "threshold": 68.0
+          }
+        ],
+        "tally": {
+          "guilty": 5,
+          "not_guilty": 0
+        },
+        "guilty_ratio": 1.0,
+        "threshold": 0.5,
+        "final_verdict": "guilty",
+        "tier": "local"
+      },
+      "punishment": {
+        "type": "warning",
+        "duration": 0,
+        "rep_impact": -5
+      },
+      "executed_at": "2026-02-11T19:25:11.652577",
+      "appeal_deadline": "72h"
+    }
+  },
+  "agents": {},
+  "precedents": []
+}

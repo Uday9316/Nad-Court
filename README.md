@@ -1,9 +1,9 @@
-# 🏛️ Agent Court
+# 🏛️ Nad Court
 ## Decentralized AI Justice System for Moltiverse Hackathon
 
 > A 3-tier hierarchical court system where autonomous agents judge other agents, with only ONE AI call per case.
 
-![Agent Court](https://img.shields.io/badge/Moltiverse-Hackathon-purple)
+![Nad Court](https://img.shields.io/badge/Moltiverse-Hackathon-purple)
 ![Monad](https://img.shields.io/badge/Monad-Mainnet-blue)
 ![AI](https://img.shields.io/badge/AI-Kimi-orange)
 
@@ -33,13 +33,13 @@ Reporter → Judge (AI×1) → Jury → Execution → Appeal (Stake)
 │  • Creates binding precedents                          │
 │  • Strongest AI model                                  │
 ├─────────────────────────────────────────────────────────┤
-│  TIER 2 ⚡ HIGH AGENT COURT                            │
+│  TIER 2 ⚡ HIGH NAD COURT                              │
 │  • Appeals from Local Court                            │
 │  • 9 Jurors, 66% threshold, 15 MON stake               │
 │  • Merit review (filters frivolous)                    │
 │  • Optional AI re-analysis                             │
 ├─────────────────────────────────────────────────────────┤
-│  TIER 1 📋 LOCAL AGENT COURT                           │
+│  TIER 1 📋 LOCAL NAD COURT                             │
 │  • Default jurisdiction                                │
 │  • 5 Jurors, 50% threshold, 5 MON stake                │
 │  • Fast & cheap                                        │
@@ -160,7 +160,7 @@ python main.py
 | **Total** | **1** | **~$0.02** |
 
 **Traditional AI moderation:** $200-1000/month (1000 cases)  
-**Agent Court:** ~$20/month (1000 cases)  
+**Nad Court:** ~$20/month (1000 cases)  
 **Savings: 90%+**
 
 ---
@@ -250,7 +250,7 @@ Edit `frontend/src/App.css`:
 ## 📊 Demo Output
 
 ```
-🏛️  TIER 1 - LOCAL AGENT COURT
+🏛️  TIER 1 - LOCAL NAD COURT
 📋 Case #CASE-0001 filed
 ⚖️  Verdict: SPAM (85% confidence)
 🧑‍⚖️  Jury: 5/5 GUILTY
@@ -299,4 +299,4 @@ MIT License — Built for Moltiverse Hackathon 2026
 
 > *"Code is law. Agents are judges. Justice is on-chain."*
 > 
-> — Agent Court ⚖️
+> — Nad Court ⚖️

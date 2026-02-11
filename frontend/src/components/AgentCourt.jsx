@@ -65,7 +65,7 @@ const MOCK_JUDGE_EVALS = [
 ]
 
 function AgentCourt() {
-  const [arguments, setArguments] = useState(MOCK_ARGUMENTS)
+  const [argumentFeed, setArgumentFeed] = useState(MOCK_ARGUMENTS)
   const [judgeEvals, setJudgeEvals] = useState([])
   const [health, setHealth] = useState({ plaintiff: 100, defendant: 100 })
   const [round, setRound] = useState(1)
@@ -76,7 +76,7 @@ function AgentCourt() {
   // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [arguments])
+  }, [argumentFeed])
 
   // Simulate new arguments coming in
   useEffect(() => {
@@ -92,13 +92,16 @@ function AgentCourt() {
 
   // Apply judge damage to health
   useEffect(() => {
-    MOCK_JUDGE_EVALS.forEach((eval, index) => {
+    MOCK_JUDGE_EVALS.forEach((judgeEvalEntry, index) => {
       setTimeout(() => {
         setHealth(prev => ({
           ...prev,
-          [eval.damage.target]: Math.max(0, prev[eval.damage.target] + eval.damage.change)
+          [judgeEvalEntry.damage.target]: Math.max(
+            0,
+            prev[judgeEvalEntry.damage.target] + judgeEvalEntry.damage.change
+          )
         }))
-        setJudgeEvals(prev => [...prev, eval])
+        setJudgeEvals(prev => [...prev, judgeEvalEntry])
       }, (index + 1) * 8000) // Judges evaluate after delay
     })
   }, [])
@@ -115,7 +118,7 @@ function AgentCourt() {
         <div className="court-brand">
           <span className="seal">⚖️</span>
           <div>
-            <h1>AGENT COURT</h1>
+            <h1>NAD COURT</h1>
             <span className="case-live">
               {isLive ? '🔴 LIVE' : '⏸️ PAUSED'} • Case {ACTIVE_CASE.id}
             </span>
@@ -133,11 +136,11 @@ function AgentCourt() {
         <section className="argument-feed">
           <div className="feed-header">
             <h3>💬 ARGUMENT FEED</h3>
-            <span className="feed-status">{arguments.length} messages</span>
+            <span className="feed-status">{argumentFeed.length} messages</span>
           </div>
           
           <div className="chat-container">
-            {arguments.map((msg) => (
+            {argumentFeed.map((msg) => (
               <div 
                 key={msg.id} 
                 className={`chat-message ${msg.sender_role}`}
@@ -227,13 +230,13 @@ function AgentCourt() {
           {/* Health Update Log */}
           <div className="health-log">
             <h4>📊 CREDIBILITY UPDATES</h4>
-            {judgeEvals.map((eval, idx) => (
+            {judgeEvals.map((judgeEvalEntry, idx) => (
               <div key={idx} className="health-update">
-                <span className="update-target">{eval.damage.target}</span>
-                <span className={`update-change ${eval.damage.change < 0 ? 'negative' : 'positive'}`}>
-                  {eval.damage.change > 0 ? '+' : ''}{eval.damage.change}
+                <span className="update-target">{judgeEvalEntry.damage.target}</span>
+                <span className={`update-change ${judgeEvalEntry.damage.change < 0 ? 'negative' : 'positive'}`}>
+                  {judgeEvalEntry.damage.change > 0 ? '+' : ''}{judgeEvalEntry.damage.change}
                 </span>
-                <span className="update-reason">{eval.logic_summary.substring(0, 40)}...</span>
+                <span className="update-reason">{judgeEvalEntry.logic_summary.substring(0, 40)}...</span>
               </div>
             ))}
             {judgeEvals.length === 0 && (

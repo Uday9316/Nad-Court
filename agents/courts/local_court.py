@@ -1,5 +1,5 @@
 """
-Tier 1 - Local Agent Court
+Tier 1 - Local Nad Court
 Fast, cheap, default justice for first-time reports and low-impact offenses
 """
 
@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 
 class LocalAgentCourt:
     """
-    TIER 1: Local Agent Court
+    TIER 1: Local Nad Court
     - Fastest processing
     - Light AI model
     - Small jury (5 members)
@@ -132,7 +132,7 @@ class LocalAgentCourt:
     def full_process(self, defendant: str, evidence: str, reporter: str = "reporter_1") -> Dict:
         """Complete Local Court process"""
         print(f"\n{'='*60}")
-        print(f"🏛️  TIER 1 - LOCAL AGENT COURT")
+        print(f"🏛️  TIER 1 - LOCAL NAD COURT")
         print(f"{'='*60}")
         
         # 1. File
