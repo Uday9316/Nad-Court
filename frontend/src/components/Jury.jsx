@@ -30,7 +30,11 @@ function Jury({ caseData }) {
             <div className="judges-panel">
               {JURY_MEMBERS.map((judge, idx) => (
                 <div key={judge.id} className="judge-avatar-animate" style={{animationDelay: `${idx * 0.2}s`}}>
-                  <span className="j-avatar">{judge.avatar}</span>
+                  {judge.image ? (
+                    <img src={judge.image} alt={judge.name} className="j-avatar j-avatar-img" />
+                  ) : (
+                    <span className="j-avatar">{judge.avatar}</span>
+                  )}
                   <span className="j-name">{judge.name}</span>
                   <span className="j-thinking">Analyzing...</span>
                 </div>
@@ -144,7 +148,11 @@ function Jury({ caseData }) {
                     className={`jury-member ${verdict?.verdict}`}
                     onClick={() => {setSelectedJudge(judge); setViewMode('verdicts')}}
                   >
-                    <span className="j-avatar">{judge.avatar}</span>
+                    {judge.image ? (
+                      <img src={judge.image} alt={judge.name} className="j-avatar j-avatar-img" />
+                    ) : (
+                      <span className="j-avatar">{judge.avatar}</span>
+                    )}
                     <span className="j-name">{judge.name}</span>
                     <span className="j-role">{judge.role}</span>
                     <span className={`j-vote ${verdict?.verdict}`}>
@@ -233,7 +241,11 @@ function Jury({ caseData }) {
               return (
                 <div key={verdict.judgeId} className={`verdict-card ${verdict.verdict}`}>
                   <div className="verdict-judge-header">
-                    <span className="v-avatar">{judge.avatar}</span>
+                    {judge.image ? (
+                      <img src={judge.image} alt={judge.name} className="v-avatar v-avatar-img" />
+                    ) : (
+                      <span className="v-avatar">{judge.avatar}</span>
+                    )}
                     <div>
                       <h4>{judge.name}</h4>
                       <span className="v-role">{judge.role}</span>
@@ -270,7 +282,11 @@ function Jury({ caseData }) {
           <div className="judge-modal-content" onClick={e => e.stopPropagation()}>
             <button className="close-modal" onClick={() => setSelectedJudge(null)}>×</button>
             <div className="judge-profile">
-              <span className="profile-avatar">{selectedJudge.avatar}</span>
+              {selectedJudge.image ? (
+                <img src={selectedJudge.image} alt={selectedJudge.name} className="profile-avatar profile-avatar-img" />
+              ) : (
+                <span className="profile-avatar">{selectedJudge.avatar}</span>
+              )}
               <h3>{selectedJudge.name}</h3>
               <span className="profile-role">{selectedJudge.role}</span>
               <p className="catchphrase">"{selectedJudge.catchphrase}"</p>

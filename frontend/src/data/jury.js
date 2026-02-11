@@ -1,12 +1,21 @@
 // Jury System - 6 Community Judges
 // Each judge analyzes cases and posts their verdict with logic
 
+// Import judge profile images
+import portdevImg from '../assets/portdev.png'
+import mikewebImg from '../assets/mikeweb.jpg'
+import keoneImg from '../assets/keone.jpg'
+import jamesImg from '../assets/james.jpg'
+import harpalImg from '../assets/harpal.jpg'
+import anagoImg from '../assets/anago.jpg'
+
 export const JURY_MEMBERS = [
   {
     id: 'portdev',
     name: 'PortDev',
     role: 'Technical Architect',
     avatar: '👨‍💻',
+    image: portdevImg,
     bias: 'technical',
     style: 'analytical',
     catchphrase: 'Show me the code',
@@ -17,6 +26,7 @@ export const JURY_MEMBERS = [
     name: 'MikeWeb',
     role: 'Community Builder',
     avatar: '🤝',
+    image: mikewebImg,
     bias: 'community',
     style: 'empathetic',
     catchphrase: 'Community first',
@@ -27,6 +37,7 @@ export const JURY_MEMBERS = [
     name: 'Keone',
     role: 'Blockchain Expert',
     avatar: '⛓️',
+    image: keoneImg,
     bias: 'on-chain',
     style: 'data-driven',
     catchphrase: 'On-chain never lies',
@@ -37,6 +48,7 @@ export const JURY_MEMBERS = [
     name: 'James',
     role: 'Governance Lead',
     avatar: '📜',
+    image: jamesImg,
     bias: 'governance',
     style: 'principled',
     catchphrase: 'Rules are rules',
@@ -47,6 +59,7 @@ export const JURY_MEMBERS = [
     name: 'Harpal',
     role: 'Senior Developer',
     avatar: '⚡',
+    image: harpalImg,
     bias: 'merit',
     style: 'direct',
     catchphrase: 'Results speak',
@@ -57,6 +70,7 @@ export const JURY_MEMBERS = [
     name: 'Anago',
     role: 'Protocol Researcher',
     avatar: '🔬',
+    image: anagoImg,
     bias: 'protocol',
     style: 'methodical',
     catchphrase: 'Evidence or nothing',

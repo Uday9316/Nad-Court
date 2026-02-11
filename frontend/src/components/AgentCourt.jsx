@@ -261,7 +261,11 @@ function AgentCourt() {
                   className={`judge-card ${judgeEval ? 'evaluated' : 'pending'}`}
                 >
                   <div className="judge-header">
-                    <span className="judge-avatar">{judge.avatar}</span>
+                    {judge.image ? (
+                      <img src={judge.image} alt={judge.name} className="judge-avatar judge-avatar-img" />
+                    ) : (
+                      <span className="judge-avatar">{judge.avatar}</span>
+                    )}
                     <div>
                       <span className="judge-name">{judge.name}</span>
                       <span className="judge-role">{judge.role}</span>
