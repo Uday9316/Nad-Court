@@ -63,6 +63,16 @@
   margin-bottom: 8px;
 }
 
+/* Image versions of judge avatars should match the emoji size */
+.j-avatar-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 8px;
+}
+
 .j-name {
   display: block;
   font-size: 12px;
@@ -400,6 +410,16 @@
   margin-bottom: 8px;
 }
 
+/* Smaller image avatar inside jury member cards */
+.jury-member .j-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 8px auto;
+}
+
 .jury-member .j-name {
   display: block;
   font-size: 12px;
@@ -708,6 +728,14 @@
   color: #aaa;
 }
 
+/* Verdict-card avatar image */
+.v-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
 .judge-meta {
   display: flex;
   gap: 8px;
@@ -760,6 +788,16 @@
 
 .judge-profile .profile-avatar {
   font-size: 72px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* Large profile image in judge modal */
+.judge-profile .profile-avatar-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  object-fit: cover;
   display: block;
   margin-bottom: 16px;
 }

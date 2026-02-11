@@ -444,6 +444,14 @@
   font-size: 24px;
 }
 
+/* Image avatars for judges in Nad Court sidebar */
+.judge-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
 .judge-header div {
   flex: 1;
 }
