@@ -1,41 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { ethers } from 'ethers'
 import './Arena.css'
-import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
+import { AI_AGENTS, AGENT_MOVES, ACTIVE_CASE, BATTLE_COMMENTARY } from './data/agents.js'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
-const MONAD_CHAIN_ID = 143
 
-// Today's case
-const TODAY_CASE = getTodayCase()
-
-// Icons
-const Icons = {
-  Fist: () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 12v-1h-1v-1h-1v-1h-1V8h-1V7h-1V6h-1V5h-2v1H9v1H8v1H7v1H6v1H5v1H4v2h1v1h1v1h1v1h1v1h1v1h2v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-2h-1z"/></svg>,
-  Sword: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>,
-  Shield: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-  Bolt: () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
-  Trophy: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg>
-}
-
-// Argument moves database
-const ARGUMENT_MOVES = {
-  plaintiff: [
-    { name: "OG Status", damage: 15, icon: "👑", desc: "Claims early community membership" },
-    { name: "Survivor's Tale", damage: 20, icon: "💪", desc: "Survived previous purge" },
-    { name: "Content Creation", damage: 18, icon: "🎨", desc: "Created lore and memes" },
-    { name: "Community Love", damage: 12, icon: "❤️", desc: "People want them back" }
-  ],
-  defendant: [
-    { name: "Utility Builder", damage: 16, icon: "⚙️", desc: "Built helpful bots and tools" },
-    { name: "Metrics Leader", damage: 22, icon: "📊", desc: "Top of Kaito leaderboard" },
-    { name: "New Blood", damage: 14, icon: "🌟", desc: "Fresh perspective and energy" },
-    { name: "Silent Majority", damage: 17, icon: "🤐", desc: "Community prefers them" }
-  ]
-}
-
-function App() {
-  const [account, setAccount] = useState(null)
+function Arena() {
   const [gameState, setGameState] = useState('intro') // intro, fighting, verdict
   const [plaintiffHP, setPlaintiffHP] = useState(100)
   const [defendantHP, setDefendantHP] = useState(100)
@@ -44,20 +14,26 @@ function App() {
   const [comboCount, setComboCount] = useState({ plaintiff: 0, defendant: 0 })
   const [winner, setWinner] = useState(null)
   const [shake, setShake] = useState(null)
+  const [commentary, setCommentary] = useState('')
+  const [battleLog, setBattleLog] = useState([])
   
-  const maxRounds = Math.max(ARGUMENT_MOVES.plaintiff.length, ARGUMENT_MOVES.defendant.length)
+  const maxRounds = Math.max(AGENT_MOVES.plaintiff.length, AGENT_MOVES.defendant.length)
 
-  const connectWallet = async () => {
-    if (!window.ethereum) return
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-    setAccount(accounts[0])
+  const addToLog = (message) => {
+    setBattleLog(prev => [...prev.slice(-4), message])
   }
 
   const executeMove = (side, moveIndex) => {
-    const move = ARGUMENT_MOVES[side][moveIndex]
+    const move = AGENT_MOVES[side][moveIndex]
     const isPlaintiff = side === 'plaintiff'
+    const agent = isPlaintiff ? AI_AGENTS.plaintiff : AI_AGENTS.defendant
     
-    setLastMove({ side, move, damage: move.damage })
+    setLastMove({ side, move, damage: move.damage, agent: agent.name })
+    
+    // Commentary
+    const comment = BATTLE_COMMENTARY[side][Math.floor(Math.random() * BATTLE_COMMENTARY[side].length)]
+    setCommentary(comment)
+    addToLog(`${agent.name} uses ${move.name}!`)
     
     // Apply damage with combo multiplier
     const combo = comboCount[side]
@@ -68,13 +44,14 @@ function App() {
       setDefendantHP(prev => Math.max(0, prev - finalDamage))
       setComboCount(prev => ({ ...prev, plaintiff: prev.plaintiff + 1, defendant: 0 }))
       setShake('defendant')
+      addToLog(`GuardianBot-Omega takes ${finalDamage} damage!`)
     } else {
       setPlaintiffHP(prev => Math.max(0, prev - finalDamage))
       setComboCount(prev => ({ ...prev, defendant: prev.defendant + 1, plaintiff: 0 }))
       setShake('plaintiff')
+      addToLog(`JusticeBot-Alpha takes ${finalDamage} damage!`)
     }
     
-    // Reset shake after animation
     setTimeout(() => setShake(null), 500)
     
     // Check for winner
@@ -88,11 +65,14 @@ function App() {
 
   const determineWinner = () => {
     if (plaintiffHP > defendantHP) {
-      setWinner('plaintiff')
+      setWinner({ side: 'plaintiff', agent: AI_AGENTS.plaintiff, person: ACTIVE_CASE.plaintiff })
+      addToLog(`🏆 JusticeBot-Alpha wins! ${ACTIVE_CASE.plaintiff.username} is vindicated!`)
     } else if (defendantHP > plaintiffHP) {
-      setWinner('defendant')
+      setWinner({ side: 'defendant', agent: AI_AGENTS.defendant, person: ACTIVE_CASE.defendant })
+      addToLog(`🏆 GuardianBot-Omega wins! ${ACTIVE_CASE.defendant.username} is protected!`)
     } else {
-      setWinner('draw')
+      setWinner({ side: 'draw', agent: null, person: null })
+      addToLog("⚖️ DRAW - Case requires human jury review!")
     }
     setGameState('verdict')
   }
@@ -104,27 +84,25 @@ function App() {
     setComboCount({ plaintiff: 0, defendant: 0 })
     setWinner(null)
     setLastMove(null)
+    setBattleLog([])
+    setCommentary('')
     setGameState('intro')
   }
 
   return (
     <div className="arena">
-      {/* Background Music Indicator */}
-      <div className="music-indicator">
-        <span className="beat">🎵</span>
-        <span className="music-text">NOW PLAYING: COURT BATTLE THEME</span>
-      </div>
-
+      {/* Scanline effect */}
+      <div className="scanlines" />
+      
       {/* Header */}
       <header className="arena-header">
         <div className="arena-title">
-          <span className="title-icon">⚖️</span>
-          <h1>THE ARENA</h1>
-          <span className="subtitle">ARGUMENT BATTLE</span>
+          <span className="glitch" data-text="AI_BATTLE">AI_BATTLE</span>
+          <span className="subtitle">AGENT vs AGENT</span>
         </div>
-        <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>
-          {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connect'}
-        </button>
+        <div className="case-badge">
+          Fighting for: {ACTIVE_CASE.id}
+        </div>
       </header>
 
       {/* Main Stage */}
@@ -133,28 +111,49 @@ function App() {
         {/* VS Screen */}
         {gameState === 'intro' && (
           <div className="vs-screen">
+            <div className="representatives">
+              <div className="rep plaintiff-rep">
+                <span className="rep-label">Representing</span>
+                <span className="rep-name">{ACTIVE_CASE.plaintiff.username}</span>
+              </div>
+              <div className="rep defendant-rep">
+                <span className="rep-label">Representing</span>
+                <span className="rep-name">{ACTIVE_CASE.defendant.username}</span>
+              </div>
+            </div>
+
             <div className="vs-fighters">
-              <div className="fighter plaintiff">
-                <div className="fighter-avatar">{TODAY_CASE.plaintiff.username[0]}</div>
-                <h2>{TODAY_CASE.plaintiff.username}</h2>
-                <p className="fighter-desc">{TODAY_CASE.plaintiff.description.slice(0, 50)}...</p>
+              <div className="fighter agent-plaintiff">
+                <div className="agent-avatar">{AI_AGENTS.plaintiff.avatar}</div>
+                <h2>{AI_AGENTS.plaintiff.name}</h2>
+                <div className="agent-stats">
+                  <span>STR: {AI_AGENTS.plaintiff.stats.strength}</span>
+                  <span>DEF: {AI_AGENTS.plaintiff.stats.defense}</span>
+                  <span>INT: {AI_AGENTS.plaintiff.stats.intellect}</span>
+                </div>
+                <p className="agent-desc">{AI_AGENTS.plaintiff.description}</p>
               </div>
               
               <div className="vs-badge">
                 <span className="vs-text">VS</span>
-                <span className="case-type">{TODAY_CASE.type}</span>
+                <span className="ai-indicator">🤖 AI BATTLE 🤖</span>
               </div>
               
-              <div className="fighter defendant">
-                <div className="fighter-avatar">{TODAY_CASE.defendant.username[0]}</div>
-                <h2>{TODAY_CASE.defendant.username}</h2>
-                <p className="fighter-desc">{TODAY_CASE.defendant.description.slice(0, 50)}...</p>
+              <div className="fighter agent-defendant">
+                <div className="agent-avatar">{AI_AGENTS.defendant.avatar}</div>
+                <h2>{AI_AGENTS.defendant.name}</h2>
+                <div className="agent-stats">
+                  <span>STR: {AI_AGENTS.defendant.stats.strength}</span>
+                  <span>DEF: {AI_AGENTS.defendant.stats.defense}</span>
+                  <span>INT: {AI_AGENTS.defendant.stats.intellect}</span>
+                </div>
+                <p className="agent-desc">{AI_AGENTS.defendant.description}</p>
               </div>
             </div>
             
-            <button className="fight-btn" onClick={() => setGameState('fighting')}>
-              <span className="btn-text">START BATTLE</span>
-              <span className="btn-shine"></span>
+            <button className="fight-btn cyber" onClick={() => setGameState('fighting')}>
+              <span className="btn-text">INITIALIZE_BATTLE.exe</span>
+              <span className="btn-glitch"></span>
             </button>
           </div>
         )}
@@ -162,71 +161,93 @@ function App() {
         {/* Fighting Game */}
         {gameState === 'fighting' && (
           <div className="battle-arena">
+            {/* Commentary Bar */}
+            <div className="commentary-bar">
+              <span className="pulse">▶</span>
+              <span className="commentary-text">{commentary || BATTLE_COMMENTARY.neutral[0]}</span>
+            </div>
+
             {/* Health Bars */}
             <div className="health-bars">
               <div className="health-bar plaintiff-bar">
-                <span className="fighter-name">{TODAY_CASE.plaintiff.username}</span>
+                <div className="bar-header">
+                  <span className="agent-name">{AI_AGENTS.plaintiff.name}</span>
+                  {comboCount.plaintiff > 1 && (
+                    <span className="combo-badge">{comboCount.plaintiff}x COMBO</span>
+                  )}
+                </div>
                 <div className="bar-container">
                   <div 
-                    className={`bar-fill plaintiff-fill ${shake === 'plaintiff' ? 'shake' : ''}`}
+                    className={`bar-fill plaintiff-fill ${shake === 'plaintiff' ? 'shake-damage' : ''}`}
                     style={{ width: `${plaintiffHP}%` }}
                   >
-                    <div className="bar-glow"></div>
+                    <div className="bar-scanline"></div>
                   </div>
-                  <span className="hp-text">{plaintiffHP} HP</span>
+                  <span className="hp-text">{plaintiffHP}/100 HP</span>
                 </div>
-                {comboCount.plaintiff > 1 && (
-                  <span className="combo">{comboCount.plaintiff}x COMBO!</span>
-                )}
               </div>
               
               <div className="round-counter">
-                <span className="round-num">ROUND {currentRound + 1}</span>
-                <span className="max-round">/ {maxRounds}</span>
+                <span className="round-label">ROUND</span>
+                <span className="round-num">{currentRound + 1}</span>
               </div>
               
               <div className="health-bar defendant-bar">
-                <span className="fighter-name">{TODAY_CASE.defendant.username}</span>
+                <div className="bar-header">
+                  {comboCount.defendant > 1 && (
+                    <span className="combo-badge defender">{comboCount.defendant}x COMBO</span>
+                  )}
+                  <span className="agent-name">{AI_AGENTS.defendant.name}</span>
+                </div>
                 <div className="bar-container">
                   <div 
-                    className={`bar-fill defendant-fill ${shake === 'defendant' ? 'shake' : ''}`}
+                    className={`bar-fill defendant-fill ${shake === 'defendant' ? 'shake-damage' : ''}`}
                     style={{ width: `${defendantHP}%` }}
                   >
-                    <div className="bar-glow"></div>
+                    <div className="bar-scanline"></div>
                   </div>
-                  <span className="hp-text">{defendantHP} HP</span>
+                  <span className="hp-text">{defendantHP}/100 HP</span>
                 </div>
-                {comboCount.defendant > 1 && (
-                  <span className="combo defender-combo">{comboCount.defendant}x COMBO!</span>
-                )}
               </div>
             </div>
 
-            {/* Fighters Display */}
-            <div className="fighters-display">
-              <div className={`fighter-sprite plaintiff-sprite ${shake === 'plaintiff' ? 'hit' : ''} ${lastMove?.side === 'plaintiff' ? 'attacking' : ''}`}>
-                <div className="sprite-avatar">{TODAY_CASE.plaintiff.username[0]}</div>
-                <div className="fighter-stats">
-                  <span className="stat">STR: 85</span>
-                  <span className="stat">DEF: 70</span>
+            {/* Battle Log */}
+            <div className="battle-log">
+              {battleLog.map((log, idx) => (
+                <div key={idx} className="log-entry">{log}</div>
+              ))}
+            </div>
+
+            {/* Agents Display */}
+            <div className="agents-display">
+              <div className={`agent-sprite plaintiff-agent ${shake === 'plaintiff' ? 'hit' : ''} ${lastMove?.side === 'plaintiff' ? 'attacking' : ''}`}>
+                <div className="agent-visual">{AI_AGENTS.plaintiff.avatar}</div>
+                <div className="agent-core">
+                  <span className="core-label">AI CORE</span>
+                  <div className="core-bar">
+                    <div className="core-fill" style={{width: `${plaintiffHP}%`}}></div>
+                  </div>
                 </div>
               </div>
               
               <div className="battle-center">
                 {lastMove && (
-                  <div className={`move-effect ${lastMove.side}-effect`}>
+                  <div className={`move-execution ${lastMove.side}-execution`}>
+                    <span className="move-agent">{lastMove.agent}</span>
                     <span className="move-icon">{lastMove.move.icon}</span>
                     <span className="move-name">{lastMove.move.name}</span>
-                    <span className="damage">-{lastMove.damage} HP</span>
+                    <span className="move-damage">-{lastMove.damage} HP</span>
                   </div>
                 )}
               </div>
               
-              <div className={`fighter-sprite defendant-sprite ${shake === 'defendant' ? 'hit' : ''} ${lastMove?.side === 'defendant' ? 'attacking' : ''}`}>
-                <div className="sprite-avatar">{TODAY_CASE.defendant.username[0]}</div>
-                <div className="fighter-stats">
-                  <span className="stat">STR: 78</span>
-                  <span className="stat">DEF: 82</span>
+              <div className={`agent-sprite defendant-agent ${shake === 'defendant' ? 'hit' : ''} ${lastMove?.side === 'defendant' ? 'attacking' : ''}`}>
+                <div className="agent-visual">{AI_AGENTS.defendant.avatar}</div>
+                <div className="agent-core">
+                  <span className="core-label">AI CORE</span>
+                  <div className="core-bar">
+                    <div className="core-fill defendant" style={{width: `${defendantHP}%`}}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,42 +255,54 @@ function App() {
             {/* Move Controls */}
             <div className="move-controls">
               <div className="control-side plaintiff-controls">
-                <h3>Plaintiff Moves</h3>
+                <div className="control-header">
+                  <span className="control-title">{AI_AGENTS.plaintiff.name}</span>
+                  <span className="control-sub">Plaintiff Agent</span>
+                </div>
                 <div className="moves-grid">
-                  {ARGUMENT_MOVES.plaintiff.map((move, idx) => (
+                  {AGENT_MOVES.plaintiff.map((move, idx) => (
                     <button 
                       key={idx}
-                      className="move-btn"
+                      className="move-btn cyber-btn"
                       onClick={() => executeMove('plaintiff', idx)}
                       disabled={currentRound !== idx || winner}
                     >
                       <span className="move-icon">{move.icon}</span>
-                      <span className="move-info">
+                      <div className="move-details">
                         <span className="move-name">{move.name}</span>
+                        <span className="move-desc">{move.desc}</span>
                         <span className="move-damage">{move.damage} DMG</span>
-                      </span>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
               
-              <div className="vs-divider">⚔️</div>
+              <div className="vs-divider cyber-divider">
+                <div className="divider-line"></div>
+                <span className="vs-icon">VS</span>
+                <div className="divider-line"></div>
+              </div>
               
               <div className="control-side defendant-controls">
-                <h3>Defendant Moves</h3>
+                <div className="control-header">
+                  <span className="control-title">{AI_AGENTS.defendant.name}</span>
+                  <span className="control-sub">Defendant Agent</span>
+                </div>
                 <div className="moves-grid">
-                  {ARGUMENT_MOVES.defendant.map((move, idx) => (
+                  {AGENT_MOVES.defendant.map((move, idx) => (
                     <button 
                       key={idx}
-                      className="move-btn defendant-move"
+                      className="move-btn cyber-btn defendant"
                       onClick={() => executeMove('defendant', idx)}
                       disabled={currentRound !== idx || winner}
                     >
                       <span className="move-icon">{move.icon}</span>
-                      <span className="move-info">
+                      <div className="move-details">
                         <span className="move-name">{move.name}</span>
+                        <span className="move-desc">{move.desc}</span>
                         <span className="move-damage">{move.damage} DMG</span>
-                      </span>
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -282,55 +315,58 @@ function App() {
         {gameState === 'verdict' && (
           <div className="verdict-screen">
             <div className="winner-display">
-              <div className="winner-trophy">
-                <Icons.Trophy />
+              <div className="winner-agent">
+                <span className="winner-avatar">{winner?.agent?.avatar || '⚖️'}</span>
+                <h2 className="winner-name">{winner?.agent?.name || 'DRAW'}</h2>
+                <span className="winner-label">VICTORIOUS</span>
               </div>
-              <h2 className="winner-text">
-                {winner === 'plaintiff' ? TODAY_CASE.plaintiff.username : 
-                 winner === 'defendant' ? TODAY_CASE.defendant.username : 'DRAW'}
-              </h2>
-              <p className="verdict-label">WINS THE CASE</p>
+              
+              <div className="represented-party">
+                <span className="rep-label">Representing</span>
+                <span className="rep-person">{winner?.person?.username || 'Both parties'}</span>
+                <p className="rep-verdict">
+                  {winner?.side === 'plaintiff' 
+                    ? `${ACTIVE_CASE.plaintiff.username} wins the case!`
+                    : winner?.side === 'defendant'
+                    ? `${ACTIVE_CASE.defendant.username} wins the case!`
+                    : 'Case requires jury review'
+                  }
+                </p>
+              </div>
             </div>
             
-            <div className="final-stats">
-              <div className="stat-row">
-                <span className="stat-label">Plaintiff HP</span>
-                <div className="final-bar">
-                  <div className="final-fill" style={{ width: `${plaintiffHP}%` }}></div>
+            <div className="final-stats cyber-stats">
+              <div className="stat-comparison">
+                <div className="stat-item">
+                  <span className="stat-label">{AI_AGENTS.plaintiff.name}</span>
+                  <div className="stat-bar">
+                    <div className="stat-fill" style={{width: `${plaintiffHP}%`}}></div>
+                  </div>
+                  <span className="stat-value">{plaintiffHP} HP</span>
                 </div>
-                <span className="stat-value">{plaintiffHP}</span>
-              </div>
-              <div className="stat-row">
-                <span className="stat-label">Defendant HP</span>
-                <div className="final-bar">
-                  <div className="final-fill defendant" style={{ width: `${defendantHP}%` }}></div>
+                <div className="stat-item">
+                  <span className="stat-label">{AI_AGENTS.defendant.name}</span>
+                  <div className="stat-bar">
+                    <div className="stat-fill defendant" style={{width: `${defendantHP}%`}}></div>
+                  </div>
+                  <span className="stat-value">{defendantHP} HP</span>
                 </div>
-                <span className="stat-value">{defendantHP}</span>
               </div>
             </div>
             
             <div className="verdict-actions">
-              <button className="action-btn" onClick={resetGame}>
-                🔄 Rematch
+              <button className="cyber-btn secondary" onClick={resetGame}>
+                🔄 NEW_BATTLE.exe
               </button>
-              <a href="https://nad-court.vercel.app" className="action-btn primary">
-                🌐 View Full Case
+              <a href="/" className="cyber-btn primary">
+                📋 VIEW_CASE_FILE
               </a>
             </div>
           </div>
         )}
       </main>
-
-      {/* Footer Info */}
-      <footer className="arena-footer">
-        <div className="case-info">
-          <span className="case-id">Case: {TODAY_CASE.id}</span>
-          <span className="divider">|</span>
-          <span className="case-summary">{TODAY_CASE.summary.slice(0, 60)}...</span>
-        </div>
-      </footer>
     </div>
   )
 }
 
-export default App
+export default Arena

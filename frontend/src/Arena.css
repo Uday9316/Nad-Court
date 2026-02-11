@@ -1,4 +1,4 @@
-/* Tekken-Style Fighting Game CSS for Nad Court Arena */
+/* Cyberpunk AI Agent Battle Arena CSS */
 
 :root {
   --arena-bg: #0a0a0f;
@@ -762,7 +762,7 @@
   justify-content: center;
 }
 
-.action-btn {
+.action-btn, .cyber-btn {
   padding: 16px 32px;
   background: var(--arena-surface);
   border: 2px solid var(--text-muted);
@@ -775,17 +775,498 @@
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
+  font-family: 'Courier New', monospace;
 }
 
-.action-btn:hover {
+.cyber-btn:hover:not(:disabled) {
   background: var(--arena-elevated);
-  border-color: var(--text-secondary);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(0, 204, 255, 0.3);
 }
 
-.action-btn.primary {
+.cyber-btn.primary {
   background: linear-gradient(135deg, var(--accent-gold), #ff6600);
   border-color: var(--accent-gold);
   color: #000;
+}
+
+.cyber-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Scanlines */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+}
+
+/* Glitch text */
+.glitch {
+  position: relative;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 2s infinite;
+  color: var(--plaintiff-color);
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 2s infinite;
+  color: var(--defendant-color);
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(20% 0 60% 0); transform: translate(-2px, 2px); }
+  40% { clip-path: inset(40% 0 40% 0); transform: translate(2px, -2px); }
+  60% { clip-path: inset(60% 0 20% 0); transform: translate(-2px, 0); }
+  80% { clip-path: inset(80% 0 0 0); transform: translate(2px, 2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(60% 0 20% 0); transform: translate(2px, -2px); }
+  40% { clip-path: inset(40% 0 40% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(20% 0 60% 0); transform: translate(2px, 0); }
+  80% { clip-path: inset(0 0 80% 0); transform: translate(-2px, -2px); }
+}
+
+/* Representatives */
+.representatives {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 100px;
+  margin-bottom: 30px;
+}
+
+.rep {
+  text-align: center;
+}
+
+.rep-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.rep-name {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+/* AI Indicator */
+.ai-indicator {
+  font-size: 14px;
+  color: var(--accent-blue);
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+/* Agent Avatars */
+.agent-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  margin: 0 auto 20px;
+  border: 4px solid;
+  background: radial-gradient(circle, rgba(0,0,0,0.8), rgba(0,0,0,0.95));
+  box-shadow: 
+    0 0 40px currentColor,
+    inset 0 0 40px rgba(255,255,255,0.1);
+}
+
+.agent-plaintiff .agent-avatar {
+  border-color: var(--plaintiff-color);
+  color: var(--plaintiff-color);
+  box-shadow: 0 0 60px var(--plaintiff-glow);
+}
+
+.agent-defendant .agent-avatar {
+  border-color: var(--defendant-color);
+  color: var(--defendant-color);
+  box-shadow: 0 0 60px var(--defendant-glow);
+}
+
+/* Agent Stats */
+.agent-stats {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.agent-stats span {
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: var(--text-secondary);
+}
+
+/* Commentary Bar */
+.commentary-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 30px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid var(--accent-blue);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-family: 'Courier New', monospace;
+}
+
+.commentary-bar .pulse {
+  color: var(--accent-blue);
+  animation: pulse 1s infinite;
+}
+
+.commentary-text {
+  color: var(--accent-blue);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* Battle Log */
+.battle-log {
+  height: 120px;
+  overflow-y: auto;
+  padding: 15px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--text-muted);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.log-entry {
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: var(--text-secondary);
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+  color: var(--text-primary);
+}
+
+/* Agents Display */
+.agents-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  margin-bottom: 20px;
+}
+
+.agent-sprite {
+  text-align: center;
+}
+
+.agent-visual {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  margin: 0 auto 15px;
+  border: 3px solid;
+  background: radial-gradient(circle, rgba(0,0,0,0.9), rgba(0,0,0,1));
+}
+
+.plaintiff-agent .agent-visual {
+  border-color: var(--plaintiff-color);
+  box-shadow: 0 0 40px var(--plaintiff-glow);
+}
+
+.defendant-agent .agent-visual {
+  border-color: var(--defendant-color);
+  box-shadow: 0 0 40px var(--defendant-glow);
+}
+
+.agent-core {
+  margin-top: 10px;
+}
+
+.core-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.core-bar {
+  width: 100px;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.core-fill {
+  height: 100%;
+  background: var(--plaintiff-color);
+  transition: width 0.3s ease;
+}
+
+.core-fill.defendant {
+  background: var(--defendant-color);
+}
+
+/* Move Execution */
+.move-execution {
+  text-align: center;
+  padding: 20px 40px;
+  background: rgba(0,0,0,0.9);
+  border: 2px solid;
+  border-radius: 8px;
+  animation: movePop 0.5s ease;
+}
+
+@keyframes movePop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.plaintiff-execution {
+  border-color: var(--plaintiff-color);
+  box-shadow: 0 0 40px var(--plaintiff-glow);
+}
+
+.defendant-execution {
+  border-color: var(--defendant-color);
+  box-shadow: 0 0 40px var(--defendant-glow);
+}
+
+.move-agent {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.move-execution .move-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.move-execution .move-name {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.move-execution .move-damage {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--accent-gold);
+}
+
+/* Control Headers */
+.control-header {
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid;
+}
+
+.plaintiff-controls .control-header {
+  border-color: var(--plaintiff-color);
+}
+
+.defendant-controls .control-header {
+  border-color: var(--defendant-color);
+}
+
+.control-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.control-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* Cyber Divider */
+.cyber-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.divider-line {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(to bottom, transparent, var(--text-muted), transparent);
+}
+
+.vs-icon {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--accent-gold);
+}
+
+/* Cyber Button */
+.cyber {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glitch {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: glitch 2s infinite;
+}
+
+/* Represented Party */
+.represented-party {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--text-muted);
+  border-radius: 8px;
+}
+
+.rep-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.rep-person {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 10px;
+}
+
+.rep-verdict {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Cyber Stats */
+.cyber-stats {
+  background: rgba(0,0,0,0.8);
+  border: 1px solid var(--accent-blue);
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.stat-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-item .stat-label {
+  width: 200px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.stat-item .stat-bar {
+  flex: 1;
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-item .stat-fill {
+  height: 100%;
+  background: var(--plaintiff-color);
+  transition: width 1s ease;
+}
+
+.stat-item .stat-fill.defendant {
+  background: var(--defendant-color);
+}
+
+.stat-item .stat-value {
+  width: 60px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Case Badge */
+.case-badge {
+  padding: 8px 16px;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid var(--accent-gold);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
 }
 
 /* Footer */
