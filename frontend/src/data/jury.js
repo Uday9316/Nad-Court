@@ -2,11 +2,12 @@
 // Each judge analyzes cases and posts their verdict with logic
 
 // Import judge profile images
-import portdevImg from '../../assets/portdev.png'
-import mikewebImg from '../../assets/mikeweb.jpg'
-import keoneImg from '../../assets/keone.jpg'
-import jamesImg from '../../assets/james.jpg'
-import anagoImg from '../../assets/anago.jpg'
+import portdevImg from '../assets/portdev.png'
+import mikewebImg from '../assets/mikeweb.jpg'
+import keoneImg from '../assets/keone.jpg'
+import jamesImg from '../assets/james.jpg'
+import harpalImg from '../assets/harpal.jpg'
+import anagoImg from '../assets/anago.jpg'
 
 export const JURY_MEMBERS = [
   {
