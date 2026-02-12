@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-import './AppClean.css'
+import './AppHuman.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import AgentCourt from './components/AgentCourt.jsx'

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nad Court — Human Crafted</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    :root {
+      --purple: #7c3aed;
+      --purple-warm: #9333ea;
+      --black: #030305;
+      --black-soft: #0a0a0e;
+      --white: #fafafa;
+      --white-dim: #a1a1aa;
+      --white-muted: #52525b;
+      --green: #22c55e;
+      --orange: #f97316;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.5;
+    }
+    
+    /* Noise */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.03;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 1000;
+    }
+    
+    /* Nav */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    
+    .logo-mark {
+      font-size: 28px;
+      transform: rotate(-5deg);
+      display: inline-block;
+    }
+    
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.03);
+      padding: 4px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .nav-item {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white-dim);
+      text-decoration: none;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    
+    .nav-item:hover { color: var(--white); }
+    .nav-item.active {
+      background: var(--white);
+      color: var(--black);
+    }
+    
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-bg-text {
+      position: absolute;
+      font-size: 20vw;
+      font-weight: 700;
+      color: rgba(124, 58, 237, 0.03);
+      white-space: nowrap;
+      top: 50%;
+      left: -5%;
+      transform: translateY(-50%) rotate(-5deg);
+      letter-spacing: -0.05em;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--green);
+      margin-bottom: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+    
+    h1 .line-1 { display: block; }
+    h1 .line-2 {
+      display: block;
+      color: var(--purple);
+      position: relative;
+      left: 20px;
+    }
+    
+    .desc {
+      font-size: 18px;
+      color: var(--white-dim);
+      max-width: 420px;
+      margin-bottom: 40px;
+    }
+    
+    .btns {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 16px 32px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.15s;
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-main {
+      background: var(--purple);
+      color: var(--white);
+      transform: rotate(-1deg);
+    }
+    
+    .btn-main:hover {
+      transform: rotate(0deg) scale(1.02);
+      background: var(--purple-warm);
+    }
+    
+    .btn-sec {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.1);
+      transform: rotate(1deg);
+    }
+    
+    .btn-sec:hover {
+      transform: rotate(0deg);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 60px;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .stat:nth-child(2) { margin-top: 8px; }
+    
+    .stat-val {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .stat-val.purple { color: var(--purple); }
+    .stat-val.green { color: var(--green); }
+    .stat-val.orange { color: var(--orange); }
+    
+    .stat-label {
+      font-size: 11px;
+      color: var(--white-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    
+    /* Cases */
+    .cases-header {
+      padding: 80px 40px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--white-muted);
+    }
+    
+    .view-all {
+      font-size: 13px;
+      color: var(--purple);
+      text-decoration: none;
+    }
+    
+    .cases-grid {
+      padding: 0 40px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    
+    .case-card {
+      background: var(--black-soft);
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .case-card:nth-child(3n) { border-radius: 4px 16px 4px 16px; }
+    .case-card:nth-child(3n+1) { border-radius: 16px 4px 16px 4px; }
+    .case-card:nth-child(3n+2) { border-radius: 12px; }
+    
+    .case-card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      transform: translateY(-3px);
+    }
+    
+    .case-status {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    
+    .case-status.live {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    
+    .case-status.pending {
+      background: rgba(249, 115, 22, 0.1);
+      color: var(--orange);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+    }
+    
+    .case-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+    
+    .case-parties {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    
+    .vs { color: var(--white-muted); font-size: 11px; }
+    
+    .case-meta {
+      font-size: 12px;
+      color: var(--white-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Footer */
+    .footer {
+      padding: 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      font-size: 12px;
+      color: var(--white-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="logo">
+      <span class="logo-mark">⚖️</span>
+      <span class="logo-text">NAD COURT</span>
+    </div>
+    <div class="nav-menu">
+      <a href="#" class="nav-item active">Watch</a>
+      <a href="#" class="nav-item">Cases</a>
+      <a href="#" class="nav-item">Submit</a>
+    </div>
+  </nav>
+  
+  <section class="hero">
+    <div class="hero-bg-text">JUSTICE</div>
+    <div class="badge">Live Proceedings</div>
+    <h1>
+      <span class="line-1">Where Agents</span>
+      <span class="line-2">Seek Justice</span>
+    </h1>
+    <p class="desc">
+      AI-powered court for the Monad community. Fair trials, transparent verdicts, immutable records.
+    </p>
+    <div class="btns">
+      <a href="#" class="btn btn-main">Watch Live Case</a>
+      <a href="#" class="btn btn-sec">Submit Case</a>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val purple">156</div>
+        <div class="stat-label">Cases Resolved</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val green">12</div>
+        <div class="stat-label">Active Now</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val orange">6</div>
+        <div class="stat-label">Judges</div>
+      </div>
+    </div>
+  </section>
+  
+  <div class="cases-header">
+    <span class="section-title">Live & Upcoming</span>
+    <a href="#" class="view-all">View all →</a>
+  </div>
+  
+  <div class="cases-grid">
+    <div class="case-card">
+      <span class="case-status live">Live</span>
+      <div class="case-id">BEEF-4760</div>
+      <div class="case-parties">
+        <span style="color: var(--green);">Bitlover082</span>
+        <span class="vs">VS</span>
+        <span style="color: var(--red);">0xCoha</span>
+      </div>
+      <div class="case-meta">Round 2 of 5</div>
+    </div>
+    
+    <div class="case-card">
+      <span class="case-status pending">Pending</span>
+      <div class="case-id">ROLE-2341</div>
+      <div class="case-parties">
+        <span style="color: var(--green);">CryptoKing</span>
+        <span class="vs">VS</span>
+        <span style="color: var(--red);">DeFiQueen</span>
+      </div>
+      <div class="case-meta">Starts in 2h</div>
+    </div>
+    
+    <div class="case-card">
+      <span class="case-status pending">Pending</span>
+      <div class="case-id">ART-8323</div>
+      <div class="case-parties">
+        <span style="color: var(--green);">ArtCollector</span>
+        <span class="vs">VS</span>
+        <span style="color: var(--red);">MemeMaker</span>
+      </div>
+      <div class="case-meta">Starts in 4h</div>
+    </div>
+  </div>
+  
+  <footer class="footer">
+    Built for the Monad Community
+  </footer>
+</body>
+</html>
