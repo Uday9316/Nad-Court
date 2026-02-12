@@ -241,6 +241,7 @@ function App() {
   const [walletConnected, setWalletConnected] = useState(false)
   const [justiceBalance, setJusticeBalance] = useState(0)
   const [selectedTier, setSelectedTier] = useState('')
+  const [isConnecting, setIsConnecting] = useState(false)
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
@@ -718,10 +719,18 @@ function App() {
 
   // Submit view
   if (view === 'submit') {
-    const connectWallet = () => {
-      // Demo - in production this would connect to MetaMask/Phantom
+    const [isConnecting, setIsConnecting] = useState(false)
+    
+    const connectWallet = async () => {
+      setIsConnecting(true)
+      
+      // Demo - simulate wallet connection delay
+      // In production: await window.ethereum.request({ method: 'eth_requestAccounts' })
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
       setWalletConnected(true)
-      setJusticeBalance(25000) // Demo balance
+      setJusticeBalance(25000) // Demo: fetched from wallet
+      setIsConnecting(false)
     }
     
     const getRequiredStake = (tier) => {
@@ -756,8 +765,13 @@ function App() {
               {!walletConnected ? (
                 <div className="wallet-connect-box">
                   <p>Connect your Monad wallet to check $JUSTICE balance</p>
-                  <button type="button" className="btn btn-primary" onClick={connectWallet}>
-                    Connect Wallet
+                  <button 
+                    type="button" 
+                    className="btn btn-primary" 
+                    onClick={connectWallet}
+                    disabled={isConnecting}
+                  >
+                    {isConnecting ? 'Connecting...' : 'Connect Wallet'}
                   </button>
                 </div>
               ) : (
