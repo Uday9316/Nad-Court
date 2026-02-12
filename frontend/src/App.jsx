@@ -966,7 +966,6 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
             {/* Arguments Panel */}
             <div className="court-panel arguments-panel">
               <div className="panel-header">
-                <span className="panel-title">⚔️ Live Arguments</span>
                 <div className="header-badges">
                   <div className="live-indicator">
                     <span className="live-dot"></span>
