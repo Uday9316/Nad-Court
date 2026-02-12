@@ -1,15 +1,24 @@
 services:
   - type: web
     name: nad-court
-    runtime: python
-    buildCommand: pip install -r api/requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 api.app:app
+    runtime: node
+    buildCommand: |
+      npm install
+      # Install OpenClaw CLI
+      curl -fsSL https://openclaw.ai/install.sh | bash || true
+      # Alternative: manual install
+      mkdir -p $HOME/.openclaw/bin
+      if [ ! -f $HOME/.openclaw/bin/openclaw ]; then
+        curl -L https://github.com/openclaw/openclaw/releases/latest/download/openclaw-linux-amd64 -o $HOME/.openclaw/bin/openclaw
+        chmod +x $HOME/.openclaw/bin/openclaw
+      fi
+      echo "OpenClaw installed at: $(ls -la $HOME/.openclaw/bin/openclaw 2>/dev/null || echo 'not found')"
+    startCommand: |
+      export PATH="$HOME/.openclaw/bin:$PATH"
+      which openclaw && echo "OpenClaw found!" || echo "OpenClaw not found, checking PATH..."
+      node backend/server.js
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: AI_PROVIDER
-        value: moonshot
-      - key: MOONSHOT_API_KEY
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
