@@ -293,8 +293,22 @@ final_verdict = "plaintiff" if plaintiff_wins > defendant_wins else "defendant"
 ## API Usage
 
 ### Environment Variables
+
+Choose your AI provider:
+
 ```bash
+# Option 1: OpenClaw Gateway (Recommended)
+AI_PROVIDER=openclaw
+OPENCLAW_API_KEY=your_openclaw_key
+OPENCLAW_GATEWAY_URL=http://localhost:3000
+
+# Option 2: OpenAI GPT-4
+AI_PROVIDER=openai
 OPENAI_API_KEY=sk-...
+
+# Option 3: Moonshot/Kimi K2.5
+AI_PROVIDER=moonshot
+MOONSHOT_API_KEY=your_moonshot_key
 ```
 
 ### Cost Per Case
