@@ -1479,6 +1479,48 @@ body {
   margin-bottom: var(--space-2xl);
 }
 
+.api-section.one-command {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.02));
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.api-section.one-command h2 {
+  color: var(--color-purple-light);
+}
+
+.code-block.featured {
+  background: #0d1117;
+  border: 2px solid var(--color-purple);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.command-note {
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-md);
+}
+
+.command-note p {
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  color: var(--color-text);
+}
+
+.command-note ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.command-note li {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
 .api-section h2 {
   font-size: 24px;
   font-weight: 600;
