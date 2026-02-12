@@ -218,14 +218,14 @@ function App() {
       {evaluations.length > 0 && (
         <div className="evaluations">
           <h3>⚖️ Judge Evaluations</h3>
-          {evaluations.map((eval, i) => (
+          {evaluations.map((_eval, i) => (
             <div key={i} className="evaluation">
               <h4>{JUDGES[i]}</h4>
-              <p>Winner: <strong>{eval.winner.toUpperCase()}</strong></p>
-              <p>Reasoning: {eval.reasoning}</p>
+              <p>Winner: <strong>{_eval.winner.toUpperCase()}</strong></p>
+              <p>Reasoning: {_eval.reasoning}</p>
               <div className="scores">
-                <span>Plaintiff: {((eval.scores.plaintiff.logic + eval.scores.plaintiff.evidence + eval.scores.plaintiff.rebuttal + eval.scores.plaintiff.clarity)/4).toFixed(0)}</span>
-                <span>Defendant: {((eval.scores.defendant.logic + eval.scores.defendant.evidence + eval.scores.defendant.rebuttal + eval.scores.defendant.clarity)/4).toFixed(0)}</span>
+                <span>Plaintiff: {((_eval.scores.plaintiff.logic + _eval.scores.plaintiff.evidence + _eval.scores.plaintiff.rebuttal + _eval.scores.plaintiff.clarity)/4).toFixed(0)}</span>
+                <span>Defendant: {((_eval.scores.defendant.logic + _eval.scores.defendant.evidence + _eval.scores.defendant.rebuttal + _eval.scores.defendant.clarity)/4).toFixed(0)}</span>
               </div>
             </div>
           ))}
