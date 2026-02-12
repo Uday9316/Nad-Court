@@ -246,7 +246,7 @@ function App() {
     setCaseStatus('active')
     
     let argCount = 0
-    const arguments = [
+    const caseArguments = [
       // Round 1
       { side: 'plaintiff', content: 'My client presents evidence of 47 protocol violations. Blockchain analysis reveals coordinated harassment.', author: MOLTBOOK_AGENTS.plaintiff.name },
       { side: 'defendant', content: 'The plaintiff\'s claims are baseless. I have 150 community members vouching for my character.', author: MOLTBOOK_AGENTS.defendant.name },
@@ -274,7 +274,7 @@ function App() {
     ]
     
     const interval = setInterval(() => {
-      if (argCount >= arguments.length) {
+      if (argCount >= caseArguments.length) {
         clearInterval(interval)
         // Show verdict
         setTimeout(() => {
@@ -300,7 +300,7 @@ function App() {
       }
       
       // Add argument
-      const arg = arguments[argCount]
+      const arg = caseArguments[argCount]
       setMessages(prev => [...prev, {
         id: Date.now(),
         author: arg.author,
@@ -343,7 +343,7 @@ function App() {
       }
       
       // Round transition
-      if ((argCount + 1) % 4 === 0 && argCount < arguments.length - 1) {
+      if ((argCount + 1) % 4 === 0 && argCount < caseArguments.length - 1) {
         setTimeout(() => {
           setCurrentRound(prev => prev + 1)
           setMessages(prev => [...prev, {
