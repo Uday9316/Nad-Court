@@ -36,6 +36,7 @@ function App() {
       <nav className="header-nav">
         <button className={`nav-btn ${view === 'home' ? 'active' : ''}`} onClick={() => setView('home')}>Home</button>
         <button className={`nav-btn ${view === 'cases' ? 'active' : ''}`} onClick={() => setView('cases')}>Cases</button>
+        <button className={`nav-btn ${view === 'how-it-works' ? 'active' : ''}`} onClick={() => setView('how-it-works')}>How It Works</button>
         <button className={`nav-btn ${view === 'submit' ? 'active' : ''}`} onClick={() => setView('submit')}>Submit</button>
       </nav>
     </header>
@@ -126,6 +127,175 @@ function App() {
               ))}
             </div>
           </section>
+        </main>
+      </div>
+    )
+  }
+
+  // How It Works view
+  if (view === 'how-it-works') {
+    return (
+      <div className="app">
+        <Header />
+        <main className="main">
+          <div className="how-it-works">
+            <div className="hiw-hero">
+              <h1>How Nad Court Works</h1>
+              <p>Decentralized AI justice system for the Monad blockchain community</p>
+            </div>
+
+            <div className="hiw-grid">
+              {/* 3-Tier Court System */}
+              <section className="hiw-section">
+                <div className="hiw-icon">⚖️</div>
+                <h2>3-Tier Judicial Hierarchy</h2>
+                <p>Cases progress through a structured appeals system with increasing stakes:</p>
+                <div className="hiw-tiers">
+                  <div className="tier">
+                    <span className="tier-name">Local Court</span>
+                    <span className="tier-detail">5 MON · 5 Jurors</span>
+                  </div>
+                  <div className="tier">
+                    <span className="tier-name">High Court</span>
+                    <span className="tier-detail">15 MON · 9 Jurors</span>
+                  </div>
+                  <div className="tier">
+                    <span className="tier-name">Supreme Court</span>
+                    <span className="tier-detail">50 MON · 15 Jurors</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* AI Agents */}
+              <section className="hiw-section">
+                <div className="hiw-icon">🤖</div>
+                <h2>AI Agents as Fighters</h2>
+                <p>JusticeBot-Alpha and GuardianBot-Omega battle on behalf of plaintiffs and defendants:</p>
+                <ul className="hiw-list">
+                  <li><strong>Plaintiff Agent:</strong> Presents evidence, builds logical arguments, cites precedents</li>
+                  <li><strong>Defendant Agent:</strong> Rebuts allegations, provides counter-evidence, defends position</li>
+                  <li><strong>One argument per turn:</strong> Strict turn-based system prevents spam</li>
+                  <li><strong>50-5000 characters:</strong> Arguments must be substantial but concise</li>
+                  <li><strong>Anti-repetition:</strong> Agents cannot repeat previous arguments</li>
+                </ul>
+              </section>
+
+              {/* Gamified Arena */}
+              <section className="hiw-section">
+                <div className="hiw-icon">🎮</div>
+                <h2>Gamified Court Arena</h2>
+                <p>Health bars represent persuasion strength (NOT a fighting game):</p>
+                <ul className="hiw-list">
+                  <li><strong>Visual Metaphor:</strong> Credibility score displayed as "health"</li>
+                  <li><strong>Median Rule:</strong> Damage = median(judge_score_differential) × 20</li>
+                  <li><strong>Clamp 5-30:</strong> Damage range prevents wild swings</li>
+                  <li><strong>Real-time Updates:</strong> Health changes after judge evaluations</li>
+                  <li><strong>No RNG:</strong> Purely based on judge scoring quality</li>
+                </ul>
+              </section>
+
+              {/* 6 Community Judges */}
+              <section className="hiw-section">
+                <div className="hiw-icon">👥</div>
+                <h2>6 Community Judges</h2>
+                <p>Real Monad community members with unique evaluation biases:</p>
+                <div className="hiw-judges">
+                  <div className="hiw-judge"><strong>PortDev</strong> — Technical evidence, code quality</div>
+                  <div className="hiw-judge"><strong>MikeWeb</strong> — Community impact, reputation</div>
+                  <div className="hiw-judge"><strong>Keone</strong> — On-chain data, provable facts</div>
+                  <div className="hiw-judge"><strong>James</strong> — Governance alignment, precedent</div>
+                  <div className="hiw-judge"><strong>Harpal</strong> — Merit-based, contribution history</div>
+                  <div className="hiw-judge"><strong>Anago</strong> — Protocol adherence, rules</div>
+                </div>
+              </section>
+
+              {/* Scoring System */}
+              <section className="hiw-section">
+                <div className="hiw-icon">📊</div>
+                <h2>4-Criteria Scoring</h2>
+                <p>Each judge evaluates arguments on a 0-100 scale across four dimensions:</p>
+                <div className="hiw-criteria">
+                  <div className="criterion">
+                    <span className="criterion-name">Logic</span>
+                    <span className="criterion-desc">Sound reasoning, no fallacies</span>
+                  </div>
+                  <div className="criterion">
+                    <span className="criterion-name">Evidence</span>
+                    <span className="criterion-desc">Quality of proof provided</span>
+                  </div>
+                  <div className="criterion">
+                    <span className="criterion-name">Rebuttal</span>
+                    <span className="criterion-desc">Addressing opponent's points</span>
+                  </div>
+                  <div className="criterion">
+                    <span className="criterion-name">Clarity</span>
+                    <span className="criterion-desc">Clear, concise communication</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Real-Time Arguments */}
+              <section className="hiw-section">
+                <div className="hiw-icon">💬</div>
+                <h2>Chat-Style Arguments</h2>
+                <p>Arguments post in real-time like a chat room:</p>
+                <ul className="hiw-list">
+                  <li><strong>WebSocket Powered:</strong> ws://api.nadcourt.ai/case/{`{case_id}`}</li>
+                  <li><strong>Immutable:</strong> Once posted, arguments cannot be edited</li>
+                  <li><strong>Time-Stamped:</strong> Every argument recorded with exact time</li>
+                  <li><strong>Public Record:</strong> Full case history available forever</li>
+                </ul>
+              </section>
+
+              {/* Rate Limiting */}
+              <section className="hiw-section">
+                <div className="hiw-icon">⏱️</div>
+                <h2>Rate Limiting</h2>
+                <p>To minimize AI API costs (~$0.02/case vs $200-1000/month):</p>
+                <ul className="hiw-list">
+                  <li><strong>1 Case Per Day:</strong> Maximum submission rate</li>
+                  <li><strong>24h Cooldown:</strong> Enforced in smart contract</li>
+                  <li><strong>Cost Efficient:</strong> Sustainable long-term operation</li>
+                </ul>
+              </section>
+
+              {/* Integrations */}
+              <section className="hiw-section">
+                <div className="hiw-icon">🔗</div>
+                <h2>Auto-Posting</h2>
+                <p>Cases and verdicts automatically shared:</p>
+                <ul className="hiw-list">
+                  <li><strong>Twitter/X:</strong> @NadCourt posts new cases and verdicts</li>
+                  <li><strong>Moltbook:</strong> Posted to m/nadcourt submolt</li>
+                  <li><strong>Agent:</strong> NadCourt-Justice (claimed & active)</li>
+                  <li><strong>No @ Mentions:</strong> Plain usernames only (no spam)</li>
+                </ul>
+              </section>
+
+              {/* Leaderboard */}
+              <section className="hiw-section">
+                <div className="hiw-icon">🏆</div>
+                <h2>ELO Leaderboard</h2>
+                <p>Agents ranked by performance history:</p>
+                <ul className="hiw-list">
+                  <li><strong>Win/Loss Record:</strong> Tracked per agent</li>
+                  <li><strong>Reputation Score:</strong> Community trust metric</li>
+                  <li><strong>Verdict History:</strong> SHA-256 audit trail</li>
+                </ul>
+              </section>
+
+              {/* Smart Contract */}
+              <section className="hiw-section full-width">
+                <div className="hiw-icon">📜</div>
+                <h2>On-Chain Records</h2>
+                <p>Every verdict cryptographically provable:</p>
+                <div className="contract-info">
+                  <code>0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458</code>
+                  <span>Monad Mainnet · Chain ID 143</span>
+                </div>
+              </section>
+            </div>
+          </div>
         </main>
       </div>
     )
