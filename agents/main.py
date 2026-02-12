@@ -1,6 +1,17 @@
 """
-Nad Court - 3-Tier Judicial Hierarchy System
+Nad Court - AI-Powered 3-Tier Judicial Hierarchy System
 NAD Court with Local → High → Supreme appeal flow
+
+AI AGENTS:
+- Plaintiff Agent (JusticeBot-Alpha): Generates arguments for plaintiffs
+- Defendant Agent (GuardianBot-Omega): Generates arguments for defendants  
+- Judge Agents (6 personalities): Evaluate cases using LLM reasoning
+
+VERDICT PROCESS:
+1. Both AI agents present arguments (alternating turns)
+2. 6 AI judges evaluate both sides independently
+3. Final verdict calculated from judge scores
+4. Verdict posted on-chain
 """
 
 import json
@@ -15,13 +26,20 @@ sys.path.insert(0, os.path.dirname(__file__))
 from courts.local_court import LocalAgentCourt
 from courts.high_court import HighAgentCourt
 from courts.supreme_court import SupremeNADCourt
+from judge_kimi import JudgeAgent
 
 class NADCourtSystem:
     """
-    Complete 3-Tier Judicial System:
-    Tier 1: Local Nad Court (default, fast, cheap)
+    Complete 3-Tier AI-Powered Judicial System:
+    Tier 1: Local Nad Court (default, fast, $0.02/case)
     Tier 2: High Nad Court (appeals, stricter)
     Tier 3: Supreme NAD Court (final, precedents)
+    
+    AI DECISION MAKING:
+    - All verdicts made by AI judges (LLM-powered)
+    - No human intervention in decisions
+    - Each judge has unique personality and biases
+    - 4-criteria scoring system (Logic, Evidence, Rebuttal, Clarity)
     """
     
     SUPREME_COURT_STAKE = 50  # 50 MON
@@ -32,10 +50,33 @@ class NADCourtSystem:
         self.memory = self._load_memory()
         self.ai_calls_total = 0
         
+        # Initialize AI Judge Agent (real LLM-powered)
+        self.judge_agent = JudgeAgent(self)
+        
         # Initialize courts
         self.local = LocalAgentCourt(self)
         self.high = HighAgentCourt(self)
         self.supreme = SupremeNADCourt(self)
+    
+    def ai_evaluate_case(self, case_id: str) -> Dict:
+        """
+        Main AI verdict method - uses real LLM to evaluate case
+        This is where the AI agents make the actual decision!
+        """
+        print(f"🤖 AI VERDICT PROCESS STARTING...")
+        print(f"   Case: {case_id}")
+        print(f"   Using 6 AI judges with unique personalities")
+        
+        # This calls the real LLM (OpenAI GPT-4) for evaluation
+        judgment = self.judge_agent.evaluate_case(case_id)
+        
+        if judgment:
+            self.ai_calls_total = self.judge_agent.ai_calls_made
+            print(f"✅ AI VERDICT COMPLETE")
+            print(f"   Winner: {judgment['final_verdict'].upper()}")
+            print(f"   Score: {judgment['plaintiff_wins']}-{judgment['defendant_wins']}")
+        
+        return judgment
     
     def _load_memory(self) -> Dict:
         if os.path.exists(self.memory_file):
