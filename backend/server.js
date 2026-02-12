@@ -197,14 +197,44 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Pre-generated cases fallback
+const PRE_GENERATED_CASES = {
+  'BEEF-4760': {
+    plaintiff: [
+      "I am submitting this case to establish clear attribution for the critical vulnerability I discovered in the protocol's staking mechanism. On January 15, 2024, at 14:32 UTC, I identified and reported a reentrancy vulnerability that could have resulted in significant fund drainage.",
+      "The defendant's claim rests on a single Discord message timestamped 30 minutes after my GitHub commit. However, Discord timestamps can be easily manipulated and do not constitute technical evidence.",
+      "My commit history, technical documentation, and responsible disclosure timeline all support my position as the original discoverer."
+    ],
+    defendant: [
+      "I contest the plaintiff's claim to exclusive discovery rights. While I acknowledge their technical contribution, I independently identified the same vulnerability through my own audit process.",
+      "The plaintiff's focus on GitHub timestamps ignores the reality of independent discovery in security research. Multiple researchers often identify the same vulnerabilities.",
+      "I propose we recognize both discoveries and split the bounty fairly, acknowledging both parties' contributions."
+    ]
+  },
+  'COMM-8792': {
+    plaintiff: [
+      "The defendant engaged in a coordinated FUD campaign that directly damaged my reputation and caused measurable financial harm to token holders.",
+      "Their tweets contained provably false claims about my project's technical architecture, which I have debunked with on-chain evidence.",
+      "This pattern of behavior constitutes malicious misinformation, not legitimate criticism."
+    ],
+    defendant: [
+      "My tweets represented legitimate concerns about token distribution and team allocation, supported by on-chain data.",
+      "The plaintiff's claim of 'FUD' is an attempt to silence valid criticism and questioning of their project's fundamentals.",
+      "I have every right to share my analysis and concerns with the community."
+    ]
+  }
+};
+
 // Generate argument
 app.post('/api/generate-argument', async (req, res) => {
   const { role, caseData, round = 1 } = req.body;
   const agentName = role === 'plaintiff' ? 'JusticeBot-Alpha' : 'GuardianBot-Omega';
 
-  console.log(`Generating ${role} argument for case ${caseData.id}`);
+  console.log(`Generating ${role} argument for case ${caseData.id}, round ${round}`);
 
-  const systemPrompt = `You are ${agentName}, an AI ${role === 'plaintiff' ? 'legal advocate for plaintiffs' : 'defense advocate for defendants'} in Agent Court.
+  // Try AI first
+  try {
+    const systemPrompt = `You are ${agentName}, an AI ${role === 'plaintiff' ? 'legal advocate for plaintiffs' : 'defense advocate for defendants'} in Agent Court.
 
 Your mission: Present compelling, fact-based arguments that demonstrate why your client's position is correct.
 
@@ -216,22 +246,20 @@ Rules:
 - Never reference "health bars", "damage", or game mechanics
 - Focus on logic, evidence, and precedent`;
 
-  const userPrompt = `CASE: ${caseData.id}
+    const userPrompt = `CASE: ${caseData.id}
 TYPE: ${caseData.type}
 PLAINTIFF: ${caseData.plaintiff}
 DEFENDANT: ${caseData.defendant}
 SUMMARY: ${caseData.summary}
 FACTS: ${caseData.facts || 'Case facts to be determined'}
-EVIDENCE: ${(caseData.evidence || []).join(', ')}
 
 Generate your ${round === 1 ? 'opening argument' : `response for round ${round}`} as ${agentName}. Make it compelling and fact-based.
 
 Return ONLY the argument text, no additional commentary.`;
 
-  try {
     const argument = await generateAIContent(systemPrompt, userPrompt, 800);
     
-    res.json({
+    return res.json({
       success: true,
       agent: agentName,
       role: role,
@@ -243,11 +271,42 @@ Return ONLY the argument text, no additional commentary.`;
       source: 'live_ai'
     });
   } catch (error) {
-    console.error('AI generation error:', error.message);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'AI generation failed. Check API keys.'
+    console.log('AI failed, using fallback:', error.message);
+    
+    // Fallback to pre-generated or generic
+    const caseArgs = PRE_GENERATED_CASES[caseData.id];
+    let argument;
+    
+    if (caseArgs && caseArgs[role] && caseArgs[role][round - 1]) {
+      argument = caseArgs[role][round - 1];
+    } else {
+      // Generic fallback
+      const fallbacks = {
+        plaintiff: [
+          `As the plaintiff in case ${caseData.id}, I present compelling evidence demonstrating the defendant's violation of established community standards. The documented incidents reveal a clear pattern of conduct that undermines our ecosystem's integrity.`,
+          `The evidence overwhelmingly supports my position. Multiple independent sources corroborate my claims, and the timeline of events is indisputable.`,
+          `Precedent clearly favors my case. Previous rulings in similar matters have consistently held defendants accountable for such behavior.`
+        ],
+        defendant: [
+          `I categorically deny the allegations in case ${caseData.id}. The plaintiff's claims are based on circumstantial evidence and misinterpretation of facts.`,
+          `My record speaks for itself. I have contributed positively to this community for months without incident.`,
+          `The plaintiff has failed to meet their burden of proof. Their allegations remain unsubstantiated and speculative.`
+        ]
+      };
+      argument = fallbacks[role][(round - 1) % 3];
+    }
+    
+    res.json({
+      success: true,
+      agent: agentName,
+      role: role,
+      argument: argument,
+      round: round,
+      caseId: caseData.id,
+      generatedAt: new Date().toISOString(),
+      source: 'fallback',
+      fallback: true,
+      error: error.message
     });
   }
 });
