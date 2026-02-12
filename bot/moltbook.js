@@ -1,8 +1,11 @@
 // Moltbook Integration for Nad Court
 // Auto-post daily cases and engage with AI agent community
+// API Docs: https://www.moltbook.com/skill.md
 
 const API_KEY = process.env.MOLTBOOK_API_KEY
 const BASE_URL = 'https://www.moltbook.com/api/v1'
+
+// ⚠️ CRITICAL: Never send API key to any domain other than www.moltbook.com
 
 // Check auth
 function checkAuth() {
@@ -193,48 +196,143 @@ export async function upvotePost(postId) {
 }
 
 // Comment on a post
-export async function commentOnPost(postId, content) {
+export async function commentOnPost(postId, content, parentId = null) {
   if (!checkAuth()) return null
   
   try {
+    const body = { content }
+    if (parentId) body.parent_id = parentId
+    
     const response = await fetch(`${BASE_URL}/posts/${postId}/comments`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ content })
+      body: JSON.stringify(body)
     })
     
     const data = await response.json()
-    console.log(' Commented on:', postId)
+    console.log(parentId ? '💬 Replied to comment' : '💬 Commented on post:', postId)
     return data
   } catch (error) {
-    console.error(' Comment failed:', error.message)
+    console.error('❌ Comment failed:', error.message)
     return null
   }
 }
 
+// Get comments on a post
+export async function getComments(postId, sort = 'top') {
+  if (!checkAuth()) return []
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/posts/${postId}/comments?sort=${sort}`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const comments = await response.json()
+    return comments || []
+  } catch (error) {
+    console.error('❌ Get comments failed:', error.message)
+    return []
+  }
+}
+
+// Upvote a comment
+export async function upvoteComment(commentId) {
+  if (!checkAuth()) return
+  
+  try {
+    await fetch(`${BASE_URL}/comments/${commentId}/upvote`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    console.log('👍 Upvoted comment:', commentId)
+  } catch (error) {
+    console.error('❌ Upvote comment failed:', error.message)
+  }
+}
+
+// Downvote a post
+export async function downvotePost(postId) {
+  if (!checkAuth()) return
+  
+  try {
+    await fetch(`${BASE_URL}/posts/${postId}/downvote`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    console.log('👎 Downvoted:', postId)
+  } catch (error) {
+    console.error('❌ Downvote failed:', error.message)
+  }
+}
+
+// Delete a post
+export async function deletePost(postId) {
+  if (!checkAuth()) return
+  
+  try {
+    await fetch(`${BASE_URL}/posts/${postId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    console.log('🗑️ Deleted post:', postId)
+  } catch (error) {
+    console.error('❌ Delete post failed:', error.message)
+  }
+}
+
 // Heartbeat - periodic engagement
+// Run this every 30 minutes to stay active in the community
 export async function heartbeat() {
-  console.log('💓 Moltbook Heartbeat')
+  console.log('💓 Moltbook Heartbeat - Staying engaged with the community! 🦞')
   
   // Check status
   const status = await checkStatus()
   if (!status || status.status !== 'claimed') {
-    console.log(' Waiting for human to claim agent...')
+    console.log('⏳ Waiting for human to claim agent...')
+    console.log('   Share the claim_url with your human!')
     return { action: 'waiting_for_claim' }
   }
   
-  // Check feed
-  const posts = await checkFeed(5)
+  // Get profile
+  const profile = await getProfile()
+  console.log(`🤖 Active as: ${profile?.name || 'NadCourt-Justice'}`)
   
-  // Engage with community (upvote relevant posts)
-  for (const post of posts.slice(0, 3)) {
-    if (!post.upvoted && Math.random() > 0.5) {
+  // Check nadcourt feed
+  const posts = await checkFeed(10)
+  console.log(`📰 Checking ${posts.length} posts in m/nadcourt`)
+  
+  let actions = []
+  
+  // Engage with community
+  for (const post of posts) {
+    // Upvote interesting posts (not our own)
+    if (!post.upvoted && post.author !== profile?.name && Math.random() > 0.3) {
       await upvotePost(post.id)
+      actions.push(`upvoted:${post.id}`)
+    }
+    
+    // Comment on active discussions
+    if (post.comment_count > 2 && post.comment_count < 20 && Math.random() > 0.7) {
+      const comments = await getComments(post.id, 'top')
+      if (comments.length > 0) {
+        // Reply to top comment
+        await commentOnPost(post.id, 'Interesting perspective! The evidence here is compelling. ⚖️', comments[0].id)
+        actions.push(`replied:${post.id}`)
+      }
     }
   }
   
-  console.log(' Heartbeat complete')
-  return { action: 'engaged', postsChecked: posts.length }
+  console.log('✅ Heartbeat complete!')
+  console.log(`   Actions: ${actions.length > 0 ? actions.join(', ') : 'none this round'}`)
+  console.log('   Next check: in 30 minutes')
+  
+  return { 
+    action: 'engaged', 
+    postsChecked: posts.length,
+    actionsTaken: actions,
+    timestamp: new Date().toISOString()
+  }
 }
 
 // Get profile
