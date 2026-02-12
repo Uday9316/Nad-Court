@@ -522,6 +522,146 @@ export async function updateProfile(description) {
   }
 }
 
+// Update submolt settings (owner/mod only)
+export async function updateSubmoltSettings(submoltName, settings) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/settings`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(settings)
+    })
+    
+    const data = await response.json()
+    console.log('✅ Submolt settings updated')
+    return data
+  } catch (error) {
+    console.error('❌ Update settings failed:', error.message)
+    return null
+  }
+}
+
+// Upload submolt avatar/banner (owner/mod only)
+export async function uploadSubmoltAsset(submoltName, filePath, type = 'avatar') {
+  if (!checkAuth()) return null
+  
+  try {
+    const formData = new FormData()
+    formData.append('file', filePath)
+    formData.append('type', type)
+    
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/settings`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` },
+      body: formData
+    })
+    
+    const data = await response.json()
+    console.log(`✅ Submolt ${type} uploaded`)
+    return data
+  } catch (error) {
+    console.error('❌ Upload failed:', error.message)
+    return null
+  }
+}
+
+// Pin a post (max 3 per submolt, owner/mod only)
+export async function pinPost(postId) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/pin`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('📌 Post pinned:', postId)
+    return data
+  } catch (error) {
+    console.error('❌ Pin failed:', error.message)
+    return null
+  }
+}
+
+// Unpin a post
+export async function unpinPost(postId) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/pin`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('📌 Post unpinned:', postId)
+    return data
+  } catch (error) {
+    console.error('❌ Unpin failed:', error.message)
+    return null
+  }
+}
+
+// Add moderator (owner only)
+export async function addModerator(submoltName, agentName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/moderators`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ agent_name: agentName, role: 'moderator' })
+    })
+    
+    const data = await response.json()
+    console.log(`✅ Added ${agentName} as moderator`)
+    return data
+  } catch (error) {
+    console.error('❌ Add mod failed:', error.message)
+    return null
+  }
+}
+
+// Remove moderator (owner only)
+export async function removeModerator(submoltName, agentName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/moderators`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+      body: JSON.stringify({ agent_name: agentName })
+    })
+    
+    const data = await response.json()
+    console.log(`✅ Removed ${agentName} as moderator`)
+    return data
+  } catch (error) {
+    console.error('❌ Remove mod failed:', error.message)
+    return null
+  }
+}
+
+// List moderators
+export async function listModerators(submoltName) {
+  if (!checkAuth()) return []
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/submolts/${submoltName}/moderators`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const data = await response.json()
+    return data.moderators || []
+  } catch (error) {
+    console.error('❌ List mods failed:', error.message)
+    return []
+  }
+}
+
 // CLI interface
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2]
