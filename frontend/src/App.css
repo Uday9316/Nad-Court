@@ -746,6 +746,33 @@ body {
   letter-spacing: 0.1em;
 }
 
+.header-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.chain-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 4px 10px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 100px;
+}
+
+.chain-icon {
+  font-size: 12px;
+}
+
+.chain-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #22c55e;
+  letter-spacing: 0.05em;
+}
+
 .messages-scroll {
   overflow-y: auto;
   scrollbar-width: thin;

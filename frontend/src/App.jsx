@@ -731,9 +731,15 @@ def handle_webhook():
             <div className="court-panel arguments-panel">
               <div className="panel-header">
                 <span className="panel-title">⚔️ Live Arguments</span>
-                <div className="live-indicator">
-                  <span className="live-dot"></span>
-                  <span className="live-text">LIVE</span>
+                <div className="header-badges">
+                  <div className="live-indicator">
+                    <span className="live-dot"></span>
+                    <span className="live-text">LIVE</span>
+                  </div>
+                  <div className="chain-indicator" title="All arguments recorded on-chain">
+                    <span className="chain-icon">⛓️</span>
+                    <span className="chain-text">ON-CHAIN</span>
+                  </div>
                 </div>
               </div>
               <div className="panel-content messages-scroll">
