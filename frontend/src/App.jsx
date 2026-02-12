@@ -31,22 +31,59 @@ const JUDGES = [
   { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
 ]
 
-// Simulated agent arguments
-const AGENT_ARGUMENTS = [
-  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'My client presents cryptographic proof of engagement farming. Transaction hashes show coordinated upvote manipulation.' },
-  { author: 'GuardianBot-Omega', role: 'defendant', content: 'Those transactions are legitimate community rewards. Here\'s the smart contract code proving fair distribution.' },
-  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'The timing correlation is undeniable. 23 posts within 4 minutes during peak hours. Statistical impossibility.' },
-  { author: 'GuardianBot-Omega', role: 'defendant', content: 'Timezone clustering explains the pattern. My client is based in Asia - those are evening hours locally.' },
-  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'Even accounting for timezone, the engagement velocity exceeds human capacity. Bot-like behavior confirmed.' },
-  { author: 'GuardianBot-Omega', role: 'defendant', content: 'My client uses notification aggregation. Multiple posts appear simultaneously when they go online.' },
-]
+// Dynamic argument generators
+const generatePlaintiffArgument = (round) => {
+  const args = [
+    `Round ${round}: My client presents on-chain evidence showing ${Math.floor(Math.random() * 50 + 20)} instances of protocol violation.`,
+    `The defendant's wallet history reveals suspicious patterns: ${Math.floor(Math.random() * 100 + 50)} rapid transactions in a ${Math.floor(Math.random() * 10 + 5)}-minute window.`,
+    `Community testimony from ${Math.floor(Math.random() * 20 + 10)} members corroborates our claims of misconduct.`,
+    `Smart contract analysis shows ${Math.floor(Math.random() * 30 + 10)} unauthorized function calls. This is not normal behavior.`,
+    `Cross-referencing with previous cases reveals identical patterns. The defendant is a repeat offender.`,
+    `My client's reputation score dropped by ${Math.floor(Math.random() * 40 + 20)}% directly following the defendant's actions.`,
+    `We have timestamped screenshots proving coordinated harassment across ${Math.floor(Math.random() * 5 + 2)} different channels.`,
+    `The defendant's own words condemn them: "I'll make sure they regret this" - documented in Exhibit ${String.fromCharCode(65 + Math.floor(Math.random() * 5))}.`,
+    `Blockchain forensics show the defendant's funds trace back to a sanctioned address. This is serious.`,
+    `My client has suffered measurable damages: ${Math.floor(Math.random() * 1000 + 500)} $JUSTICE tokens in lost opportunities.`,
+  ]
+  return args[round % args.length]
+}
 
-// Simulated judge evaluations
-const JUDGE_EVALUATIONS = [
-  { judge: 'PortDev', reasoning: 'Solid technical evidence from plaintiff. Defense needs stronger on-chain proof.', scores: { plaintiff: 78, defendant: 62 } },
-  { judge: 'MikeWeb', reasoning: 'Reputation metrics favor defendant. Long history of quality contributions.', scores: { plaintiff: 65, defendant: 82 } },
-  { judge: 'Keone', reasoning: 'Data supports both sides. Need more granular transaction analysis.', scores: { plaintiff: 71, defendant: 74 } },
-]
+const generateDefendantArgument = (round) => {
+  const args = [
+    `Round ${round}: The plaintiff's "evidence" is circumstantial at best. I have ${Math.floor(Math.random() * 100 + 50)} community members vouching for my character.`,
+    `Those transactions were legitimate trades during market volatility. Here's the DEX routing proof.`,
+    `I was participating in a community event at the time. ${Math.floor(Math.random() * 20 + 5)} witnesses can confirm my presence.`,
+    `The smart contract interactions were authorized through the official frontend. No foul play occurred.`,
+    `I've been an active community member for ${Math.floor(Math.random() * 12 + 6)} months with zero prior incidents.`,
+    `My reputation score has actually increased by ${Math.floor(Math.random() * 20 + 10)}% this month through genuine contributions.`,
+    `The screenshots are taken out of context. Here's the full conversation showing no malicious intent.`,
+    `The "sanctioned" address claim is false. That's a legitimate bridge contract used by thousands.`,
+    `I've contributed ${Math.floor(Math.random() * 50 + 20)} technical proposals to improve this protocol.`,
+    `The plaintiff has a history of frivolous cases. Check case #${Math.floor(Math.random() * 1000 + 1000)} from last month.`,
+  ]
+  return args[round % args.length]
+}
+
+const generateJudgeEvaluation = (judgeIndex) => {
+  const judges = ['PortDev', 'MikeWeb', 'Keone', 'James', 'Harpal', 'Anago']
+  const reasonings = [
+    'Strong technical evidence presented. The on-chain data is compelling.',
+    'Community sentiment appears divided. Need more objective metrics.',
+    'The transaction patterns warrant further investigation.',
+    'Historical precedent suggests caution before judgment.',
+    'Contribution history shows genuine engagement from both parties.',
+    'Protocol rules are clear on this matter. The evidence speaks for itself.',
+    'Both sides raise valid points. This is a complex case.',
+    'The timing correlations are suspicious but not conclusive.',
+  ]
+  const pScore = Math.floor(Math.random() * 30 + 60)
+  const dScore = Math.floor(Math.random() * 30 + 60)
+  return {
+    judge: judges[judgeIndex % judges.length],
+    reasoning: reasonings[judgeIndex % reasonings.length],
+    scores: { plaintiff: pScore, defendant: dScore }
+  }
+}
 
 function App() {
   const [view, setView] = useState('home')
@@ -60,62 +97,64 @@ function App() {
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // Simulate live court proceedings
+  // Simulate live court proceedings with dynamic arguments
   useEffect(() => {
     if (view !== 'live' || isLive) return
     setIsLive(true)
     
+    let argCount = 0
     const argInterval = setInterval(() => {
-      if (currentArgIndex < AGENT_ARGUMENTS.length) {
-        const arg = AGENT_ARGUMENTS[currentArgIndex]
-        const newMessage = {
-          id: messages.length + 1,
-          author: arg.author,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          content: arg.content,
-          role: arg.role,
-          type: 'argument'
-        }
-        setMessages(prev => [...prev, newMessage])
-        setCurrentArgIndex(prev => prev + 1)
+      const isPlaintiff = argCount % 2 === 0
+      const content = isPlaintiff 
+        ? generatePlaintiffArgument(Math.floor(argCount / 2))
+        : generateDefendantArgument(Math.floor(argCount / 2))
+      
+      const newMessage = {
+        id: Date.now(),
+        author: isPlaintiff ? 'JusticeBot-Alpha' : 'GuardianBot-Omega',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        content: content,
+        role: isPlaintiff ? 'plaintiff' : 'defendant',
+        type: 'argument'
       }
+      setMessages(prev => [...prev, newMessage])
+      argCount++
     }, 5000) // New argument every 5 seconds
 
     return () => clearInterval(argInterval)
-  }, [view, currentArgIndex, messages.length, isLive])
+  }, [view, isLive])
 
-  // Simulate judge evaluations
+  // Simulate judge evaluations with dynamic scoring
   useEffect(() => {
     if (view !== 'live') return
     
+    let evalCount = 0
     const evalInterval = setInterval(() => {
-      if (currentEvalIndex < JUDGE_EVALUATIONS.length) {
-        const eval_ = JUDGE_EVALUATIONS[currentEvalIndex]
-        const newEval = {
-          id: messages.length + 100,
-          author: `${eval_.judge} (Judge)`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          content: `${eval_.reasoning} [P:${eval_.scores.plaintiff} vs D:${eval_.scores.defendant}]`,
-          role: 'judge',
-          type: 'evaluation'
-        }
-        setMessages(prev => [...prev, newEval])
-        
-        // Update health based on scores
-        const diff = eval_.scores.plaintiff - eval_.scores.defendant
-        const damage = Math.min(30, Math.max(5, Math.abs(diff) / 3))
-        if (diff > 0) {
-          setDefendantHealth(prev => Math.max(0, prev - damage))
-        } else {
-          setPlaintiffHealth(prev => Math.max(0, prev - damage))
-        }
-        
-        setCurrentEvalIndex(prev => prev + 1)
+      const eval_ = generateJudgeEvaluation(evalCount)
+      const newEval = {
+        id: Date.now() + 1000,
+        author: `${eval_.judge} (Judge)`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        content: `${eval_.reasoning} [P:${eval_.scores.plaintiff} vs D:${eval_.scores.defendant}]`,
+        role: 'judge',
+        type: 'evaluation'
       }
+      setMessages(prev => [...prev, newEval])
+      
+      // Update health based on scores
+      const diff = eval_.scores.plaintiff - eval_.scores.defendant
+      const damage = Math.min(30, Math.max(5, Math.abs(diff) / 3))
+      if (diff > 0) {
+        setDefendantHealth(prev => Math.max(0, prev - damage))
+      } else {
+        setPlaintiffHealth(prev => Math.max(0, prev - damage))
+      }
+      
+      evalCount++
     }, 8000) // Judge evaluation every 8 seconds
 
     return () => clearInterval(evalInterval)
-  }, [view, currentEvalIndex, messages.length])
+  }, [view])
 
   // Header component
   const Header = () => (
