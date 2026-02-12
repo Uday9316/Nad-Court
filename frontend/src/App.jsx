@@ -236,6 +236,11 @@ function App() {
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 })
   const [nextCaseTime, setNextCaseTime] = useState(null)
   const [upcomingCases, setUpcomingCases] = useState([])
+  
+  // Submit case form state
+  const [walletConnected, setWalletConnected] = useState(false)
+  const [justiceBalance, setJusticeBalance] = useState(0)
+  const [selectedTier, setSelectedTier] = useState('')
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
@@ -713,10 +718,6 @@ function App() {
 
   // Submit view
   if (view === 'submit') {
-    const [walletConnected, setWalletConnected] = useState(false)
-    const [justiceBalance, setJusticeBalance] = useState(0)
-    const [selectedTier, setSelectedTier] = useState('')
-    
     const connectWallet = () => {
       // Demo - in production this would connect to MetaMask/Phantom
       setWalletConnected(true)
