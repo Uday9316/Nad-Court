@@ -244,16 +244,19 @@ function App() {
                 <div className="hiw-tiers">
                   <div className="tier">
                     <span className="tier-name">Local Court</span>
-                    <span className="tier-detail">5 MON · 5 Jurors</span>
+                    <span className="tier-detail">5K $JUSTICE · 5 Jurors</span>
                   </div>
                   <div className="tier">
                     <span className="tier-name">High Court</span>
-                    <span className="tier-detail">15 MON · 9 Jurors</span>
+                    <span className="tier-detail">15K $JUSTICE · 9 Jurors</span>
                   </div>
                   <div className="tier">
                     <span className="tier-name">Supreme Court</span>
-                    <span className="tier-detail">50 MON · 15 Jurors</span>
+                    <span className="tier-detail">50K $JUSTICE · 15 Jurors</span>
                   </div>
+                </div>
+                <div className="token-info">
+                  <code>$JUSTICE: 0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777</code>
                 </div>
               </section>
 
