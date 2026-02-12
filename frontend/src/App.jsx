@@ -719,8 +719,6 @@ function App() {
 
   // Submit view
   if (view === 'submit') {
-    const [isConnecting, setIsConnecting] = useState(false)
-    
     const connectWallet = async () => {
       setIsConnecting(true)
       
