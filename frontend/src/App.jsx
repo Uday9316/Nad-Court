@@ -238,22 +238,128 @@ function App() {
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // Load case from blockchain - no WebSocket needed
+  // Live simulation for testing - posts arguments in real-time
   useEffect(() => {
     if (view !== 'live') return
     
-    // For demo: simulate loading from blockchain
-    // In production: fetch from contract events
+    setIsLive(true)
+    setCaseStatus('active')
     
-    const loadCase = async () => {
-      setIsLive(true)
-      setCaseStatus('active')
+    let argCount = 0
+    const arguments = [
+      // Round 1
+      { side: 'plaintiff', content: 'My client presents evidence of 47 protocol violations. Blockchain analysis reveals coordinated harassment.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'The plaintiff\'s claims are baseless. I have 150 community members vouching for my character.', author: MOLTBOOK_AGENTS.defendant.name },
+      { side: 'plaintiff', content: 'The defendant\'s wallet shows 63 suspicious transactions in a 7-minute window. This is not normal.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'Those were legitimate trades during market volatility. Here\'s the DEX routing proof.', author: MOLTBOOK_AGENTS.defendant.name },
+      // Round 2
+      { side: 'plaintiff', content: 'Community testimony from 18 members corroborates our claims of systematic abuse.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'I was participating in a community event at the time. 12 witnesses can confirm.', author: MOLTBOOK_AGENTS.defendant.name },
+      { side: 'plaintiff', content: 'Smart contract analysis shows 23 unauthorized function calls. Bot behavior confirmed.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'The interactions were authorized through the official frontend. No foul play occurred.', author: MOLTBOOK_AGENTS.defendant.name },
+      // Round 3
+      { side: 'plaintiff', content: 'Cross-referencing reveals identical patterns. The defendant is a repeat offender.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'I\'ve contributed 35 technical proposals. This is a merit-based attack.', author: MOLTBOOK_AGENTS.defendant.name },
+      { side: 'plaintiff', content: 'Final evidence: The defendant\'s funds trace to a sanctioned address.', author: MOLTBOOK_AGENTS.plaintiff.name },
+      { side: 'defendant', content: 'Closing statement: No rules broken. Community norms support my position.', author: MOLTBOOK_AGENTS.defendant.name },
+    ]
+    
+    const evaluations = [
+      { judge: 'PortDev', reasoning: 'Technical evidence is solid. I reviewed the timestamps and they don\'t lie.', p: 78, d: 65 },
+      { judge: 'MikeWeb', reasoning: 'Community sentiment favors plaintiff. Defense needs stronger character evidence.', p: 72, d: 68 },
+      { judge: 'Keone', reasoning: 'The data tells a story, but it\'s ambiguous. Both sides have credible evidence.', p: 75, d: 71 },
+      { judge: 'James', reasoning: 'Precedent matters here. We\'ve seen similar cases before.', p: 76, d: 64 },
+      { judge: 'Harpal', reasoning: 'Contribution quality over quantity. The defendant\'s posts get better engagement.', p: 79, d: 66 },
+      { judge: 'Anago', reasoning: 'Protocol adherence is clear: no rules were technically broken.', p: 81, d: 62 },
+    ]
+    
+    const interval = setInterval(() => {
+      if (argCount >= arguments.length) {
+        clearInterval(interval)
+        // Show verdict
+        setTimeout(() => {
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: 'COURT',
+            content: '══════════════════ FINAL DELIBERATION ══════════════════',
+            role: 'system',
+            type: 'round'
+          }])
+          setTimeout(() => {
+            setMessages(prev => [...prev, {
+              id: Date.now(),
+              author: '🧠 OpenClaw Judgment',
+              content: '🏆 PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
+              role: 'system',
+              type: 'verdict'
+            }])
+            setCaseStatus('ended')
+          }, 2000)
+        }, 1000)
+        return
+      }
       
-      // Simulate loading arguments from chain
-      // In production, this would query contract events
-    }
+      // Add argument
+      const arg = arguments[argCount]
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        author: arg.author,
+        content: arg.content,
+        role: arg.side,
+        type: 'argument'
+      }])
+      
+      // Update health
+      if (arg.side === 'plaintiff') {
+        setPlaintiffHealth(prev => Math.min(100, prev + 2))
+      } else {
+        setDefendantHealth(prev => Math.min(100, prev + 2))
+      }
+      
+      // Add evaluation every 2 arguments
+      if ((argCount + 1) % 2 === 0 && (argCount + 1) / 2 <= evaluations.length) {
+        setTimeout(() => {
+          const eval_ = evaluations[(argCount + 1) / 2 - 1]
+          const damage = Math.abs(eval_.p - eval_.d) / 3
+          
+          if (eval_.p > eval_.d) {
+            setDefendantHealth(prev => Math.max(10, prev - damage))
+          } else {
+            setPlaintiffHealth(prev => Math.max(10, prev - damage))
+          }
+          
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: `${eval_.judge} (Judge)`,
+            content: `${eval_.reasoning} [P:${Math.round(eval_.p)} vs D:${Math.round(eval_.d)}]`,
+            role: 'judge',
+            type: 'evaluation',
+            criteria: {
+              plaintiff: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.p) },
+              defendant: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.d) }
+            }
+          }])
+        }, 1500)
+      }
+      
+      // Round transition
+      if ((argCount + 1) % 4 === 0 && argCount < arguments.length - 1) {
+        setTimeout(() => {
+          setCurrentRound(prev => prev + 1)
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: 'COURT',
+            content: `═══════════════════ ROUND ${Math.floor(argCount / 4) + 2} ═══════════════════`,
+            role: 'system',
+            type: 'round'
+          }])
+        }, 1000)
+      }
+      
+      argCount++
+    }, 5000) // New argument every 5 seconds
     
-    loadCase()
+    return () => clearInterval(interval)
   }, [view])
 
   // Note: In production, judge evaluations come from WebSocket server
