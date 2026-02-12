@@ -20,8 +20,8 @@ OPENCLAW_API_KEY = os.getenv("OPENCLAW_API_KEY")
 # Default provider selection
 AI_PROVIDER = os.getenv("AI_PROVIDER", "nvidia" if NVIDIA_API_KEY else ("openclaw" if os.getenv("OPENCLAW_API_KEY") else "openai"))
 
-# Moonshot/Kimi Code API configuration
-MOONSHOT_BASE_URL = os.getenv("MOONSHOT_BASE_URL", "https://api.moonshot.cn")
+# Kimi API configuration (Kimi Code API)
+KIMI_BASE_URL = os.getenv("KIMI_BASE_URL", "https://api.kimi.moonshot.cn")
 
 
 class AIArgumentAgent:
@@ -84,39 +84,43 @@ class AIArgumentAgent:
         return response.choices[0].message.content
     
     def _call_moonshot(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call Moonshot/Kimi Code API with model fallback"""
+        """Call Kimi API (Kimi Code)"""
         headers = {
             "Authorization": f"Bearer {MOONSHOT_API_KEY}",
             "Content-Type": "application/json"
         }
         
-        # Try different model names for Kimi Code subscription
-        models_to_try = ["kimi-k2.5", "moonshot-v1-128k", "kimi-latest"]
+        # Kimi API payload
+        payload = {
+            "model": "kimi-k2.5",
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
         
-        for model in models_to_try:
-            try:
-                payload = {
-                    "model": model,
-                    "messages": messages,
-                    "temperature": temperature,
-                    "max_tokens": max_tokens
-                }
-                
-                response = requests.post(
-                    f"{MOONSHOT_BASE_URL}/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    return response.json()["choices"][0]["message"]["content"]
-                    
-            except Exception:
-                continue
+        # Try Kimi API endpoint first
+        try:
+            response = requests.post(
+                f"{KIMI_BASE_URL}/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                return response.json()["choices"][0]["message"]["content"]
+        except Exception:
+            pass
         
-        # If all models fail, raise error
-        raise Exception("All Moonshot models failed")
+        # Fallback to Moonshot endpoint
+        response = requests.post(
+            "https://api.moonshot.cn/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=60
+        )
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
     
     def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
         """Call NVIDIA API with Kimi K2.5"""
@@ -359,38 +363,42 @@ class AIJudgeAgent:
         return response.choices[0].message.content
     
     def _call_moonshot(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call Moonshot/Kimi Code API with model fallback"""
+        """Call Kimi API (Kimi Code)"""
         headers = {
             "Authorization": f"Bearer {MOONSHOT_API_KEY}",
             "Content-Type": "application/json"
         }
         
-        # Try different model names
-        models_to_try = ["kimi-k2.5", "moonshot-v1-128k", "kimi-latest"]
+        payload = {
+            "model": "kimi-k2.5",
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
         
-        for model in models_to_try:
-            try:
-                payload = {
-                    "model": model,
-                    "messages": messages,
-                    "temperature": temperature,
-                    "max_tokens": max_tokens
-                }
-                
-                response = requests.post(
-                    f"{MOONSHOT_BASE_URL}/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    return response.json()["choices"][0]["message"]["content"]
-                    
-            except Exception:
-                continue
+        # Try Kimi API endpoint first
+        try:
+            response = requests.post(
+                f"{KIMI_BASE_URL}/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                return response.json()["choices"][0]["message"]["content"]
+        except Exception:
+            pass
         
-        raise Exception("All Moonshot models failed")
+        # Fallback to Moonshot endpoint
+        response = requests.post(
+            "https://api.moonshot.cn/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=60
+        )
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
     
     def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
         """Call NVIDIA API with Kimi K2.5"""
