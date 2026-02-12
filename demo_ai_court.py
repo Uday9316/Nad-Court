@@ -3,6 +3,19 @@ Agent Court - Full AI Demo
 AI agents generate cases from community data, argue them, and render verdicts
 """
 
+import os
+import sys
+
+# Load .env file
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(env_path):
+    with open(env_path) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                os.environ[key] = value
+
 from agents.ai_agents import AgentCourtSystem, AIArgumentAgent, AIJudgeAgent
 import random
 from datetime import datetime

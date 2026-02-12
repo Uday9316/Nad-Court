@@ -13,11 +13,12 @@ from datetime import datetime
 # API Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 MOONSHOT_API_KEY = os.getenv("MOONSHOT_API_KEY")
+NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", "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")
 OPENCLAW_GATEWAY_URL = os.getenv("OPENCLAW_GATEWAY_URL", "http://localhost:3000")
 OPENCLAW_API_KEY = os.getenv("OPENCLAW_API_KEY")
 
-# Default to OpenClaw if available, otherwise OpenAI, otherwise Moonshot
-AI_PROVIDER = os.getenv("AI_PROVIDER", "openclaw" if os.getenv("OPENCLAW_API_KEY") else "openai")
+# Default to NVIDIA if key available, otherwise OpenClaw, then OpenAI, then Moonshot
+AI_PROVIDER = os.getenv("AI_PROVIDER", "nvidia" if NVIDIA_API_KEY else ("openclaw" if os.getenv("OPENCLAW_API_KEY") else "openai"))
 
 class AIArgumentAgent:
     """
@@ -32,7 +33,9 @@ class AIArgumentAgent:
         
     def _call_llm(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 800) -> str:
         """Call LLM with provider fallback"""
-        if AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
+        if AI_PROVIDER == "nvidia" and NVIDIA_API_KEY:
+            return self._call_nvidia(messages, temperature, max_tokens)
+        elif AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
             return self._call_openclaw(messages, temperature, max_tokens)
         elif AI_PROVIDER == "openai" and OPENAI_API_KEY:
             return self._call_openai(messages, temperature, max_tokens)
@@ -98,9 +101,33 @@ class AIArgumentAgent:
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
     
+    def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
+        """Call NVIDIA API with Kimi K2.5"""
+        invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+        
+        headers = {
+            "Authorization": f"Bearer {NVIDIA_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "moonshotai/kimi-k2.5",
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": 1.00,
+            "stream": False
+        }
+        
+        response = requests.post(invoke_url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    
     def generate_argument(self, case_data: Dict, opponent_args: List[str] = None) -> str:
         """Generate a legal argument using LLM"""
         # Check if any provider is available
+        if AI_PROVIDER == "nvidia" and not NVIDIA_API_KEY:
+            return self._fallback_argument(case_data)
         if AI_PROVIDER == "openclaw" and not OPENCLAW_API_KEY:
             return self._fallback_argument(case_data)
         if AI_PROVIDER == "openai" and not OPENAI_API_KEY:
@@ -268,7 +295,9 @@ class AIJudgeAgent:
     
     def _call_llm(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 1000) -> str:
         """Call LLM with provider fallback (same as AIArgumentAgent)"""
-        if AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
+        if AI_PROVIDER == "nvidia" and NVIDIA_API_KEY:
+            return self._call_nvidia(messages, temperature, max_tokens)
+        elif AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
             return self._call_openclaw(messages, temperature, max_tokens)
         elif AI_PROVIDER == "openai" and OPENAI_API_KEY:
             return self._call_openai(messages, temperature, max_tokens)
@@ -334,12 +363,35 @@ class AIJudgeAgent:
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
     
+    def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
+        """Call NVIDIA API with Kimi K2.5"""
+        invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+        
+        headers = {
+            "Authorization": f"Bearer {NVIDIA_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "moonshotai/kimi-k2.5",
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "top_p": 1.00,
+            "stream": False
+        }
+        
+        response = requests.post(invoke_url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    
     def evaluate(self, case_data: Dict, plaintiff_args: List[str], defendant_args: List[str]) -> Dict:
         """
         Evaluate a case using LLM with judge's unique perspective
         """
         # Check if any provider is available
         has_provider = (
+            (AI_PROVIDER == "nvidia" and NVIDIA_API_KEY) or
             (AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY) or
             (AI_PROVIDER == "openai" and OPENAI_API_KEY) or
             (AI_PROVIDER == "moonshot" and MOONSHOT_API_KEY)
