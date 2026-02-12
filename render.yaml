@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: nad-court
+    runtime: node
+    buildCommand: npm install && curl -sSL https://install.openclaw.sh | bash
+    startCommand: node backend/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
