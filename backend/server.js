@@ -15,10 +15,10 @@ app.use(cors({
 
 app.use(express.json());
 
-// API Keys from environment - trim whitespace
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY ? process.env.MOONSHOT_API_KEY.trim() : null;
+// API Keys - hardcoded for testing
+const MOONSHOT_API_KEY = 'sk-EIEZLxk2zKScp4Wvsb5sPH3N0GtFrW6dypVZPGBazUDp6W8z';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.trim() : null;
-const AI_PROVIDER = process.env.AI_PROVIDER || 'moonshot';
+const AI_PROVIDER = 'moonshot';
 
 console.log('API Key check:');
 console.log('- MOONSHOT_API_KEY exists:', !!MOONSHOT_API_KEY);
