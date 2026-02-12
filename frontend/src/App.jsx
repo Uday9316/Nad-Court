@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import './App.css'
+import './OpenClawCourt.css'
 
 // Contract config
 const CONTRACT_ADDRESS = '0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458'
@@ -336,9 +337,9 @@ function App() {
       setTimeout(() => {
         setMessages(prev => [...prev, {
           id: Date.now() + 9999,
-          author: 'COURT VERDICT',
+          author: '🧠 OpenClaw Judgment',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          content: `🏆 ${winnerRole.toUpperCase()} WINS! After 3 rounds of deliberation, ${winner} has proven their case against ${loser}. Final scores - Plaintiff: ${Math.round(plaintiffHealth)} | Defendant: ${Math.round(defendantHealth)}.`,
+          content: `🏆 ${winnerRole.toUpperCase()} WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. ${winner} has proven their case against ${loser}. Final credibility scores - Plaintiff: ${Math.round(plaintiffHealth)} | Defendant: ${Math.round(defendantHealth)}. Punishment will be executed on-chain.`,
           role: 'system',
           type: 'verdict'
         }])
@@ -621,6 +622,45 @@ function App() {
                   <div className="criterion">
                     <span className="criterion-name">Clarity</span>
                     <span className="criterion-desc">Clear, concise communication</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Python + OpenClaw Architecture */}
+              <section className="hiw-section full-width">
+                <div className="hiw-icon">🐍</div>
+                <h2>Python Logic + OpenClaw Judgment</h2>
+                <p>Decentralized system combining deterministic Python with AI final judgment:</p>
+                <div className="system-architecture">
+                  <div className="architecture-flow">
+                    <div className="arch-step">
+                      <span className="arch-step-num">1</span>
+                      <div className="arch-step-content">
+                        <h4>Python Trial Engine ⚙️</h4>
+                        <p>Generates arguments, manages rounds, calculates 4-criteria scores (Logic, Evidence, Rebuttal, Clarity)</p>
+                      </div>
+                    </div>
+                    <div className="arch-step">
+                      <span className="arch-step-num">2</span>
+                      <div className="arch-step-content">
+                        <h4>3 Rounds of Deliberation</h4>
+                        <p>Each round: 4 arguments (2 per side) + 2 judge evaluations. All recorded on-chain.</p>
+                      </div>
+                    </div>
+                    <div className="arch-step">
+                      <span className="arch-step-num">3</span>
+                      <div className="arch-step-content">
+                        <h4>OpenClaw Final Judgment 🧠</h4>
+                        <p>After 3 rounds, OpenClaw analyzes all evidence and arguments to deliver final verdict</p>
+                      </div>
+                    </div>
+                    <div className="arch-step">
+                      <span className="arch-step-num">4</span>
+                      <div className="arch-step-content">
+                        <h4>Punishment Executed ⛓️</h4>
+                        <p>Ban, Isolation, or Warning applied. Reputation updated. Verdict recorded permanently.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
