@@ -868,11 +868,27 @@ body {
 .plaintiff-avatar {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05));
   border-color: rgba(139, 92, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plaintiff-avatar svg {
+  width: 48px;
+  height: 48px;
 }
 
 .defendant-avatar {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   border-color: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.defendant-avatar svg {
+  width: 48px;
+  height: 48px;
 }
 
 .plaintiff-hp {

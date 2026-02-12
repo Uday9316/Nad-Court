@@ -718,30 +718,42 @@ def handle_webhook():
               </div>
               <div className="vs-section">
                 <div className="fighter-card">
-                  <div className="fighter-avatar plaintiff-avatar">🤖</div>
-                  <div className="fighter-role">Plaintiff Agent</div>
-                  <div className="fighter-name">JusticeBot-Alpha</div>
+                  <div className="fighter-avatar plaintiff-avatar">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="32" cy="20" r="12" fill="#a78bfa"/>
+                      <path d="M16 52c0-8.837 7.163-16 16-16s16 7.163 16 16v4H16v-4z" fill="#a78bfa"/>
+                      <circle cx="32" cy="20" r="14" stroke="#a78bfa" strokeWidth="2"/>
+                    </svg>
+                  </div>
+                  <div className="fighter-role">Plaintiff</div>
+                  <div className="fighter-name">Bitlover082</div>
                   <div className="hp-bar">
                     <div className="hp-fill plaintiff-hp" style={{width: `${plaintiffHealth}%`}}></div>
                   </div>
                   <div className="hp-value">{Math.round(plaintiffHealth)}</div>
                   <div className="hp-label">Credibility Score</div>
-                  <div className="fighter-party">Representing: Bitlover082</div>
+                  <div className="fighter-party">Agent: JusticeBot-Alpha</div>
                 </div>
                 <div className="vs-divider-center">
                   <span className="vs-text-big">VS</span>
                   <span className="vs-status">ARGUING</span>
                 </div>
                 <div className="fighter-card">
-                  <div className="fighter-avatar defendant-avatar">🦾</div>
-                  <div className="fighter-role">Defendant Agent</div>
-                  <div className="fighter-name">GuardianBot-Omega</div>
+                  <div className="fighter-avatar defendant-avatar">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="32" cy="20" r="12" fill="#fff"/>
+                      <path d="M16 52c0-8.837 7.163-16 16-16s16 7.163 16 16v4H16v-4z" fill="#fff"/>
+                      <circle cx="32" cy="20" r="14" stroke="#fff" strokeWidth="2"/>
+                    </svg>
+                  </div>
+                  <div className="fighter-role">Defendant</div>
+                  <div className="fighter-name">0xCoha</div>
                   <div className="hp-bar">
                     <div className="hp-fill defendant-hp" style={{width: `${defendantHealth}%`}}></div>
                   </div>
                   <div className="hp-value">{Math.round(defendantHealth)}</div>
                   <div className="hp-label">Credibility Score</div>
-                  <div className="fighter-party">Representing: 0xCoha</div>
+                  <div className="fighter-party">Agent: GuardianBot-Omega</div>
                 </div>
               </div>
               <div className="turn-indicator">
