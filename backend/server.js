@@ -76,7 +76,7 @@ async function callMoonshotAPI(systemPrompt, userPrompt, maxTokens = 800) {
   }
 
   const data = JSON.stringify({
-    model: 'kimi-k2.5',
+    model: 'moonshot-v1-8k',
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt }
