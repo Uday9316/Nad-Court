@@ -404,8 +404,8 @@ function App() {
   // Header component
   const Header = () => (
     <header className="header">
-      <div className="header-brand">
-        <div className="header-logo"></div>
+      <div className="header-brand" onClick={() => setView('home')} style={{ cursor: 'pointer' }}>
+        <div className="header-logo">⚖️</div>
         <span>NAD COURT</span>
       </div>
       <nav className="header-nav">
