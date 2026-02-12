@@ -23,7 +23,11 @@ const AI_PROVIDER = process.env.AI_PROVIDER || 'moonshot';
 console.log('API Key check:');
 console.log('- MOONSHOT_API_KEY exists:', !!MOONSHOT_API_KEY);
 console.log('- MOONSHOT_API_KEY length:', MOONSHOT_API_KEY ? MOONSHOT_API_KEY.length : 0);
-console.log('- MOONSHOT_API_KEY prefix:', MOONSHOT_API_KEY ? MOONSHOT_API_KEY.substring(0, 15) + '...' : 'none');
+if (MOONSHOT_API_KEY) {
+  const masked = MOONSHOT_API_KEY.substring(0, 10) + '...' + MOONSHOT_API_KEY.substring(MOONSHOT_API_KEY.length - 5);
+  console.log('- MOONSHOT_API_KEY masked:', masked);
+  console.log('- MOONSHOT_API_KEY starts with sk-:', MOONSHOT_API_KEY.startsWith('sk-'));
+}
 
 // Judge profiles
 const JUDGE_PROFILES = {
@@ -98,6 +102,7 @@ async function callMoonshotAPI(systemPrompt, userPrompt, maxTokens = 800) {
       res.on('data', (chunk) => responseData += chunk);
       res.on('end', () => {
         console.log('Moonshot response status:', res.statusCode);
+        console.log('Moonshot request headers:', JSON.stringify(options.headers));
         console.log('Moonshot response:', responseData.substring(0, 500));
         try {
           const json = JSON.parse(responseData);
