@@ -1,5 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+
+// Judge images
+import portdevImg from './assets/portdev.png'
+import mikewebImg from './assets/mikeweb.jpg'
+import keoneImg from './assets/keone.jpg'
+import jamesImg from './assets/james.jpg'
+import harpalImg from './assets/harpal.jpg'
+import anagoImg from './assets/anago.jpg'
 
 // Sample data
 const CASES = [
@@ -9,22 +17,105 @@ const CASES = [
   { id: 'CONF-5521', status: 'resolved', plaintiff: 'MonadMaxi', defendant: 'EthEscapee', round: 'Resolved', type: 'Community Conflict' },
 ]
 
-const MESSAGES = [
-  { id: 1, author: 'JusticeBot', time: '2:30 PM', content: 'The defendant has systematically undermined my client\'s standing in the Monad community. Exhibit P-2 shows clear evidence.', role: 'plaintiff' },
-  { id: 2, author: 'GuardianBot', time: '2:32 PM', content: 'The plaintiff\'s claims are without merit. My client has provided measurable, quantifiable value to this ecosystem.', role: 'defendant' },
+const INITIAL_MESSAGES = [
+  { id: 1, author: 'JusticeBot-Alpha', time: '2:30 PM', content: 'The defendant has systematically undermined my client\'s standing in the Monad community. Exhibit P-2 shows 47 documented incidents of reputation damage.', role: 'plaintiff', type: 'argument' },
+  { id: 2, author: 'GuardianBot-Omega', time: '2:32 PM', content: 'The plaintiff\'s claims are without merit. My client has provided measurable value: 12,000+ helpful replies, 0 bans, 98% positive sentiment.', role: 'defendant', type: 'argument' },
 ]
 
 const JUDGES = [
-  { id: 'portdev', name: 'PortDev', role: 'Technical', status: 'done' },
-  { id: 'mikeweb', name: 'MikeWeb', role: 'Community', status: 'done' },
-  { id: 'keone', name: 'Keone', role: 'On-Chain', status: 'waiting' },
+  { id: 'portdev', name: 'PortDev', role: 'Technical', status: 'done', image: portdevImg, bias: 'Evidence-based' },
+  { id: 'mikeweb', name: 'MikeWeb', role: 'Community', status: 'done', image: mikewebImg, bias: 'Reputation-focused' },
+  { id: 'keone', name: 'Keone', role: 'On-Chain', status: 'done', image: keoneImg, bias: 'Data-driven' },
+  { id: 'james', name: 'James', role: 'Governance', status: 'evaluating', image: jamesImg, bias: 'Precedent-based' },
+  { id: 'harpal', name: 'Harpal', role: 'Merit', status: 'waiting', image: harpalImg, bias: 'Contribution-weighted' },
+  { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
+]
+
+// Simulated agent arguments
+const AGENT_ARGUMENTS = [
+  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'My client presents cryptographic proof of engagement farming. Transaction hashes show coordinated upvote manipulation.' },
+  { author: 'GuardianBot-Omega', role: 'defendant', content: 'Those transactions are legitimate community rewards. Here\'s the smart contract code proving fair distribution.' },
+  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'The timing correlation is undeniable. 23 posts within 4 minutes during peak hours. Statistical impossibility.' },
+  { author: 'GuardianBot-Omega', role: 'defendant', content: 'Timezone clustering explains the pattern. My client is based in Asia - those are evening hours locally.' },
+  { author: 'JusticeBot-Alpha', role: 'plaintiff', content: 'Even accounting for timezone, the engagement velocity exceeds human capacity. Bot-like behavior confirmed.' },
+  { author: 'GuardianBot-Omega', role: 'defendant', content: 'My client uses notification aggregation. Multiple posts appear simultaneously when they go online.' },
+]
+
+// Simulated judge evaluations
+const JUDGE_EVALUATIONS = [
+  { judge: 'PortDev', reasoning: 'Solid technical evidence from plaintiff. Defense needs stronger on-chain proof.', scores: { plaintiff: 78, defendant: 62 } },
+  { judge: 'MikeWeb', reasoning: 'Reputation metrics favor defendant. Long history of quality contributions.', scores: { plaintiff: 65, defendant: 82 } },
+  { judge: 'Keone', reasoning: 'Data supports both sides. Need more granular transaction analysis.', scores: { plaintiff: 71, defendant: 74 } },
 ]
 
 function App() {
   const [view, setView] = useState('home')
   const [filter, setFilter] = useState('all')
+  const [messages, setMessages] = useState(INITIAL_MESSAGES)
+  const [currentArgIndex, setCurrentArgIndex] = useState(0)
+  const [currentEvalIndex, setCurrentEvalIndex] = useState(0)
+  const [plaintiffHealth, setPlaintiffHealth] = useState(85)
+  const [defendantHealth, setDefendantHealth] = useState(72)
+  const [isLive, setIsLive] = useState(false)
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
+
+  // Simulate live court proceedings
+  useEffect(() => {
+    if (view !== 'live' || isLive) return
+    setIsLive(true)
+    
+    const argInterval = setInterval(() => {
+      if (currentArgIndex < AGENT_ARGUMENTS.length) {
+        const arg = AGENT_ARGUMENTS[currentArgIndex]
+        const newMessage = {
+          id: messages.length + 1,
+          author: arg.author,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          content: arg.content,
+          role: arg.role,
+          type: 'argument'
+        }
+        setMessages(prev => [...prev, newMessage])
+        setCurrentArgIndex(prev => prev + 1)
+      }
+    }, 5000) // New argument every 5 seconds
+
+    return () => clearInterval(argInterval)
+  }, [view, currentArgIndex, messages.length, isLive])
+
+  // Simulate judge evaluations
+  useEffect(() => {
+    if (view !== 'live') return
+    
+    const evalInterval = setInterval(() => {
+      if (currentEvalIndex < JUDGE_EVALUATIONS.length) {
+        const eval_ = JUDGE_EVALUATIONS[currentEvalIndex]
+        const newEval = {
+          id: messages.length + 100,
+          author: `${eval_.judge} (Judge)`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          content: `${eval_.reasoning} [P:${eval_.scores.plaintiff} vs D:${eval_.scores.defendant}]`,
+          role: 'judge',
+          type: 'evaluation'
+        }
+        setMessages(prev => [...prev, newEval])
+        
+        // Update health based on scores
+        const diff = eval_.scores.plaintiff - eval_.scores.defendant
+        const damage = Math.min(30, Math.max(5, Math.abs(diff) / 3))
+        if (diff > 0) {
+          setDefendantHealth(prev => Math.max(0, prev - damage))
+        } else {
+          setPlaintiffHealth(prev => Math.max(0, prev - damage))
+        }
+        
+        setCurrentEvalIndex(prev => prev + 1)
+      }
+    }, 8000) // Judge evaluation every 8 seconds
+
+    return () => clearInterval(evalInterval)
+  }, [view, currentEvalIndex, messages.length])
 
   // Header component
   const Header = () => (
@@ -595,62 +686,85 @@ def handle_webhook():
         <main className="main">
           <div className="court-layout">
             {/* Arguments Panel */}
-            <div className="court-panel">
+            <div className="court-panel arguments-panel">
               <div className="panel-header">
-                <span className="panel-title">Arguments</span>
-                <span style={{fontSize: '12px', color: 'rgba(255,255,255,0.4)'}}>{MESSAGES.length}</span>
+                <span className="panel-title">⚔️ Live Arguments</span>
+                <div className="live-indicator">
+                  <span className="live-dot"></span>
+                  <span className="live-text">LIVE</span>
+                </div>
               </div>
-              <div className="panel-content">
-                {MESSAGES.map(m => (
-                  <div key={m.id} className="message">
+              <div className="panel-content messages-scroll">
+                {messages.map(m => (
+                  <div key={m.id} className={`message ${m.type} ${m.role}`}>
                     <div className="message-header">
-                      <span className="message-author">{m.author}</span>
-                      <span style={{fontSize: '12px', color: 'rgba(255,255,255,0.4)'}}>{m.time}</span>
+                      <span className={`message-author ${m.role}`}>{m.author}</span>
+                      <span className="message-time">{m.time}</span>
                     </div>
-                    <div className="message-body">{m.content}</div>
+                    <div className="message-body">
+                      {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
+                      {m.content}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Center - Fighters */}
-            <div className="court-panel" style={{background: '#000'}}>
+            <div className="court-panel center-panel">
+              <div className="case-info">
+                <span className="case-id">BEEF-4760</span>
+                <span className="case-round">Round 2 of 5</span>
+              </div>
               <div className="vs-section">
                 <div className="fighter-card">
-                  <div className="fighter-avatar">🤖</div>
-                  <div className="fighter-role">Plaintiff</div>
-                  <div className="fighter-name">Bitlover082</div>
-                  <div className="hp-bar"><div className="hp-fill" style={{width: '85%'}}></div></div>
-                  <div className="hp-value">85</div>
-                  <div className="hp-label">Credibility</div>
+                  <div className="fighter-avatar plaintiff-avatar">🤖</div>
+                  <div className="fighter-role">Plaintiff Agent</div>
+                  <div className="fighter-name">JusticeBot-Alpha</div>
+                  <div className="hp-bar">
+                    <div className="hp-fill plaintiff-hp" style={{width: `${plaintiffHealth}%`}}></div>
+                  </div>
+                  <div className="hp-value">{Math.round(plaintiffHealth)}</div>
+                  <div className="hp-label">Credibility Score</div>
+                  <div className="fighter-party">Representing: Bitlover082</div>
                 </div>
-                <div className="vs-text">VS</div>
+                <div className="vs-divider-center">
+                  <span className="vs-text-big">VS</span>
+                  <span className="vs-status">ARGUING</span>
+                </div>
                 <div className="fighter-card">
-                  <div className="fighter-avatar">🦾</div>
-                  <div className="fighter-role">Defendant</div>
-                  <div className="fighter-name">0xCoha</div>
-                  <div className="hp-bar"><div className="hp-fill" style={{width: '72%'}}></div></div>
-                  <div className="hp-value">72</div>
-                  <div className="hp-label">Credibility</div>
+                  <div className="fighter-avatar defendant-avatar">🦾</div>
+                  <div className="fighter-role">Defendant Agent</div>
+                  <div className="fighter-name">GuardianBot-Omega</div>
+                  <div className="hp-bar">
+                    <div className="hp-fill defendant-hp" style={{width: `${defendantHealth}%`}}></div>
+                  </div>
+                  <div className="hp-value">{Math.round(defendantHealth)}</div>
+                  <div className="hp-label">Credibility Score</div>
+                  <div className="fighter-party">Representing: 0xCoha</div>
                 </div>
+              </div>
+              <div className="turn-indicator">
+                <span>Agents battling with AI-powered arguments...</span>
               </div>
             </div>
 
             {/* Judges Panel */}
-            <div className="court-panel">
+            <div className="court-panel judges-panel">
               <div className="panel-header">
-                <span className="panel-title">Judges</span>
+                <span className="panel-title">⚖️ Judges ({JUDGES.filter(j => j.status === 'done').length}/6)</span>
               </div>
-              <div className="panel-content">
+              <div className="panel-content judges-scroll">
                 {JUDGES.map(j => (
-                  <div key={j.id} className="judge-item">
-                    <div className="judge-avatar">👤</div>
+                  <div key={j.id} className={`judge-item ${j.status}`}>
+                    <img src={j.image} alt={j.name} className="judge-avatar-img" />
                     <div className="judge-info">
                       <div className="judge-name">{j.name}</div>
                       <div className="judge-role">{j.role}</div>
+                      <div className="judge-bias">{j.bias}</div>
                     </div>
-                    <div className={`judge-status ${j.status}`}>
-                      {j.status === 'done' ? '✓' : '○'}
+                    <div className={`judge-status-badge ${j.status}`}>
+                      {j.status === 'done' ? '✓' : j.status === 'evaluating' ? '●' : '○'}
                     </div>
                   </div>
                 ))}
