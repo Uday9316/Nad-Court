@@ -178,31 +178,62 @@ function App() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES)
   const [currentArgIndex, setCurrentArgIndex] = useState(0)
   const [currentEvalIndex, setCurrentEvalIndex] = useState(0)
-  const [plaintiffHealth, setPlaintiffHealth] = useState(85)
-  const [defendantHealth, setDefendantHealth] = useState(72)
+  const [plaintiffHealth, setPlaintiffHealth] = useState(100)
+  const [defendantHealth, setDefendantHealth] = useState(100)
   const [isLive, setIsLive] = useState(false)
-  const [caseStatus, setCaseStatus] = useState('active') // active, plaintiff_won, defendant_won
+  const [caseStatus, setCaseStatus] = useState('active') // active, ended
   const [currentRound, setCurrentRound] = useState(1)
+  const [roundArgsCount, setRoundArgsCount] = useState(0) // arguments in current round
+  const [verdictShown, setVerdictShown] = useState(false)
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // Simulate live court proceedings with dynamic arguments
+  // Simulate live court proceedings with 3 rounds
   useEffect(() => {
     if (view !== 'live' || isLive || caseStatus !== 'active') return
     setIsLive(true)
     
-    let argCount = 0
+    let totalArgCount = 0
+    let currentRoundNum = 1
+    let argsInCurrentRound = 0
+    const ARGS_PER_ROUND = 4 // 2 from each side per round
+    
     const argInterval = setInterval(() => {
-      // Stop if case is decided
-      if (plaintiffHealth <= 0 || defendantHealth <= 0) {
+      // Stop if case is ended
+      if (caseStatus !== 'active') {
         clearInterval(argInterval)
         return
       }
       
-      const isPlaintiff = argCount % 2 === 0
+      // Check if we need to move to next round or end case
+      if (argsInCurrentRound >= ARGS_PER_ROUND) {
+        if (currentRoundNum >= 3) {
+          // All 3 rounds complete, trigger final verdict
+          clearInterval(argInterval)
+          showFinalVerdict()
+          return
+        }
+        // Move to next round
+        currentRoundNum++
+        setCurrentRound(currentRoundNum)
+        argsInCurrentRound = 0
+        
+        // Add round transition message
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          author: 'COURT',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          content: `═══════════════════ ROUND ${currentRoundNum} ═══════════════════`,
+          role: 'system',
+          type: 'round'
+        }])
+      }
+      
+      const isPlaintiff = totalArgCount % 2 === 0
+      const roundSpecificArg = (currentRoundNum - 1) * (ARGS_PER_ROUND / 2) + Math.floor(argsInCurrentRound / 2)
       const content = isPlaintiff 
-        ? generatePlaintiffArgument(Math.floor(argCount / 2))
-        : generateDefendantArgument(Math.floor(argCount / 2))
+        ? generatePlaintiffArgument(roundSpecificArg)
+        : generateDefendantArgument(roundSpecificArg)
       
       const newMessage = {
         id: Date.now(),
@@ -213,53 +244,77 @@ function App() {
         type: 'argument'
       }
       setMessages(prev => [...prev, newMessage])
-      argCount++
-    }, 5000) // New argument every 5 seconds
+      setRoundArgsCount(prev => prev + 1)
+      
+      totalArgCount++
+      argsInCurrentRound++
+    }, 6000) // New argument every 6 seconds
 
     return () => clearInterval(argInterval)
-  }, [view, isLive, caseStatus, plaintiffHealth, defendantHealth])
+  }, [view, isLive, caseStatus])
+  
+  // Function to show final verdict after 3 rounds
+  const showFinalVerdict = () => {
+    if (verdictShown) return
+    setVerdictShown(true)
+    
+    const plaintiffWins = plaintiffHealth > defendantHealth
+    const winner = plaintiffWins ? 'Bitlover082' : '0xCoha'
+    const loser = plaintiffWins ? '0xCoha' : 'Bitlover082'
+    const winnerRole = plaintiffWins ? 'Plaintiff' : 'Defendant'
+    
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        id: Date.now() + 8888,
+        author: 'COURT',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        content: '══════════════════ FINAL DELIBERATION ══════════════════',
+        role: 'system',
+        type: 'round'
+      }])
+      
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 9999,
+          author: 'COURT VERDICT',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          content: `🏆 ${winnerRole.toUpperCase()} WINS! After 3 rounds of deliberation, ${winner} has proven their case against ${loser}. Final scores - Plaintiff: ${Math.round(plaintiffHealth)} | Defendant: ${Math.round(defendantHealth)}.`,
+          role: 'system',
+          type: 'verdict'
+        }])
+        
+        setCaseStatus('ended')
+      }, 3000)
+    }, 2000)
+  }
 
-  // Simulate judge evaluations with dynamic scoring - no repeats
+  // Simulate judge evaluations - 2 per round
   useEffect(() => {
     if (view !== 'live' || caseStatus !== 'active') return
     
     const usedReasonings = []
     let evalCount = 0
+    let roundEvalCount = 0
+    let currentEvalRound = 1
+    const EVALS_PER_ROUND = 2
     
     const evalInterval = setInterval(() => {
-      // Check for winner after health update
-      const checkWinner = (newPlaintiffHealth, newDefendantHealth) => {
-        if (newDefendantHealth <= 0) {
-          setCaseStatus('plaintiff_won')
-          setMessages(prev => [...prev, {
-            id: Date.now() + 9999,
-            author: 'COURT VERDICT',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            content: '🏆 PLAINTIFF WINS! Bitlover082 has successfully proven their case against 0xCoha. The defendant\'s credibility has been reduced to zero.',
-            role: 'system',
-            type: 'verdict'
-          }])
-          return true
-        }
-        if (newPlaintiffHealth <= 0) {
-          setCaseStatus('defendant_won')
-          setMessages(prev => [...prev, {
-            id: Date.now() + 9999,
-            author: 'COURT VERDICT',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            content: '🏆 DEFENDANT WINS! 0xCoha has successfully defended against Bitlover082\'s allegations. The plaintiff\'s credibility has been reduced to zero.',
-            role: 'system',
-            type: 'verdict'
-          }])
-          return true
-        }
-        return false
-      }
-      
-      // Stop if already decided
-      if (plaintiffHealth <= 0 || defendantHealth <= 0) {
+      // Stop if case ended
+      if (caseStatus !== 'active' || verdictShown) {
         clearInterval(evalInterval)
         return
+      }
+      
+      // Check if we've done enough evaluations for this round
+      if (roundEvalCount >= EVALS_PER_ROUND) {
+        if (currentEvalRound >= 3) {
+          // All rounds complete, wait for final verdict
+          clearInterval(evalInterval)
+          return
+        }
+        // Move to next round
+        currentEvalRound++
+        roundEvalCount = 0
       }
       
       const eval_ = generateJudgeEvaluation(evalCount, usedReasonings)
@@ -282,31 +337,22 @@ function App() {
       }
       setMessages(prev => [...prev, newEval])
       
-      // Update health based on scores
+      // Update health based on scores (smaller damage per eval)
       const diff = eval_.scores.plaintiff - eval_.scores.defendant
-      const damage = Math.min(30, Math.max(5, Math.abs(diff) / 3))
-      
-      let newPlaintiffHealth = plaintiffHealth
-      let newDefendantHealth = defendantHealth
+      const damage = Math.min(15, Math.max(3, Math.abs(diff) / 5))
       
       if (diff > 0) {
-        newDefendantHealth = Math.max(0, defendantHealth - damage)
-        setDefendantHealth(newDefendantHealth)
+        setDefendantHealth(prev => Math.max(10, prev - damage))
       } else {
-        newPlaintiffHealth = Math.max(0, plaintiffHealth - damage)
-        setPlaintiffHealth(newPlaintiffHealth)
-      }
-      
-      // Check for winner
-      if (checkWinner(newPlaintiffHealth, newDefendantHealth)) {
-        clearInterval(evalInterval)
+        setPlaintiffHealth(prev => Math.max(10, prev - damage))
       }
       
       evalCount++
-    }, 8000) // Judge evaluation every 8 seconds
+      roundEvalCount++
+    }, 10000) // Judge evaluation every 10 seconds
 
     return () => clearInterval(evalInterval)
-  }, [view, caseStatus, plaintiffHealth, defendantHealth])
+  }, [view, caseStatus, verdictShown])
 
   // Header component
   const Header = () => (
@@ -904,6 +950,7 @@ def handle_webhook():
                     <div className="message-body">
                       {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
                       {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
+                      {m.type === 'round' && <span className="round-badge">📋 ROUND</span>}
                       <div className="message-content">{m.content}</div>
                       {m.type === 'evaluation' && m.criteria && (
                         <div className="criteria-scores">
@@ -939,7 +986,7 @@ def handle_webhook():
             <div className="court-panel center-panel">
               <div className="case-info">
                 <span className="case-id">BEEF-4760</span>
-                <span className="case-round">Round 2 of 5</span>
+                <span className="case-round">Round {currentRound} of 3</span>
               </div>
               <div className="vs-section">
                 <div className="fighter-card">

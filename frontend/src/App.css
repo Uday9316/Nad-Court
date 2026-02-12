@@ -852,6 +852,19 @@ body {
   margin-bottom: var(--space-sm);
 }
 
+.round-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  margin-bottom: var(--space-sm);
+}
+
 .message.system {
   border-left: 4px solid #22c55e;
   background: rgba(34, 197, 94, 0.05);
@@ -860,6 +873,23 @@ body {
 .message.system .message-author {
   color: #22c55e;
   font-weight: 700;
+}
+
+.message.round {
+  border-left: 4px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.message.round .message-author {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.message.round .message-content {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  color: #f59e0b;
 }
 
 .message-content {
