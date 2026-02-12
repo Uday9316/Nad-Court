@@ -97,56 +97,7 @@ const JUDGES = [
   { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
 ]
 
-// Realistic community dispute arguments
-const generatePlaintiffArgument = (round) => {
-  const args = [
-    // OG Role disputes
-    `Look, I've been in this community since day one. This person got their "OG" role by copying my threads word for word. I have receipts from January showing my original content.`,
-    `The defendant bought their way in. They purchased an account with 10k followers and immediately started farming engagement pretending to be an original member.`,
-    `They keep using my exact thread formats. "Top 5 reasons to..." "Why I'm bullish on..." - these were my signature styles. Now they're getting all the credit.`,
-    // Engagement farming
-    `Check their post history. 47 replies in 2 minutes on the main thread. All one-word responses like "based" and "this". That's textbook engagement farming.`,
-    `They reply to every single top account within 30 seconds of posting. No one reads that fast. It's clearly automated alerts with pre-written responses.`,
-    `The defendant runs a paid engagement group. I've been added to their Telegram where they coordinate upvotes. This undermines genuine community building.`,
-    // Moderation abuse
-    `As a mod, they banned me for "spam" while letting their friends post the same content. Selective enforcement is destroying community trust.`,
-    `I got muted for disagreeing with their take on the roadmap. Meanwhile they spread FUD constantly without consequences. Abuse of power plain and simple.`,
-    `They deleted my announcement but kept theirs up. Same format, same timing, but mine had more engagement. That's not moderation, that's suppression.`,
-    // Art/NFT ownership
-    `This art was commissioned by ME. I paid 2 ETH for it. Now they're using it as their PFP claiming they created it. The artist confirmed I own the rights.`,
-    `They copied my meme template exactly - same font, same layout, just changed the text. The top one has 50k likes, mine has 200. They're getting credit for MY format.`,
-    // Community conflicts
-    `They started a rumor that I was "paid by competitors" because I criticized the new feature. No evidence, just vibes. Now I'm getting DMs calling me a shill.`,
-    `The defendant organized a mass unfollow campaign against me after I won the community vote. This is retaliation, not disagreement.`,
-  ]
-  return args[round % args.length]
-}
-
-const generateDefendantArgument = (round) => {
-  const args = [
-    // OG Role defense
-    `I earned my role fair and square. I was here in the Discord before the token even launched. Check my join date - December 2023. I've got screenshots.`,
-    `This isn't about "OG status" - they're mad because my threads perform better. Quality gets engagement, not just tenure. Adapt or get left behind.`,
-    `The format argument is absurd. "Top 5" lists existed before crypto. You can't own a list format. Should I sue everyone with a numbered thread?`,
-    // Engagement defense
-    `I have notifications on for the accounts I respect. When they post, I engage immediately because I'm actually interested. That's called being active, not farming.`,
-    `My replies get traction because they're thoughtful. Look at the engagement - people actually respond to my takes. Quality over quantity.`,
-    `The "paid group" accusation is defamation. That's a public community chat for alpha sharing. No money exchanges hands. Pure research collaboration.`,
-    // Moderation defense
-    `They weren't banned for "disagreeing" - they were banned for doxxing a team member's family. That's in the mod logs. Public information.`,
-    `I muted them after 7 warnings about spamming the same link. The rules apply to everyone. Being early doesn't give you immunity.`,
-    `Their "announcement" was a copy-paste from a competing protocol. Mine was original research. That's why theirs was removed - plagiarism, not suppression.`,
-    // Art defense
-    `The artist sold me commercial rights in March. Check the OpenSea transfer. I paid for unlimited usage including PFP rights. They're just salty they sold too early.`,
-    `It's a meme format! It belongs to the internet now. I saw it on 4chan first anyway. You don't own a reaction image layout.`,
-    // Community defense
-    `The "rumor" was me asking questions about their sudden flip from bearish to bullish after the partnership announcement. Valid skepticism isn't FUD.`,
-    `I didn't organize anything. People unfollowed because their content quality dropped off a cliff. Blame the algorithm, not me.`,
-  ]
-  return args[round % args.length]
-}
-
-const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
+// NOTE: Pre-generated functions removed - now using live API calls via fetchArgument() and fetchEvaluation()
   const judges = ['PortDev', 'MikeWeb', 'Keone', 'James', 'Harpal', 'Anago']
   const judge = judges[judgeIndex % judges.length]
   
