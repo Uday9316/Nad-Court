@@ -67,6 +67,14 @@ contract AgentCourt {
         address submitter;
     }
     
+    struct Argument {
+        address submitter;
+        bool isPlaintiff;
+        string content;
+        uint256 timestamp;
+        uint256 round;
+    }
+    
     struct Judgment {
         VerdictType verdict;
         string reasoning;
@@ -85,8 +93,12 @@ contract AgentCourt {
         address defendant;
         address reporter;
         address judge;
+        address plaintiffAgent;
+        address defendantAgent;
         string evidenceHash;
         string evidenceDescription;
+        Argument[] arguments;
+        uint256 argumentCount;
         Judgment judgment;
         mapping(address => Vote) juryVotes;
         address[] juryMembers;
@@ -139,6 +151,7 @@ contract AgentCourt {
     event AppealFiled(uint256 indexed appealId, uint256 indexed caseId, address appellant);
     event AppealResolved(uint256 indexed appealId, bool successful);
     event PunishmentApplied(address indexed agent, PunishmentType punishment, uint256 caseId);
+    event ArgumentSubmitted(uint256 indexed caseId, address indexed submitter, bool isPlaintiff, uint256 round);
     
     // ============ Modifiers ============
     modifier onlyOwner() {
@@ -223,6 +236,41 @@ contract AgentCourt {
         emit CaseReported(caseId, _defendant, msg.sender);
         
         return caseId;
+    }
+    
+    function submitArgument(
+        uint256 _caseId,
+        bool _isPlaintiff,
+        string calldata _content
+    ) external {
+        Case storage courtCase = cases[_caseId];
+        require(courtCase.status == CaseStatus.Open || courtCase.status == CaseStatus.Judged, "Case not active");
+        require(bytes(_content).length >= 50 && bytes(_content).length <= 5000, "Argument must be 50-5000 chars");
+        
+        // Track agent assignment
+        if (_isPlaintiff && courtCase.plaintiffAgent == address(0)) {
+            courtCase.plaintiffAgent = msg.sender;
+        } else if (!_isPlaintiff && courtCase.defendantAgent == address(0)) {
+            courtCase.defendantAgent = msg.sender;
+        }
+        
+        // Calculate round (alternating submissions)
+        uint256 round = courtCase.argumentCount / 2 + 1;
+        
+        courtCase.arguments.push(Argument({
+            submitter: msg.sender,
+            isPlaintiff: _isPlaintiff,
+            content: _content,
+            timestamp: block.timestamp,
+            round: round
+        }));
+        courtCase.argumentCount++;
+        
+        emit ArgumentSubmitted(_caseId, msg.sender, _isPlaintiff, round);
+    }
+    
+    function getArguments(uint256 _caseId) external view returns (Argument[] memory) {
+        return cases[_caseId].arguments;
     }
     
     function submitJudgment(
