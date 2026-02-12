@@ -720,9 +720,47 @@ function App() {
           <div className="form-page">
             <div className="form-header">
               <h1>Submit a Case</h1>
-              <p>File a dispute for the community to review.</p>
+              <p>File a dispute for the community to review. Requires $JUSTICE token stake.</p>
             </div>
+            
+            {/* Stake Requirements */}
+            <div className="stake-info-box">
+              <h3>💰 Stake Requirements</h3>
+              <p>To submit a case, you must stake $JUSTICE tokens:</p>
+              <div className="stake-tiers">
+                <div className="stake-tier">
+                  <span className="stake-amount">5,000 $JUSTICE</span>
+                  <span className="stake-court">Local Court</span>
+                  <span className="stake-detail">5 jurors · Standard disputes</span>
+                </div>
+                <div className="stake-tier">
+                  <span className="stake-amount">15,000 $JUSTICE</span>
+                  <span className="stake-court">High Court</span>
+                  <span className="stake-detail">9 jurors · Complex cases</span>
+                </div>
+                <div className="stake-tier">
+                  <span className="stake-amount">50,000 $JUSTICE</span>
+                  <span className="stake-court">Supreme Court</span>
+                  <span className="stake-detail">15 jurors · Final appeals</span>
+                </div>
+              </div>
+              <div className="token-contract">
+                <code>$JUSTICE: 0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777</code>
+              </div>
+            </div>
+            
             <form onSubmit={(e) => { e.preventDefault(); setView('cases') }}>
+              <div className="form-group">
+                <label className="form-label">Court Tier *</label>
+                <select className="form-select" required>
+                  <option value="">Select court tier...</option>
+                  <option value="local">🏛️ Local Court - 5,000 $JUSTICE</option>
+                  <option value="high">⚖️ High Court - 15,000 $JUSTICE</option>
+                  <option value="supreme">👑 Supreme Court - 50,000 $JUSTICE</option>
+                </select>
+                <p className="form-hint">Higher courts have more jurors and higher stakes.</p>
+              </div>
+              
               <div className="form-group">
                 <label className="form-label">Case Type</label>
                 <select className="form-select">
@@ -732,6 +770,7 @@ function App() {
                   <option>Art Ownership</option>
                 </select>
               </div>
+              
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Plaintiff</label>
@@ -742,10 +781,21 @@ function App() {
                   <input type="text" className="form-input" placeholder="@username" />
                 </div>
               </div>
+              
               <div className="form-group">
                 <label className="form-label">Summary</label>
                 <textarea className="form-textarea" placeholder="Describe the dispute..."></textarea>
               </div>
+              
+              {/* Wallet Connection */}
+              <div className="form-group">
+                <label className="form-label">Connect Wallet</label>
+                <div className="wallet-connect-box">
+                  <p>Connect your Monad wallet to verify $JUSTICE balance</p>
+                  <button type="button" className="btn btn-secondary">Connect Wallet</button>
+                </div>
+              </div>
+              
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setView('home')}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Submit Case</button>
