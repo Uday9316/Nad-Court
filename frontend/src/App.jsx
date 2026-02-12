@@ -6,6 +6,7 @@ import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import AgentCourt from './components/AgentCourt.jsx'
 import CaseArchives from './components/CaseArchives.jsx'
 import SubmitPage from './components/SubmitPage.jsx'
+import MoltCourtCases from './components/MoltCourtCases.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -195,8 +196,8 @@ function App() {
         {/* Live Nad Court */}
         {currentView === 'live' && <AgentCourt />}
 
-        {/* Cases - Combined Upcoming & Resolved */}
-        {currentView === 'upcoming' && <CaseArchives view="upcoming" />}
+        {/* Cases - MoltCourt Style */}
+        {currentView === 'upcoming' && <MoltCourtCases onNavigate={setCurrentView} />}
 
         {/* Submit Case */}
         {currentView === 'submit' && <SubmitPage />}
