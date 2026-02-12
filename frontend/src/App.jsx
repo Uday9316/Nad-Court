@@ -3,6 +3,9 @@ import { ethers } from 'ethers'
 import './App.css'
 import './OpenClawCourt.css'
 
+// API Configuration - UPDATE THIS when ngrok URL changes
+const API_URL = 'https://2295-51-20-69-171.ngrok-free.app'
+
 // Contract config
 const CONTRACT_ADDRESS = '0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458'
 const MONAD_RPC = 'https://rpc.monad.xyz' // Replace with actual Monad RPC
@@ -56,7 +59,23 @@ const JUDGES = [
   { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
 ]
 
-// Realistic community dispute arguments
+// API call for live AI generation
+const fetchLiveArgument = async (role, caseData, round) => {
+  try {
+    const response = await fetch(`${API_URL}/api/generate-argument`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, caseData, round })
+    });
+    const data = await response.json();
+    if (data.success) return data.argument;
+  } catch (e) {
+    console.log('API failed, using fallback:', e.message);
+  }
+  return null;
+};
+
+// Realistic community dispute arguments (fallback)
 const generatePlaintiffArgument = (round) => {
   const args = [
     // OG Role disputes
