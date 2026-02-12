@@ -283,7 +283,7 @@ class AICourtDemo:
             verdict = result['verdict']
             print(f"\n{i}. {case['id']}: {case['type']}")
             print(f"   {case['plaintiff']} vs {case['defendant']}")
-            print(f   → Winner: {verdict['winner']} ({verdict['plaintiff_wins']}-{verdict['defendant_wins']})")
+            print(f"   Winner: {verdict['winner']} ({verdict['plaintiff_wins']}-{verdict['defendant_wins']})")
 
 
 # Run the demo
