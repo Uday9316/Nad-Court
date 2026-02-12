@@ -963,7 +963,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
           <main className="main">
             <div className="countdown-container">
               <div className="countdown-content">
-                <div className="countdown-badge">📅 DAILY COURT</div>
+                <div className="countdown-badge">DAILY COURT</div>
                 <h1>Next Case Starting In</h1>
                 <div className="countdown-timer">
                   <div className="countdown-unit">
@@ -1021,9 +1021,8 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                     <span className="live-dot"></span>
                     <span className="live-text">LIVE</span>
                   </div>
-                  <div className="daily-badge">📅 DAILY CASE</div>
+                  <div className="daily-badge"> DAILY CASE</div>
                   <div className="chain-indicator" title="All arguments recorded on-chain">
-                    <span className="chain-icon">⛓️</span>
                     <span className="chain-text">ON-CHAIN</span>
                   </div>
                 </div>
