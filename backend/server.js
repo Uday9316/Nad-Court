@@ -19,27 +19,37 @@ app.use(express.json());
 
 // Check if OpenClaw is available
 async function checkOpenclaw() {
-  try {
-    await execPromise('which openclaw');
-    return true;
-  } catch {
-    // Try common paths
-    const paths = [
-      '/usr/local/bin/openclaw',
-      '/usr/bin/openclaw',
-      '/opt/openclaw/bin/openclaw',
-      '/root/.local/bin/openclaw',
-      '/home/render/.local/bin/openclaw',
-      process.env.HOME + '/.local/bin/openclaw'
-    ];
-    for (const p of paths) {
-      if (fs.existsSync(p)) {
+  const possiblePaths = [
+    'openclaw',
+    '/usr/local/bin/openclaw',
+    '/usr/bin/openclaw',
+    '/opt/openclaw/bin/openclaw',
+    '/root/.local/bin/openclaw',
+    '/home/render/.local/bin/openclaw',
+    '/opt/render/.local/bin/openclaw',
+    (process.env.HOME || '/home/render') + '/.local/bin/openclaw',
+    './openclaw',
+    '../openclaw'
+  ];
+  
+  for (const p of possiblePaths) {
+    try {
+      if (p === 'openclaw') {
+        await execPromise('which openclaw');
+        console.log('OpenClaw found in PATH');
+        return true;
+      } else if (fs.existsSync(p)) {
+        console.log(`OpenClaw found at: ${p}`);
         process.env.PATH = path.dirname(p) + ':' + process.env.PATH;
         return true;
       }
+    } catch (e) {
+      // Continue checking
     }
-    return false;
   }
+  
+  console.log('OpenClaw not found in any location');
+  return false;
 }
 
 let openclawAvailable = false;
