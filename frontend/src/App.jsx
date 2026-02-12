@@ -31,35 +31,51 @@ const JUDGES = [
   { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
 ]
 
-// Dynamic argument generators
+// Realistic community dispute arguments
 const generatePlaintiffArgument = (round) => {
   const args = [
-    `Round ${round}: My client presents on-chain evidence showing ${Math.floor(Math.random() * 50 + 20)} instances of protocol violation.`,
-    `The defendant's wallet history reveals suspicious patterns: ${Math.floor(Math.random() * 100 + 50)} rapid transactions in a ${Math.floor(Math.random() * 10 + 5)}-minute window.`,
-    `Community testimony from ${Math.floor(Math.random() * 20 + 10)} members corroborates our claims of misconduct.`,
-    `Smart contract analysis shows ${Math.floor(Math.random() * 30 + 10)} unauthorized function calls. This is not normal behavior.`,
-    `Cross-referencing with previous cases reveals identical patterns. The defendant is a repeat offender.`,
-    `My client's reputation score dropped by ${Math.floor(Math.random() * 40 + 20)}% directly following the defendant's actions.`,
-    `We have timestamped screenshots proving coordinated harassment across ${Math.floor(Math.random() * 5 + 2)} different channels.`,
-    `The defendant's own words condemn them: "I'll make sure they regret this" - documented in Exhibit ${String.fromCharCode(65 + Math.floor(Math.random() * 5))}.`,
-    `Blockchain forensics show the defendant's funds trace back to a sanctioned address. This is serious.`,
-    `My client has suffered measurable damages: ${Math.floor(Math.random() * 1000 + 500)} $JUSTICE tokens in lost opportunities.`,
+    // OG Role disputes
+    `Look, I've been in this community since day one. This person got their "OG" role by copying my threads word for word. I have receipts from January showing my original content.`,
+    `The defendant bought their way in. They purchased an account with 10k followers and immediately started farming engagement pretending to be an original member.`,
+    `They keep using my exact thread formats. "Top 5 reasons to..." "Why I'm bullish on..." - these were my signature styles. Now they're getting all the credit.`,
+    // Engagement farming
+    `Check their post history. 47 replies in 2 minutes on the main thread. All one-word responses like "based" and "this". That's textbook engagement farming.`,
+    `They reply to every single top account within 30 seconds of posting. No one reads that fast. It's clearly automated alerts with pre-written responses.`,
+    `The defendant runs a paid engagement group. I've been added to their Telegram where they coordinate upvotes. This undermines genuine community building.`,
+    // Moderation abuse
+    `As a mod, they banned me for "spam" while letting their friends post the same content. Selective enforcement is destroying community trust.`,
+    `I got muted for disagreeing with their take on the roadmap. Meanwhile they spread FUD constantly without consequences. Abuse of power plain and simple.`,
+    `They deleted my announcement but kept theirs up. Same format, same timing, but mine had more engagement. That's not moderation, that's suppression.`,
+    // Art/NFT ownership
+    `This art was commissioned by ME. I paid 2 ETH for it. Now they're using it as their PFP claiming they created it. The artist confirmed I own the rights.`,
+    `They copied my meme template exactly - same font, same layout, just changed the text. The top one has 50k likes, mine has 200. They're getting credit for MY format.`,
+    // Community conflicts
+    `They started a rumor that I was "paid by competitors" because I criticized the new feature. No evidence, just vibes. Now I'm getting DMs calling me a shill.`,
+    `The defendant organized a mass unfollow campaign against me after I won the community vote. This is retaliation, not disagreement.`,
   ]
   return args[round % args.length]
 }
 
 const generateDefendantArgument = (round) => {
   const args = [
-    `Round ${round}: The plaintiff's "evidence" is circumstantial at best. I have ${Math.floor(Math.random() * 100 + 50)} community members vouching for my character.`,
-    `Those transactions were legitimate trades during market volatility. Here's the DEX routing proof.`,
-    `I was participating in a community event at the time. ${Math.floor(Math.random() * 20 + 5)} witnesses can confirm my presence.`,
-    `The smart contract interactions were authorized through the official frontend. No foul play occurred.`,
-    `I've been an active community member for ${Math.floor(Math.random() * 12 + 6)} months with zero prior incidents.`,
-    `My reputation score has actually increased by ${Math.floor(Math.random() * 20 + 10)}% this month through genuine contributions.`,
-    `The screenshots are taken out of context. Here's the full conversation showing no malicious intent.`,
-    `The "sanctioned" address claim is false. That's a legitimate bridge contract used by thousands.`,
-    `I've contributed ${Math.floor(Math.random() * 50 + 20)} technical proposals to improve this protocol.`,
-    `The plaintiff has a history of frivolous cases. Check case #${Math.floor(Math.random() * 1000 + 1000)} from last month.`,
+    // OG Role defense
+    `I earned my role fair and square. I was here in the Discord before the token even launched. Check my join date - December 2023. I've got screenshots.`,
+    `This isn't about "OG status" - they're mad because my threads perform better. Quality gets engagement, not just tenure. Adapt or get left behind.`,
+    `The format argument is absurd. "Top 5" lists existed before crypto. You can't own a list format. Should I sue everyone with a numbered thread?`,
+    // Engagement defense
+    `I have notifications on for the accounts I respect. When they post, I engage immediately because I'm actually interested. That's called being active, not farming.`,
+    `My replies get traction because they're thoughtful. Look at the engagement - people actually respond to my takes. Quality over quantity.`,
+    `The "paid group" accusation is defamation. That's a public community chat for alpha sharing. No money exchanges hands. Pure research collaboration.`,
+    // Moderation defense
+    `They weren't banned for "disagreeing" - they were banned for doxxing a team member's family. That's in the mod logs. Public information.`,
+    `I muted them after 7 warnings about spamming the same link. The rules apply to everyone. Being early doesn't give you immunity.`,
+    `Their "announcement" was a copy-paste from a competing protocol. Mine was original research. That's why theirs was removed - plagiarism, not suppression.`,
+    // Art defense
+    `The artist sold me commercial rights in March. Check the OpenSea transfer. I paid for unlimited usage including PFP rights. They're just salty they sold too early.`,
+    `It's a meme format! It belongs to the internet now. I saw it on 4chan first anyway. You don't own a reaction image layout.`,
+    // Community defense
+    `The "rumor" was me asking questions about their sudden flip from bearish to bullish after the partnership announcement. Valid skepticism isn't FUD.`,
+    `I didn't organize anything. People unfollowed because their content quality dropped off a cliff. Blame the algorithm, not me.`,
   ]
   return args[round % args.length]
 }
@@ -73,32 +89,91 @@ const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
   const rebuttalQuality = Math.floor(Math.random() * 40 + 30)
   const clarityScore = Math.floor(Math.random() * 30 + 40)
   
-  const reasonings = [
-    `After reviewing the evidence, plaintiff's argument shows ${evidenceStrength}% technical validity. Defense rebuttal at ${rebuttalQuality}%.`,
-    `Community metrics analysis: engagement patterns suggest ${Math.random() > 0.5 ? 'genuine' : 'suspicious'} activity. Cross-referencing ${Math.floor(Math.random() * 20 + 10)} data points.`,
-    `On-chain forensics reveal ${Math.floor(Math.random() * 50 + 20)} transactions with ${Math.random() > 0.5 ? 'anomalous' : 'normal'} timing. Wallet age: ${Math.floor(Math.random() * 12 + 3)} months.`,
-    `Comparing to precedent case #${Math.floor(Math.random() * 1000 + 4000)}: ${Math.random() > 0.5 ? 'Similar circumstances, similar ruling expected.' : 'Key distinctions in evidence quality.'}`,
-    `Contribution analysis: ${Math.floor(Math.random() * 100 + 50)} posts, ${Math.floor(Math.random() * 80 + 20)}% helpful rate. Merit score: ${Math.floor(Math.random() * 40 + 60)}/100.`,
-    `Protocol compliance check: ${Math.random() > 0.6 ? 'Violation confirmed in section ' + Math.floor(Math.random() * 5 + 1) + '.' : 'No direct rule breach detected.'}`,
-    `Argument clarity assessment: Plaintiff at ${clarityScore}%, Defense at ${Math.floor(Math.random() * 30 + 40)}%. Structure and evidence presentation evaluated.`,
-    `Timeline analysis: Events occurred over ${Math.floor(Math.random() * 14 + 1)} days. Correlation coefficient: ${(Math.random() * 0.6 + 0.2).toFixed(2)}.`,
-  ]
+  // Judge-specific reasoning styles - human opinions, not data dumps
+  const judgeReasonings = {
+    'PortDev': [
+      "The technical evidence is solid. I reviewed the timestamps and they don't lie. However, the defense has a point about context.",
+      "Looking at the on-chain data, I see patterns that concern me. The transaction clustering is suspicious but not definitive.",
+      "Code doesn't lie. The evidence shows clear coordination. But the rebuttal about timezone clustering holds some water.",
+      "I've analyzed the engagement patterns. There's smoke here, but I need to see more fire before I'm convinced.",
+    ],
+    'MikeWeb': [
+      "Community vibe check: the plaintiff has been here longer, but the defendant's contributions have been higher quality lately.",
+      "Reputation matters. The plaintiff has history but the defendant's recent engagement has been genuinely helpful.",
+      "I've seen both sides in the Discord. The plaintiff makes valid points about originality, but gatekeeping helps no one.",
+      "This feels like a seniority vs merit debate. I'm leaning toward merit, but the copy-paste allegations are concerning.",
+    ],
+    'Keone': [
+      "The data tells a story, but it's ambiguous. Both sides have credible evidence. Need more on-chain proof.",
+      "I pulled the wallet history. Nothing definitive, but the timing patterns are worth investigating further.",
+      "Looking at the transaction flows, I don't see smoking gun evidence. But the circumstantial case is building.",
+      "The analytics show both sides have merit. This is closer than it appears on the surface.",
+    ],
+    'James': [
+      "Precedent matters here. We've seen similar cases before - usually resolved in favor of documented first use.",
+      "Rules are rules. If the engagement farming threshold was crossed, that's a violation regardless of intent.",
+      "Historical context: early members get some leeway, but not immunity. The evidence needs to stand on its own.",
+      "The moderation decision, if documented properly, should stand. But selective enforcement undermines trust.",
+    ],
+    'Harpal': [
+      "Contribution quality over quantity. The defendant's posts get better engagement for a reason - they're more valuable.",
+      "I've tracked both accounts. The plaintiff has tenure but the defendant has momentum. Merit should win here.",
+      "Community value isn't just about being early. It's about what you bring. Both sides bring something, but one brings more.",
+      "The engagement farming accusation needs harder proof. Good content gets organic engagement - that's not farming.",
+    ],
+    'Anago': [
+      "Protocol adherence is clear: no rules were technically broken. But community norms matter too.",
+      "The moderation logs show consistency. The ban was warranted based on the documented violations.",
+      "Looking at the rules as written, this is a gray area. Intent matters, and I see questionable intent.",
+      "The evidence meets the burden of proof for community standards violations. The case has merit.",
+    ],
+  }
   
-  // Pick a reasoning not used yet, or generate unique one
+  const reasonings = judgeReasonings[judge]
   let reasoning = reasonings[Math.floor(Math.random() * reasonings.length)]
+  
+  // Ensure uniqueness
   let attempts = 0
   while (usedReasonings.includes(reasoning) && attempts < 10) {
     reasoning = reasonings[Math.floor(Math.random() * reasonings.length)]
     attempts++
   }
   
-  // If all used, add timestamp to make unique
   if (usedReasonings.includes(reasoning)) {
-    reasoning += ` [Evaluated at ${new Date().toLocaleTimeString()}]`
+    reasoning += ` [${judge}'s final take]`
   }
   
-  const pScore = Math.floor(Math.random() * 30 + 60)
-  const dScore = Math.floor(Math.random() * 30 + 60)
+  // Varied scores based on judge personality
+  let pScore, dScore
+  switch(judge) {
+    case 'PortDev':
+      pScore = Math.floor(Math.random() * 15 + 70)
+      dScore = Math.floor(Math.random() * 20 + 60)
+      break
+    case 'MikeWeb':
+      pScore = Math.floor(Math.random() * 20 + 60)
+      dScore = Math.floor(Math.random() * 15 + 70)
+      break
+    case 'Keone':
+      pScore = Math.floor(Math.random() * 10 + 65)
+      dScore = Math.floor(Math.random() * 10 + 65)
+      break
+    case 'James':
+      pScore = Math.floor(Math.random() * 15 + 65)
+      dScore = Math.floor(Math.random() * 15 + 60)
+      break
+    case 'Harpal':
+      pScore = Math.floor(Math.random() * 20 + 55)
+      dScore = Math.floor(Math.random() * 15 + 70)
+      break
+    case 'Anago':
+      pScore = Math.floor(Math.random() * 15 + 70)
+      dScore = Math.floor(Math.random() * 15 + 65)
+      break
+    default:
+      pScore = Math.floor(Math.random() * 30 + 60)
+      dScore = Math.floor(Math.random() * 30 + 60)
+  }
   
   return {
     judge,
