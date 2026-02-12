@@ -352,6 +352,176 @@ export async function getProfile() {
   }
 }
 
+// Semantic Search - AI-powered search by meaning
+export async function searchMoltbook(query, type = 'all', limit = 20) {
+  if (!checkAuth()) return []
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search?q=${encodeURIComponent(query)}&type=${type}&limit=${limit}`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const data = await response.json()
+    console.log(`🔍 Search: "${query}" - ${data.results?.length || 0} results`)
+    return data.results || []
+  } catch (error) {
+    console.error('❌ Search failed:', error.message)
+    return []
+  }
+}
+
+// Get submolt info
+export async function getSubmoltInfo(submoltName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/submolts/${submoltName}`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('❌ Get submolt info failed:', error.message)
+    return null
+  }
+}
+
+// Subscribe to a submolt
+export async function subscribeToSubmolt(submoltName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/subscribe`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('✅ Subscribed to m/' + submoltName)
+    return data
+  } catch (error) {
+    console.error('❌ Subscribe failed:', error.message)
+    return null
+  }
+}
+
+// Unsubscribe from a submolt
+export async function unsubscribeFromSubmolt(submoltName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/submolts/${submoltName}/subscribe`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('✅ Unsubscribed from m/' + submoltName)
+    return data
+  } catch (error) {
+    console.error('❌ Unsubscribe failed:', error.message)
+    return null
+  }
+}
+
+// Follow another molty (BE SELECTIVE!)
+export async function followMolty(moltyName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/agents/${moltyName}/follow`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('✅ Following ' + moltyName)
+    return data
+  } catch (error) {
+    console.error('❌ Follow failed:', error.message)
+    return null
+  }
+}
+
+// Unfollow a molty
+export async function unfollowMolty(moltyName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/agents/${moltyName}/follow`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${API_KEY}` }
+    })
+    
+    const data = await response.json()
+    console.log('✅ Unfollowed ' + moltyName)
+    return data
+  } catch (error) {
+    console.error('❌ Unfollow failed:', error.message)
+    return null
+  }
+}
+
+// Get personalized feed (from followed submolts/moltys)
+export async function getPersonalizedFeed(sort = 'hot', limit = 25) {
+  if (!checkAuth()) return []
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/feed?sort=${sort}&limit=${limit}`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const posts = await response.json()
+    console.log(`📰 Personalized feed: ${posts.length || 0} posts`)
+    return posts || []
+  } catch (error) {
+    console.error('❌ Feed fetch failed:', error.message)
+    return []
+  }
+}
+
+// View another molty's profile
+export async function viewMoltyProfile(moltyName) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/agents/profile?name=${encodeURIComponent(moltyName)}`,
+      { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+    )
+    
+    const data = await response.json()
+    return data.agent || null
+  } catch (error) {
+    console.error('❌ Profile view failed:', error.message)
+    return null
+  }
+}
+
+// Update profile description
+export async function updateProfile(description) {
+  if (!checkAuth()) return null
+  
+  try {
+    const response = await fetch(`${BASE_URL}/agents/me`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ description })
+    })
+    
+    const data = await response.json()
+    console.log('✅ Profile updated')
+    return data
+  } catch (error) {
+    console.error('❌ Profile update failed:', error.message)
+    return null
+  }
+}
+
 // CLI interface
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2]
@@ -375,13 +545,24 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     case 'feed':
       checkFeed().then(posts => console.log(JSON.stringify(posts, null, 2)))
       break
+    case 'my-feed':
+      getPersonalizedFeed().then(posts => console.log(JSON.stringify(posts, null, 2)))
+      break
     case 'heartbeat':
       heartbeat()
       break
     case 'profile':
       getProfile().then(p => console.log(JSON.stringify(p, null, 2)))
       break
+    case 'search':
+      const query = process.argv[3] || 'AI agents memory'
+      searchMoltbook(query).then(r => console.log(JSON.stringify(r, null, 2)))
+      break
+    case 'submolt':
+      const name = process.argv[3] || 'aithoughts'
+      getSubmoltInfo(name).then(s => console.log(JSON.stringify(s, null, 2)))
+      break
     default:
-      console.log('Usage: node moltbook.js [register|status|setup|post|feed|heartbeat|profile]')
+      console.log('Usage: node moltbook.js [register|status|setup|post|feed|my-feed|heartbeat|profile|search|submolt]')
   }
 }
