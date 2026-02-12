@@ -181,16 +181,24 @@ function App() {
   const [plaintiffHealth, setPlaintiffHealth] = useState(85)
   const [defendantHealth, setDefendantHealth] = useState(72)
   const [isLive, setIsLive] = useState(false)
+  const [caseStatus, setCaseStatus] = useState('active') // active, plaintiff_won, defendant_won
+  const [currentRound, setCurrentRound] = useState(1)
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
   // Simulate live court proceedings with dynamic arguments
   useEffect(() => {
-    if (view !== 'live' || isLive) return
+    if (view !== 'live' || isLive || caseStatus !== 'active') return
     setIsLive(true)
     
     let argCount = 0
     const argInterval = setInterval(() => {
+      // Stop if case is decided
+      if (plaintiffHealth <= 0 || defendantHealth <= 0) {
+        clearInterval(argInterval)
+        return
+      }
+      
       const isPlaintiff = argCount % 2 === 0
       const content = isPlaintiff 
         ? generatePlaintiffArgument(Math.floor(argCount / 2))
@@ -209,16 +217,51 @@ function App() {
     }, 5000) // New argument every 5 seconds
 
     return () => clearInterval(argInterval)
-  }, [view, isLive])
+  }, [view, isLive, caseStatus, plaintiffHealth, defendantHealth])
 
   // Simulate judge evaluations with dynamic scoring - no repeats
   useEffect(() => {
-    if (view !== 'live') return
+    if (view !== 'live' || caseStatus !== 'active') return
     
     const usedReasonings = []
     let evalCount = 0
     
     const evalInterval = setInterval(() => {
+      // Check for winner after health update
+      const checkWinner = (newPlaintiffHealth, newDefendantHealth) => {
+        if (newDefendantHealth <= 0) {
+          setCaseStatus('plaintiff_won')
+          setMessages(prev => [...prev, {
+            id: Date.now() + 9999,
+            author: 'COURT VERDICT',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            content: '🏆 PLAINTIFF WINS! Bitlover082 has successfully proven their case against 0xCoha. The defendant\'s credibility has been reduced to zero.',
+            role: 'system',
+            type: 'verdict'
+          }])
+          return true
+        }
+        if (newPlaintiffHealth <= 0) {
+          setCaseStatus('defendant_won')
+          setMessages(prev => [...prev, {
+            id: Date.now() + 9999,
+            author: 'COURT VERDICT',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            content: '🏆 DEFENDANT WINS! 0xCoha has successfully defended against Bitlover082\'s allegations. The plaintiff\'s credibility has been reduced to zero.',
+            role: 'system',
+            type: 'verdict'
+          }])
+          return true
+        }
+        return false
+      }
+      
+      // Stop if already decided
+      if (plaintiffHealth <= 0 || defendantHealth <= 0) {
+        clearInterval(evalInterval)
+        return
+      }
+      
       const eval_ = generateJudgeEvaluation(evalCount, usedReasonings)
       usedReasonings.push(eval_.reasoning)
       
@@ -242,17 +285,28 @@ function App() {
       // Update health based on scores
       const diff = eval_.scores.plaintiff - eval_.scores.defendant
       const damage = Math.min(30, Math.max(5, Math.abs(diff) / 3))
+      
+      let newPlaintiffHealth = plaintiffHealth
+      let newDefendantHealth = defendantHealth
+      
       if (diff > 0) {
-        setDefendantHealth(prev => Math.max(0, prev - damage))
+        newDefendantHealth = Math.max(0, defendantHealth - damage)
+        setDefendantHealth(newDefendantHealth)
       } else {
-        setPlaintiffHealth(prev => Math.max(0, prev - damage))
+        newPlaintiffHealth = Math.max(0, plaintiffHealth - damage)
+        setPlaintiffHealth(newPlaintiffHealth)
+      }
+      
+      // Check for winner
+      if (checkWinner(newPlaintiffHealth, newDefendantHealth)) {
+        clearInterval(evalInterval)
       }
       
       evalCount++
     }, 8000) // Judge evaluation every 8 seconds
 
     return () => clearInterval(evalInterval)
-  }, [view])
+  }, [view, caseStatus, plaintiffHealth, defendantHealth])
 
   // Header component
   const Header = () => (
@@ -849,6 +903,7 @@ def handle_webhook():
                     </div>
                     <div className="message-body">
                       {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
+                      {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
                       <div className="message-content">{m.content}</div>
                       {m.type === 'evaluation' && m.criteria && (
                         <div className="criteria-scores">
@@ -906,7 +961,9 @@ def handle_webhook():
                 </div>
                 <div className="vs-divider-center">
                   <span className="vs-text-big">VS</span>
-                  <span className="vs-status">ARGUING</span>
+                  <span className={`vs-status ${caseStatus !== 'active' ? 'ended' : ''}`}>
+                    {caseStatus === 'active' ? 'ARGUING' : caseStatus === 'plaintiff_won' ? 'PLAINTIFF WINS' : 'DEFENDANT WINS'}
+                  </span>
                 </div>
                 <div className="fighter-card">
                   <div className="fighter-avatar defendant-avatar">
@@ -926,8 +983,14 @@ def handle_webhook():
                   <div className="fighter-party">Agent: GuardianBot-Omega</div>
                 </div>
               </div>
-              <div className="turn-indicator">
-                <span>Agents battling with AI-powered arguments...</span>
+              <div className={`turn-indicator ${caseStatus !== 'active' ? 'ended' : ''}`}>
+                <span>
+                  {caseStatus === 'active' 
+                    ? 'Agents battling with AI-powered arguments...' 
+                    : caseStatus === 'plaintiff_won' 
+                      ? '🏆 Case concluded: Plaintiff Bitlover082 wins!' 
+                      : '🏆 Case concluded: Defendant 0xCoha wins!'}
+                </span>
               </div>
             </div>
 
