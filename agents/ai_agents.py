@@ -1,7 +1,7 @@
 """
 AI Agent System for Agent Court
 Real LLM-powered agents that argue cases and render verdicts
-Supports: OpenAI GPT-4, Moonshot/Kimi K2.5, or OpenClaw gateway
+Supports: OpenAI GPT-4, Moonshot/Kimi K2.5, NVIDIA, or OpenClaw gateway
 """
 
 import os
@@ -17,8 +17,12 @@ NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", "nvapi-I6JRd4c2422sqg8Bp6s4ouCi7bpW
 OPENCLAW_GATEWAY_URL = os.getenv("OPENCLAW_GATEWAY_URL", "http://localhost:3000")
 OPENCLAW_API_KEY = os.getenv("OPENCLAW_API_KEY")
 
-# Default to NVIDIA if key available, otherwise OpenClaw, then OpenAI, then Moonshot
+# Default provider selection
 AI_PROVIDER = os.getenv("AI_PROVIDER", "nvidia" if NVIDIA_API_KEY else ("openclaw" if os.getenv("OPENCLAW_API_KEY") else "openai"))
+
+# Moonshot/Kimi Code API configuration
+MOONSHOT_BASE_URL = os.getenv("MOONSHOT_BASE_URL", "https://api.moonshot.cn")
+
 
 class AIArgumentAgent:
     """
@@ -80,26 +84,39 @@ class AIArgumentAgent:
         return response.choices[0].message.content
     
     def _call_moonshot(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call Moonshot/Kimi API"""
+        """Call Moonshot/Kimi Code API with model fallback"""
         headers = {
             "Authorization": f"Bearer {MOONSHOT_API_KEY}",
             "Content-Type": "application/json"
         }
         
-        payload = {
-            "model": "moonshot-v1-128k",
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens
-        }
+        # Try different model names for Kimi Code subscription
+        models_to_try = ["kimi-k2.5", "moonshot-v1-128k", "kimi-latest"]
         
-        response = requests.post(
-            "https://api.moonshot.cn/v1/chat/completions",
-            headers=headers,
-            json=payload
-        )
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        for model in models_to_try:
+            try:
+                payload = {
+                    "model": model,
+                    "messages": messages,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens
+                }
+                
+                response = requests.post(
+                    f"{MOONSHOT_BASE_URL}/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    return response.json()["choices"][0]["message"]["content"]
+                    
+            except Exception:
+                continue
+        
+        # If all models fail, raise error
+        raise Exception("All Moonshot models failed")
     
     def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
         """Call NVIDIA API with Kimi K2.5"""
@@ -119,7 +136,7 @@ class AIArgumentAgent:
             "stream": False
         }
         
-        response = requests.post(invoke_url, headers=headers, json=payload)
+        response = requests.post(invoke_url, headers=headers, json=payload, timeout=60)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
     
@@ -294,7 +311,7 @@ class AIJudgeAgent:
         self.evaluations = []
     
     def _call_llm(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 1000) -> str:
-        """Call LLM with provider fallback (same as AIArgumentAgent)"""
+        """Call LLM with provider fallback"""
         if AI_PROVIDER == "nvidia" and NVIDIA_API_KEY:
             return self._call_nvidia(messages, temperature, max_tokens)
         elif AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
@@ -342,26 +359,38 @@ class AIJudgeAgent:
         return response.choices[0].message.content
     
     def _call_moonshot(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call Moonshot/Kimi API"""
+        """Call Moonshot/Kimi Code API with model fallback"""
         headers = {
             "Authorization": f"Bearer {MOONSHOT_API_KEY}",
             "Content-Type": "application/json"
         }
         
-        payload = {
-            "model": "moonshot-v1-128k",
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens
-        }
+        # Try different model names
+        models_to_try = ["kimi-k2.5", "moonshot-v1-128k", "kimi-latest"]
         
-        response = requests.post(
-            "https://api.moonshot.cn/v1/chat/completions",
-            headers=headers,
-            json=payload
-        )
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        for model in models_to_try:
+            try:
+                payload = {
+                    "model": model,
+                    "messages": messages,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens
+                }
+                
+                response = requests.post(
+                    f"{MOONSHOT_BASE_URL}/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    return response.json()["choices"][0]["message"]["content"]
+                    
+            except Exception:
+                continue
+        
+        raise Exception("All Moonshot models failed")
     
     def _call_nvidia(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
         """Call NVIDIA API with Kimi K2.5"""
@@ -381,14 +410,12 @@ class AIJudgeAgent:
             "stream": False
         }
         
-        response = requests.post(invoke_url, headers=headers, json=payload)
+        response = requests.post(invoke_url, headers=headers, json=payload, timeout=60)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
     
     def evaluate(self, case_data: Dict, plaintiff_args: List[str], defendant_args: List[str]) -> Dict:
-        """
-        Evaluate a case using LLM with judge's unique perspective
-        """
+        """Evaluate a case using LLM with judge's unique perspective"""
         # Check if any provider is available
         has_provider = (
             (AI_PROVIDER == "nvidia" and NVIDIA_API_KEY) or
@@ -525,9 +552,7 @@ SUMMARY: {case_data.get('summary', '')}
 
 
 class AgentCourtSystem:
-    """
-    Main system that orchestrates AI agent battles and verdicts
-    """
+    """Main system that orchestrates AI agent battles and verdicts"""
     
     def __init__(self):
         self.plaintiff_agent = AIArgumentAgent('plaintiff', 'JusticeBot-Alpha')
@@ -543,9 +568,7 @@ class AgentCourtSystem:
         self.case_history = []
     
     def run_case(self, case_data: Dict, num_arguments: int = 6) -> Dict:
-        """
-        Run a complete case with AI agents arguing and judges evaluating
-        """
+        """Run a complete case with AI agents arguing and judges evaluating"""
         print(f"⚖️ STARTING CASE: {case_data.get('id', 'Unknown')}")
         print(f"   Type: {case_data.get('type', 'Dispute')}")
         print(f"   Arguments per side: {num_arguments}")
