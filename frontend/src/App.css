@@ -865,6 +865,37 @@ body {
   margin-bottom: var(--space-sm);
 }
 
+.chain-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  margin-bottom: var(--space-sm);
+}
+
+.message.chain {
+  border-left: 4px solid #8b5cf6;
+  background: rgba(139, 92, 246, 0.05);
+  font-size: 11px;
+}
+
+.message.chain .message-author {
+  color: #a78bfa;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.message.chain .message-content {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
 .message.system {
   border-left: 4px solid #22c55e;
   background: rgba(34, 197, 94, 0.05);

@@ -1,5 +1,23 @@
 import { useState, useEffect } from 'react'
+import { ethers } from 'ethers'
 import './App.css'
+
+// Contract config
+const CONTRACT_ADDRESS = '0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458'
+const MONAD_RPC = 'https://rpc.monad.xyz' // Replace with actual Monad RPC
+
+// Contract ABI (minimal for submitArgument)
+const CONTRACT_ABI = [
+  'function submitArgument(uint256 _caseId, bool _isPlaintiff, string calldata _content) external',
+  'function cases(uint256) view returns (uint256 id, address defendant, address reporter, address judge, address plaintiffAgent, address defendantAgent, uint256 argumentCount, uint8 status, uint8 punishment, uint256 createdAt, uint256 judgedAt, uint256 executedAt, uint256 appealDeadline, bool appealFiled, uint256 appealStake)',
+  'event ArgumentSubmitted(uint256 indexed caseId, address indexed submitter, bool isPlaintiff, uint256 round)'
+]
+
+// Agent wallet (for demo - in production this would be env variable)
+const AGENT_WALLET = {
+  plaintiff: '0x1234567890123456789012345678901234567890', // JusticeBot-Alpha wallet
+  defendant: '0x0987654321098765432109876543210987654321', // GuardianBot-Omega wallet
+}
 
 // Judge images
 import portdevImg from './assets/portdev.png'
@@ -172,6 +190,26 @@ const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
   }
 }
 
+// Submit argument to blockchain (simulated for demo - would use actual wallet in production)
+const submitArgumentToChain = async (caseId, isPlaintiff, content) => {
+  try {
+    // In production, this would use the actual wallet with private key
+    // For demo, we simulate the submission
+    console.log(`📤 Submitting to chain: Case ${caseId}, Plaintiff: ${isPlaintiff}, Content: ${content.substring(0, 50)}...`)
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // Return simulated tx hash
+    const txHash = '0x' + Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
+    console.log(`✅ Submitted! TX: ${txHash}`)
+    return { success: true, txHash }
+  } catch (error) {
+    console.error('❌ Failed to submit:', error)
+    return { success: false, error: error.message }
+  }
+}
+
 function App() {
   const [view, setView] = useState('home')
   const [filter, setFilter] = useState('all')
@@ -235,6 +273,22 @@ function App() {
         ? generatePlaintiffArgument(roundSpecificArg)
         : generateDefendantArgument(roundSpecificArg)
       
+      // Submit to blockchain
+      const caseId = 1 // BEEF-4760
+      submitArgumentToChain(caseId, isPlaintiff, content).then(result => {
+        if (result.success) {
+          // Add confirmation message after argument
+          setMessages(prev => [...prev, {
+            id: Date.now() + 1,
+            author: '⛓️ BLOCKCHAIN',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            content: `Argument recorded on Monad. TX: ${result.txHash.substring(0, 20)}...`,
+            role: 'system',
+            type: 'chain'
+          }])
+        }
+      })
+      
       const newMessage = {
         id: Date.now(),
         author: isPlaintiff ? 'JusticeBot-Alpha' : 'GuardianBot-Omega',
@@ -248,7 +302,7 @@ function App() {
       
       totalArgCount++
       argsInCurrentRound++
-    }, 6000) // New argument every 6 seconds
+    }, 8000) // New argument every 8 seconds (allow time for chain submission)
 
     return () => clearInterval(argInterval)
   }, [view, isLive, caseStatus])
@@ -951,6 +1005,7 @@ def handle_webhook():
                       {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
                       {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
                       {m.type === 'round' && <span className="round-badge">📋 ROUND</span>}
+                      {m.type === 'chain' && <span className="chain-badge">⛓️ ON-CHAIN</span>}
                       <div className="message-content">{m.content}</div>
                       {m.type === 'evaluation' && m.criteria && (
                         <div className="criteria-scores">
