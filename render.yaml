@@ -2,21 +2,8 @@ services:
   - type: web
     name: nad-court
     runtime: node
-    buildCommand: |
-      npm install
-      # Install OpenClaw CLI
-      curl -fsSL https://openclaw.ai/install.sh | bash || true
-      # Alternative: manual install
-      mkdir -p $HOME/.openclaw/bin
-      if [ ! -f $HOME/.openclaw/bin/openclaw ]; then
-        curl -L https://github.com/openclaw/openclaw/releases/latest/download/openclaw-linux-amd64 -o $HOME/.openclaw/bin/openclaw
-        chmod +x $HOME/.openclaw/bin/openclaw
-      fi
-      echo "OpenClaw installed at: $(ls -la $HOME/.openclaw/bin/openclaw 2>/dev/null || echo 'not found')"
-    startCommand: |
-      export PATH="$HOME/.openclaw/bin:$PATH"
-      which openclaw && echo "OpenClaw found!" || echo "OpenClaw not found, checking PATH..."
-      node backend/server.js
+    buildCommand: npm install
+    startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
