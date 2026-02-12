@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-import './App.css'
+import './AppClean.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import AgentCourt from './components/AgentCourt.jsx'
@@ -66,11 +66,10 @@ function App() {
           <span className="brand-text">Nad Court</span>
         </div>
         
-        <div className="nav-links">
-          <button className={currentView === 'live' ? 'active' : ''} onClick={() => setCurrentView('live')}> Live Court</button>
-          <button className={currentView === 'upcoming' ? 'active' : ''} onClick={() => setCurrentView('upcoming')}> Upcoming</button>
-          <button className={currentView === 'resolved' ? 'active' : ''} onClick={() => setCurrentView('resolved')}> Resolved</button>
-          <button className={currentView === 'about' ? 'active' : ''} onClick={() => setCurrentView('about')}> How It Works</button>
+        <div className="nav-links minimal">
+          <button className={currentView === 'live' ? 'active' : ''} onClick={() => setCurrentView('live')}>Watch</button>
+          <button className={currentView === 'upcoming' ? 'active' : ''} onClick={() => setCurrentView('upcoming')}>Cases</button>
+          <button className={currentView === 'submit' ? 'active' : ''} onClick={() => setCurrentView('submit')}>Submit</button>
         </div>
         
         <button className={`wallet-btn ${account ? 'connected' : ''}`} onClick={connectWallet}>
@@ -195,11 +194,46 @@ function App() {
         {/* Live Nad Court */}
         {currentView === 'live' && <AgentCourt />}
 
-        {/* Upcoming Cases */}
+        {/* Cases - Combined Upcoming & Resolved */}
         {currentView === 'upcoming' && <CaseArchives view="upcoming" />}
 
-        {/* Resolved Cases */}
-        {currentView === 'resolved' && <CaseArchives view="resolved" />}
+        {/* Submit Case */}
+        {currentView === 'submit' && (
+          <div className="submit-view">
+            <header className="view-header">
+              <h1>Submit Your Case</h1>
+              <p>File a dispute for the community to judge</p>
+            </header>
+            <div className="submit-form-container">
+              <form className="submit-case-form">
+                <div className="form-section">
+                  <label>Case Type</label>
+                  <select>
+                    <option>Beef Resolution</option>
+                    <option>Community Conflict</option>
+                    <option>Role Dispute</option>
+                    <option>Art Ownership</option>
+                  </select>
+                </div>
+                <div className="form-row">
+                  <div className="form-field">
+                    <label>Plaintiff</label>
+                    <input type="text" placeholder="@username" />
+                  </div>
+                  <div className="form-field">
+                    <label>Defendant</label>
+                    <input type="text" placeholder="@username" />
+                  </div>
+                </div>
+                <div className="form-field">
+                  <label>Case Summary</label>
+                  <textarea rows={4} placeholder="Describe the dispute..." />
+                </div>
+                <button type="submit" className="btn btn-primary">Submit Case</button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Leaderboard View - Stats & Rankings */}
         {currentView === 'leaderboard' && (
