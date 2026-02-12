@@ -86,12 +86,16 @@ async function callMoonshotAPI(systemPrompt, userPrompt, maxTokens = 800) {
   });
 
   return new Promise((resolve, reject) => {
+    const authHeader = `Bearer ${MOONSHOT_API_KEY}`;
+    console.log('Authorization header length:', authHeader.length);
+    console.log('Authorization header (masked):', authHeader.substring(0, 20) + '...');
+
     const options = {
       hostname: 'api.moonshot.cn',
       path: '/v1/chat/completions',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${MOONSHOT_API_KEY}`,
+        'Authorization': authHeader,
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
       }
