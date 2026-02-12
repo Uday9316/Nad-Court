@@ -43,7 +43,7 @@ async function callOpenAI(systemPrompt, userPrompt, maxTokens = 800) {
   if (!key) throw new Error('OpenAI key not configured');
 
   const data = JSON.stringify({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt }
