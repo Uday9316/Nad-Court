@@ -1,394 +1,261 @@
+
 ---
-name: agent-court
+name: nad-court
 version: 1.0.0
-description: Decentralized AI justice system for the Monad blockchain. Real AI agents argue cases and render verdicts using LLM reasoning.
+description: Decentralized AI justice system for the Monad blockchain. AI agents battle in court, community judges evaluate, on-chain verdicts.
 homepage: https://nad-court.vercel.app
 metadata:
   emoji: "⚖️"
   category: "blockchain"
   chain: "monad"
   contract: "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
-  ai_provider: "moonshot/kimi-k2.5"
 ---
 
-# Agent Court - AI-Powered Justice System
+# Agent Court
 
-**A decentralized court system where AI agents argue cases and render verdicts on the Monad blockchain.**
+Decentralized AI justice system for the Monad blockchain where community disputes are resolved through AI-powered legal proceedings.
 
-## 🎯 Hackathon Submission Overview
+## What It Does
 
-Agent Court is a fully functional AI justice system featuring:
-- **Real LLM-powered AI agents** that generate legal arguments
-- **6 AI judges** with unique personalities evaluating cases
-- **On-chain verdicts** stored on Monad blockchain
-- **Token-gated access** requiring $JUSTICE stake
-- **Moltbook integration** for AI agent community engagement
+Agent Court is a 3-tier judicial system where:
+- **AI Agents** battle as legal advocates (Plaintiff vs Defendant)
+- **6 Community Judges** evaluate cases with unique personalities
+- **On-Chain Verdicts** are cryptographically provable
+- **Token Stakes** ensure serious disputes only
 
-## 🤖 AI Agent Architecture
+## The Court System
 
-### Argument Agents (Legal Advocates)
+### 3-Tier Judicial Hierarchy
 
-#### JusticeBot-Alpha (Plaintiff Agent)
+| Tier | Stake | Jurors | Use Case |
+|------|-------|--------|----------|
+| Local Court | 5,000 $JUSTICE | 5 jurors | Standard disputes |
+| High Court | 15,000 $JUSTICE | 9 jurors | Complex cases |
+| Supreme Court | 50,000 $JUSTICE | 15 jurors | Final appeals |
 
-**Purpose**: Represents parties filing disputes
-**AI Model**: Moonshot Kimi K2.5
-**System Prompt**:
-```
-You are JusticeBot-Alpha, an AI legal advocate representing plaintiffs in Agent Court.
+### Case Lifecycle
 
-Your mission: Present compelling, fact-based arguments that demonstrate why your 
-client's position is correct.
+1. **Registration** - Stake $JUSTICE tokens
+2. **Opening Arguments** - Both sides present
+3. **3 Rounds of Battle** - 12 total arguments (alternating)
+4. **Judge Evaluation** - 6 AI judges score both sides
+5. **Verdict** - Winner determined by majority
+6. **Appeal** (optional) - Escalate to higher court
 
-Rules:
-- Present ONE cohesive argument per response (50-5000 characters)
-- Base arguments ONLY on provided case facts
-- Cite specific evidence when available
-- Address defendant's previous arguments if provided
-- Use persuasive but professional legal tone
-- Never reference "health bars", "damage", or game mechanics
-- Build on your previous arguments - don't repeat
-- Focus on logic, evidence, and precedent
-```
+## AI Agents
 
-**Implementation**: `agents/ai_agents.py` - `AIArgumentAgent` class
-**API Call**: Real-time LLM inference via Moonshot API
-**Output**: Unique legal argument for each case
+### Plaintiff Agent (JusticeBot-Alpha)
+- Presents evidence supporting plaintiff
+- Builds logical, fact-based arguments
+- Cites precedents and community rules
+- Responds to defendant rebuttals
 
-#### GuardianBot-Omega (Defendant Agent)
+### Defendant Agent (GuardianBot-Omega)
+- Rebuts plaintiff allegations
+- Provides counter-evidence
+- Defends with logic and facts
+- Questions plaintiff's evidence validity
 
-**Purpose**: Represents parties responding to allegations  
-**AI Model**: Moonshot Kimi K2.5
-**System Prompt**:
-```
-You are GuardianBot-Omega, an AI defense advocate representing defendants in Agent Court.
+### 6 Judge Agents
 
-Your mission: Protect your client's interests by rebutting allegations and 
-demonstrating their innocence or justification.
+Each judge has unique evaluation criteria:
 
-Rules:
-- Present ONE cohesive response per turn (50-5000 characters)
-- Address specific allegations made by plaintiff
-- Provide factual counter-evidence
-- Question validity of plaintiff's claims where appropriate
-- No counter-accusations - focus on defense
-- Use persuasive but professional legal tone
-- Never reference "health bars", "damage", or game mechanics
-- Build a consistent defensive narrative
-```
+**PortDev** - Technical Evidence
+- Focus: Code, timestamps, data integrity
+- Catchphrase: "Code doesn't lie"
 
-**Implementation**: `agents/ai_agents.py` - `AIArgumentAgent` class
-**API Call**: Real-time LLM inference via Moonshot API
-**Output**: Rebuttal argument responding to plaintiff
+**MikeWeb** - Community Impact
+- Focus: Reputation, contributions, sentiment
+- Catchphrase: "Community vibe check"
 
-### Judge Agents (Evaluators)
+**Keone** - On-Chain Data
+- Focus: Wallet history, transactions, proof
+- Catchphrase: "Show me the transactions"
 
-All 6 judges use **Moonshot Kimi K2.5** for real reasoning:
+**James** - Governance Precedent
+- Focus: Rules, historical cases, moderation
+- Catchphrase: "Precedent matters here"
 
-#### PortDev - Technical Evidence Specialist
-- **Focus**: Code, timestamps, data integrity
-- **Voice**: Analytical, precise, technical
-- **Catchphrase**: "Code doesn't lie."
-- **Prompt Strategy**: Emphasize technical proof over emotional arguments
+**Harpal** - Merit-Based
+- Focus: Quality, engagement value, impact
+- Catchphrase: "Contribution quality over quantity"
 
-#### MikeWeb - Community Impact Assessor
-- **Focus**: Reputation, contributions, sentiment
-- **Voice**: Warm, community-focused, balanced
-- **Catchphrase**: "Community vibe check."
-- **Prompt Strategy**: Value long-term community value
+**Anago** - Protocol Adherence
+- Focus: Rule violations, compliance
+- Catchphrase: "Protocol adherence is clear"
 
-#### Keone - On-Chain Data Analyst
-- **Focus**: Wallet history, transactions, verified data
-- **Voice**: Data-driven, factual, analytical
-- **Catchphrase**: "Show me the transactions."
-- **Prompt Strategy**: Demand provable blockchain facts
+## Smart Contracts
 
-#### James - Governance Precedent Keeper
-- **Focus**: Rules, historical cases, moderation logs
-- **Voice**: Formal, precedent-focused, structured
-- **Catchphrase**: "Precedent matters here."
-- **Prompt Strategy**: Prioritize consistency with past rulings
-
-#### Harpal - Merit-Based Evaluator
-- **Focus**: Contribution quality, engagement value, impact
-- **Voice**: Direct, merit-focused, results-oriented
-- **Catchphrase**: "Contribution quality over quantity."
-- **Prompt Strategy**: Reward measurable quality over tenure
-
-#### Anago - Protocol Adherence Guardian
-- **Focus**: Rule violations, compliance, documentation
-- **Voice**: Formal, rule-focused, protocol-minded
-- **Catchphrase**: "Protocol adherence is clear."
-- **Prompt Strategy**: Enforce technical compliance strictly
-
-**Implementation**: `agents/ai_agents.py` - `AIJudgeAgent` class
-**Evaluation Method**: 4-criteria scoring (Logic, Evidence, Rebuttal, Clarity)
-**Output**: JSON with scores, reasoning, and winner determination
-
-## ⚖️ 4-Criteria Scoring System
-
-Every AI judge evaluates both sides on:
-
-| Criteria | Weight | Description |
-|----------|--------|-------------|
-| **Logic** | 25% | Soundness of reasoning, logical consistency |
-| **Evidence** | 25% | Quality and relevance of proof presented |
-| **Rebuttal** | 25% | Effectiveness at addressing opponent's points |
-| **Clarity** | 25% | Persuasiveness and communication quality |
-
-**Score Range**: 0-100 per criteria
-**Overall Score**: Average of 4 criteria
-**Verdict**: Side with higher overall score wins that judge's vote
-
-## 📋 Case Lifecycle (AI-Driven)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    AGENT COURT - AI FLOW                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. CASE REGISTRATION                                           │
-│     └── User stakes $JUSTICE tokens                             │
-│                                                                 │
-│  2. AI ARGUMENT GENERATION (Alternating)                        │
-│     ├── JusticeBot-Alpha (Plaintiff) → LLM Call → Argument     │
-│     ├── GuardianBot-Omega (Defendant) → LLM Call → Rebuttal    │
-│     ├── JusticeBot-Alpha → LLM Call → Counter                  │
-│     └── ... (6 rounds = 12 total arguments)                    │
-│                                                                 │
-│  3. AI JUDGE EVALUATION                                         │
-│     ├── PortDev → LLM Call → Scores + Reasoning                │
-│     ├── MikeWeb → LLM Call → Scores + Reasoning                │
-│     ├── Keone → LLM Call → Scores + Reasoning                  │
-│     ├── James → LLM Call → Scores + Reasoning                  │
-│     ├── Harpal → LLM Call → Scores + Reasoning                 │
-│     └── Anago → LLM Call → Scores + Reasoning                  │
-│                                                                 │
-│  4. VERDICT CALCULATION                                         │
-│     └── Majority vote of 6 judges determines winner            │
-│                                                                 │
-│  5. ON-CHAIN SUBMISSION                                         │
-│     └── Verdict stored on Monad blockchain                     │
-│                                                                 │
-│  6. SOCIAL NOTIFICATION                                         │
-│     ├── Post to Twitter/X                                       │
-│     └── Post to Moltbook (m/nadcourt)                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-## 🔧 Technical Implementation
-
-### AI Provider Configuration
-
-**Current Setup** (as configured in `.env`):
-```bash
-AI_PROVIDER=moonshot
-MOONSHOT_API_KEY=sk-EIEZLxk2zKScp4Wvsb5sPH3N0GtFrW6dypVZPGBazUDp6W8z
-```
-
-**Model Used**: `moonshot-v1-128k` (Kimi K2.5)
-
-### API Integration Code
-
-```python
-# From agents/ai_agents.py
-
-def _call_moonshot(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-    """Call Moonshot/Kimi K2.5 API for real AI reasoning"""
-    headers = {
-        "Authorization": f"Bearer {MOONSHOT_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "model": "moonshot-v1-128k",  # Kimi K2.5
-        "messages": messages,
-        "temperature": temperature,
-        "max_tokens": max_tokens
-    }
-    
-    response = requests.post(
-        "https://api.moonshot.cn/v1/chat/completions",
-        headers=headers,
-        json=payload
-    )
-    return response.json()["choices"][0]["message"]["content"]
-```
-
-### Cost Per Case
-
-- **12 arguments** (6 per side): ~$0.012
-- **6 judge evaluations**: ~$0.012
-- **Total**: ~$0.024 per case
-- **Daily limit**: 1 case/day = $0.72/month
-
-## 🏛️ Smart Contract Integration
-
-**Contract**: `0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458`
-**Chain**: Monad Mainnet (Chain ID 143)
+**Contract Address:** `0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458`
+**Chain:** Monad Mainnet (Chain ID 143)
+**Token:** $JUSTICE (`0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777`)
 
 ### Contract Functions
+- `submitCase()` - Register dispute with stake
+- `submitArgument()` - Post argument (agents only)
+- `submitJudgment()` - Judges submit scores
+- `resolveCase()` - Calculate final verdict
+- `appealCase()` - Escalate to higher court
 
-```solidity
-// Submit AI-generated argument
-function submitArgument(
-    uint256 _caseId, 
-    bool _isPlaintiff, 
-    string calldata _content
-) external;
+## Evaluation System
 
-// Submit AI judge evaluation
-function submitJudgment(
-    uint256 _caseId,
-    address _judge,
-    uint8[4] calldata _plaintiffScores,  // [logic, evidence, rebuttal, clarity]
-    uint8[4] calldata _defendantScores,
-    string calldata _reasoning
-) external;
+### 4-Criteria Scoring (0-100 each)
 
-// Calculate final verdict from AI evaluations
-function resolveCase(uint256 _caseId) external;
-```
+1. **Logic** - Soundness of reasoning
+2. **Evidence** - Quality and relevance of proof
+3. **Rebuttal** - Effectiveness at addressing opponent
+4. **Clarity** - Persuasiveness and communication
 
-## 📁 Project Structure
+### Verdict Calculation
+
+- Each of 6 judges evaluates both sides
+- Winner = majority of judge votes
+- Health bars = visual persuasion strength (NOT a game)
+- Final verdict posted on-chain
+
+## Cost Optimization
+
+- **1 case per 24 hours** - Rate limiting keeps costs low
+- **~$0.02 per case** - 12 arguments + 6 judge evaluations
+- **vs Unlimited:** Saves $200-1000/month
+
+## Tech Stack
+
+- **Frontend:** React, Vite, Ethers.js
+- **Smart Contracts:** Solidity (Foundry)
+- **AI:** OpenAI GPT-4 / Claude (LLM-powered judges)
+- **Blockchain:** Monad Mainnet
+- **Social:** Twitter/X API, Moltbook API
+
+## File Structure
 
 ```
 AGENT_COURT_COMPLETE/
-├── agents/
-│   ├── ai_agents.py          # ⭐ Main AI system (real LLM calls)
-│   ├── judge_kimi.py         # Legacy judge system
-│   ├── main.py               # Court orchestrator
-│   └── SKILL.md              # ⭐ AI agent documentation
-├── contracts/
-│   ├── AgentCourt.sol        # Smart contract
-│   └── JusticeToken.sol      # $JUSTICE token
-├── frontend/
+├── contracts/          # Solidity smart contracts
+│   ├── AgentCourt.sol
+│   └── JusticeToken.sol
+├── frontend/           # React web app
 │   ├── src/
-│   │   ├── App.jsx           # React frontend
-│   │   └── assets/           # Judge images
-│   └── ...
-├── bot/
-│   ├── moltbook.js           # Moltbook integration
-│   └── twitter-oauth2.js     # Twitter integration
-├── SKILL.md                  # ⭐ Project documentation
-├── HEARTBEAT.md              # Periodic tasks
-└── .env                      # API keys (configured)
+│   │   ├── App.jsx    # Main application
+│   │   ├── App.css    # Styles
+│   │   └── assets/    # Judge images
+├── agents/            # Python AI agent system
+│   ├── main.py        # Court orchestrator
+│   ├── judge_kimi.py  # LLM-powered judges
+│   └── courts/        # Court implementations
+├── bot/               # Social integrations
+│   ├── moltbook.js    # Moltbook API
+│   ├── twitter-oauth2.js
+│   └── agent_prompts.md
+├── SKILL.md           # This file
+├── HEARTBEAT.md       # Periodic tasks
+└── README.md          # Project overview
 ```
 
-## 🚀 Running the AI Court
-
-### Prerequisites
-```bash
-pip install openai requests python-dotenv
-```
-
-### Run a Test Case
-```python
-from agents.ai_agents import AgentCourtSystem
-
-# Initialize with real AI agents
-court = AgentCourtSystem()
-
-# Define a case
-case = {
-    "id": "HACKATHON-001",
-    "type": "Community Conflict",
-    "summary": "Dispute over contribution recognition in Monad ecosystem",
-    "facts": "Both parties contributed to community growth, disagreement over credit",
-    "evidence": [
-        "Discord server activity logs",
-        "GitHub contribution records", 
-        "Community testimonials"
-    ]
-}
-
-# Run AI-powered court case
-result = court.run_case(case, num_arguments=6)
-
-# Output:
-# - 12 AI-generated arguments (6 per side)
-# - 6 AI judge evaluations with reasoning
-# - Final verdict with vote count
-```
-
-### Expected Output
-```
-⚖️ STARTING CASE: HACKATHON-001
-   Type: Community Conflict
-   Arguments per side: 6
-
---- ROUND 1 ---
-🤖 JusticeBot-Alpha generating argument...
-   Plaintiff: The evidence clearly demonstrates my client's substantial 
-   contributions to the Monad ecosystem over the past 6 months...
-
-🤖 GuardianBot-Omega generating response...
-   Defendant: While the plaintiff claims credit, the documented timeline 
-   reveals a different narrative. Our on-chain records show...
-
-⚖️ JUDGES EVALUATING...
-   PortDev evaluating...
-   ✅ PortDev: DEFENDANT wins
-      Reasoning: The technical evidence, specifically the timestamped 
-      GitHub commits, contradicts the plaintiff's claims...
-
-   MikeWeb evaluating...
-   ✅ MikeWeb: PLAINTIFF wins
-      Reasoning: Community vibe check - the plaintiff has been consistently 
-      helpful in Discord for months...
-
-   [... 4 more judges ...]
-
-==================================================
-🏆 FINAL VERDICT: DEFENDANT WINS!
-   Score: 2-4
-==================================================
-```
-
-## 🎨 Frontend Demo
-
-Visit: https://nad-court.vercel.app
-
-Features:
-- **Live Court**: Watch AI agents argue in real-time
-- **Judge Panel**: See individual judge evaluations
-- **Case Archive**: Browse past AI-verdicted cases
-- **Submit Case**: Stake $JUSTICE to file disputes
-
-## 📝 Skill Files for Hackathon
-
-| File | Purpose | Location |
-|------|---------|----------|
-| `SKILL.md` | Project overview | `/SKILL.md` |
-| `agents/SKILL.md` | AI agent documentation | `/agents/SKILL.md` |
-| `HEARTBEAT.md` | Periodic tasks | `/HEARTBEAT.md` |
-
-## 🔗 Integrations
-
-### Moltbook
-- **Agent**: NadCourt-Justice
-- **Submolt**: m/nadcourt
-- **Actions**: Auto-post cases and verdicts
+## Integration Points
 
 ### Twitter/X
-- **Posts**: Case announcements and verdicts
-- **Frequency**: 1 per case (24h limit)
+- Auto-post new cases
+- Auto-post verdicts
+- No @ mentions (community preference)
 
-## 📊 Hackathon Judging Criteria
+### Moltbook
+- Agent: `NadCourt-Justice`
+- Submolt: `m/nadcourt`
+- Auto-post cases and verdicts
+- Heartbeat every 30 minutes
 
-✅ **AI Integration**: Real LLM calls for every argument and evaluation  
-✅ **Blockchain**: On-chain verdicts via Monad smart contracts  
-✅ **Community**: Moltbook social integration for AI agents  
-✅ **Innovation**: Novel AI-as-legal-advocate concept  
-✅ **Functionality**: Working demo at https://nad-court.vercel.app  
+## Usage
 
-## 🏆 Team
+### Submit a Case
+1. Connect wallet (MetaMask/Phantom)
+2. Select court tier (based on $JUSTICE balance)
+3. Enter case details
+4. Stake tokens
+5. Wait for AI agent battle (24h)
 
-- **Project**: Agent Court
-- **Blockchain**: Monad
-- **AI Model**: Moonshot Kimi K2.5
-- **Status**: Ready for hackathon submission
+### Watch Live Court
+- Real-time argument feed
+- Gamified status (health bars)
+- Judge logic panel
+- Verdict countdown
+
+### Appeal a Verdict
+- Stake higher amount
+- Escalate to next tier
+- New jury evaluates
+
+## Environment Variables
+
+```bash
+# AI API Keys
+OPENAI_API_KEY=sk-...
+
+# Blockchain
+MONAD_RPC_URL=https://rpc.monad.xyz
+PRIVATE_KEY=0x...
+
+# Social
+MOLTBOOK_API_KEY=moltbook_...
+TWITTER_BEARER_TOKEN=...
+TWITTER_API_KEY=...
+TWITTER_API_SECRET=...
+```
+
+## CLI Commands
+
+```bash
+# Run AI court system
+python agents/main.py
+
+# Post to Moltbook
+node bot/moltbook.js heartbeat
+
+# Post to Twitter
+node bot/twitter-oauth2.js post
+
+# Deploy contracts
+forge script contracts/Deploy.s.sol --rpc-url $MONAD_RPC_URL --broadcast
+```
+
+## API Endpoints
+
+### Moltbook Integration
+- `POST /api/v1/posts` - Post case/verdict
+- `GET /api/v1/submolts/nadcourt/feed` - Check community
+- `POST /api/v1/posts/{id}/comments` - Engage
+
+### Smart Contract
+- `submitArgument(uint256 caseId, bool isPlaintiff, string content)`
+- `cases(uint256)` - View case data
+- `ArgumentSubmitted` event - Real-time updates
+
+## Community
+
+- **Monad Discord:** #agent-court channel
+- **Moltbook:** m/nadcourt
+- **Twitter:** Auto-posted updates
+- **GitHub:** github.com/Uday9316/Nad-Court
+
+## License
+
+MIT - Open source for the Monad community
+
+## Credits
+
+- Built for Monad blockchain hackathon
+- Inspired by MoltCourt design philosophy
+- Community judges: portdev, mikeweb, keone, james, harpal, anago
+- AI models: OpenAI GPT-4, Claude
+
+## Skill Files
+
+| File | Purpose |
+|------|---------|
+| SKILL.md | This file - overview & docs |
+| HEARTBEAT.md | Periodic tasks & reminders |
+| README.md | Project setup & install |
 
 ---
 
-⚖️ *Real AI. Real Arguments. Real Justice.* ⚖️
+⚖️ *Justice is a process. Truth emerges from debate.* ⚖️
