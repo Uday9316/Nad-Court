@@ -143,42 +143,32 @@ const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
     reasoning += ` [${judge}'s final take]`
   }
   
-  // Varied scores based on judge personality
-  let pScore, dScore
-  switch(judge) {
-    case 'PortDev':
-      pScore = Math.floor(Math.random() * 15 + 70)
-      dScore = Math.floor(Math.random() * 20 + 60)
-      break
-    case 'MikeWeb':
-      pScore = Math.floor(Math.random() * 20 + 60)
-      dScore = Math.floor(Math.random() * 15 + 70)
-      break
-    case 'Keone':
-      pScore = Math.floor(Math.random() * 10 + 65)
-      dScore = Math.floor(Math.random() * 10 + 65)
-      break
-    case 'James':
-      pScore = Math.floor(Math.random() * 15 + 65)
-      dScore = Math.floor(Math.random() * 15 + 60)
-      break
-    case 'Harpal':
-      pScore = Math.floor(Math.random() * 20 + 55)
-      dScore = Math.floor(Math.random() * 15 + 70)
-      break
-    case 'Anago':
-      pScore = Math.floor(Math.random() * 15 + 70)
-      dScore = Math.floor(Math.random() * 15 + 65)
-      break
-    default:
-      pScore = Math.floor(Math.random() * 30 + 60)
-      dScore = Math.floor(Math.random() * 30 + 60)
+  // Generate 4-criteria scores for each side (0-100)
+  const generateCriteriaScores = () => {
+    return {
+      logic: Math.floor(Math.random() * 30 + 60),
+      evidence: Math.floor(Math.random() * 30 + 60),
+      rebuttal: Math.floor(Math.random() * 30 + 60),
+      clarity: Math.floor(Math.random() * 30 + 60),
+    }
   }
+  
+  const plaintiffScores = generateCriteriaScores()
+  const defendantScores = generateCriteriaScores()
+  
+  // Calculate overall score (average of 4 criteria)
+  const pOverall = Math.round((plaintiffScores.logic + plaintiffScores.evidence + plaintiffScores.rebuttal + plaintiffScores.clarity) / 4)
+  const dOverall = Math.round((defendantScores.logic + defendantScores.evidence + defendantScores.rebuttal + defendantScores.clarity) / 4)
   
   return {
     judge,
     reasoning,
-    scores: { plaintiff: pScore, defendant: dScore }
+    scores: { 
+      plaintiff: pOverall, 
+      defendant: dOverall,
+      plaintiffCriteria: plaintiffScores,
+      defendantCriteria: defendantScores
+    }
   }
 }
 
@@ -232,11 +222,18 @@ function App() {
       const eval_ = generateJudgeEvaluation(evalCount, usedReasonings)
       usedReasonings.push(eval_.reasoning)
       
+      const pCrit = eval_.scores.plaintiffCriteria
+      const dCrit = eval_.scores.defendantCriteria
+      
       const newEval = {
         id: Date.now() + 1000,
         author: `${eval_.judge} (Judge)`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        content: `${eval_.reasoning} [P:${eval_.scores.plaintiff} vs D:${eval_.scores.defendant}]`,
+        content: eval_.reasoning,
+        criteria: {
+          plaintiff: { logic: pCrit.logic, evidence: pCrit.evidence, rebuttal: pCrit.rebuttal, clarity: pCrit.clarity, total: eval_.scores.plaintiff },
+          defendant: { logic: dCrit.logic, evidence: dCrit.evidence, rebuttal: dCrit.rebuttal, clarity: dCrit.clarity, total: eval_.scores.defendant }
+        },
         role: 'judge',
         type: 'evaluation'
       }
@@ -852,7 +849,31 @@ def handle_webhook():
                     </div>
                     <div className="message-body">
                       {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
-                      {m.content}
+                      <div className="message-content">{m.content}</div>
+                      {m.type === 'evaluation' && m.criteria && (
+                        <div className="criteria-scores">
+                          <div className="criteria-side">
+                            <span className="criteria-label">Plaintiff</span>
+                            <div className="criteria-row">
+                              <span>Logic: {m.criteria.plaintiff.logic}</span>
+                              <span>Evidence: {m.criteria.plaintiff.evidence}</span>
+                              <span>Rebuttal: {m.criteria.plaintiff.rebuttal}</span>
+                              <span>Clarity: {m.criteria.plaintiff.clarity}</span>
+                            </div>
+                            <span className="criteria-total">Total: {m.criteria.plaintiff.total}</span>
+                          </div>
+                          <div className="criteria-side">
+                            <span className="criteria-label">Defendant</span>
+                            <div className="criteria-row">
+                              <span>Logic: {m.criteria.defendant.logic}</span>
+                              <span>Evidence: {m.criteria.defendant.evidence}</span>
+                              <span>Rebuttal: {m.criteria.defendant.rebuttal}</span>
+                              <span>Clarity: {m.criteria.defendant.clarity}</span>
+                            </div>
+                            <span className="criteria-total">Total: {m.criteria.defendant.total}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
