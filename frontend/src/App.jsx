@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ethers } from 'ethers'
 import './App.css'
 import './OpenClawCourt.css'
@@ -230,6 +230,7 @@ function App() {
   const [currentRound, setCurrentRound] = useState(1)
   const [roundArgsCount, setRoundArgsCount] = useState(0)
   const [verdictShown, setVerdictShown] = useState(false)
+  const caseStartedRef = useRef(false)
   
   // Daily case countdown
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 })
@@ -241,6 +242,10 @@ function App() {
   // Live simulation for testing - posts arguments in real-time
   useEffect(() => {
     if (view !== 'live') return
+    
+    // Prevent restarting if case already started or ended
+    if (caseStartedRef.current || caseStatus === 'ended') return
+    caseStartedRef.current = true
     
     setIsLive(true)
     setCaseStatus('active')
