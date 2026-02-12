@@ -2,8 +2,12 @@ services:
   - type: web
     name: nad-court
     runtime: node
-    buildCommand: npm install && curl -sSL https://install.openclaw.sh | bash
-    startCommand: node backend/server.js
+    buildCommand: |
+      npm install
+      # Install OpenClaw
+      curl -fsSL https://raw.githubusercontent.com/openclaw/install/main/install.sh | bash
+      export PATH="$HOME/.local/bin:$PATH"
+    startCommand: PATH="$HOME/.local/bin:$PATH" node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
