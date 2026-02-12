@@ -1,19 +1,31 @@
 // frontend/src/services/aiCourt.js
-// Connects frontend to AI Court backend
+// Connects frontend to Agent Court Backend
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-export const generateCase = async (caseData) => {
-  const response = await fetch(`${API_URL}/api/generate-case`, {
+// Generate argument from OpenClaw AI agent
+export const generateArgument = async (role, caseData, round = 1) => {
+  const response = await fetch(`${API_URL}/api/generate-argument`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(caseData)
+    body: JSON.stringify({ role, caseData, round })
   });
   return response.json();
 };
 
-export const generateArguments = async (caseData) => {
-  const response = await fetch(`${API_URL}/api/generate-arguments`, {
+// Generate judge evaluation
+export const getJudgeEvaluation = async (judge, caseData, plaintiffArgs, defendantArgs) => {
+  const response = await fetch(`${API_URL}/api/judge-evaluation`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ judge, caseData, plaintiffArgs, defendantArgs })
+  });
+  return response.json();
+};
+
+// Run full case with all AI agents
+export const runFullCase = async (caseData) => {
+  const response = await fetch(`${API_URL}/api/run-full-case`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ caseData })
@@ -21,11 +33,14 @@ export const generateArguments = async (caseData) => {
   return response.json();
 };
 
-export const getJudgeEvaluations = async (caseId, args) => {
-  const response = await fetch(`${API_URL}/api/judge-evaluation`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ caseId, arguments: args })
-  });
+// Get all judges info
+export const getJudges = async () => {
+  const response = await fetch(`${API_URL}/api/judges`);
+  return response.json();
+};
+
+// Health check
+export const checkHealth = async () => {
+  const response = await fetch(`${API_URL}/api/health`);
   return response.json();
 };
