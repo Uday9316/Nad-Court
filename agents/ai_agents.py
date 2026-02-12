@@ -13,12 +13,13 @@ from datetime import datetime
 # API Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 MOONSHOT_API_KEY = os.getenv("MOONSHOT_API_KEY")
-NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", "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")
+NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 OPENCLAW_GATEWAY_URL = os.getenv("OPENCLAW_GATEWAY_URL", "https://api.openclaw.ai")
 OPENCLAW_API_KEY = os.getenv("OPENCLAW_API_KEY")
 
-# Default provider selection - prioritize OpenClaw if key available
-AI_PROVIDER = os.getenv("AI_PROVIDER", "openclaw" if OPENCLAW_API_KEY else "nvidia" if NVIDIA_API_KEY else "openai")
+# Default to no provider - will use fallback mode
+# Set AI_PROVIDER in .env to enable real AI: openai, moonshot, nvidia, openclaw
+AI_PROVIDER = os.getenv("AI_PROVIDER", "fallback")
 
 # Kimi API configuration
 KIMI_BASE_URL = os.getenv("KIMI_BASE_URL", "https://api.kimi.moonshot.cn")
@@ -72,8 +73,10 @@ class AIArgumentAgent:
         self.argument_history = []
         
     def _call_llm(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 800) -> str:
-        """Call LLM with provider fallback"""
-        if AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
+        """Call LLM with provider fallback for AIArgumentAgent"""
+        if AI_PROVIDER == "fallback":
+            raise Exception("Fallback mode - no API calls")
+        elif AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
             return call_openclaw_gateway(messages, temperature, max_tokens)
         elif AI_PROVIDER == "nvidia" and NVIDIA_API_KEY:
             return self._call_nvidia(messages, temperature, max_tokens)
@@ -85,7 +88,7 @@ class AIArgumentAgent:
             raise Exception("No AI provider configured")
     
     def _call_openai(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call OpenAI API"""
+        """Call OpenAI API for argument generation"""
         import openai
         openai.api_key = OPENAI_API_KEY
         
@@ -314,8 +317,10 @@ class AIJudgeAgent:
         self.evaluations = []
     
     def _call_llm(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 1000) -> str:
-        """Call LLM with provider fallback"""
-        if AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
+        """Call LLM with provider fallback for AIJudgeAgent"""
+        if AI_PROVIDER == "fallback":
+            raise Exception("Fallback mode - no API calls")
+        elif AI_PROVIDER == "openclaw" and OPENCLAW_API_KEY:
             return call_openclaw_gateway(messages, temperature, max_tokens)
         elif AI_PROVIDER == "nvidia" and NVIDIA_API_KEY:
             return self._call_nvidia(messages, temperature, max_tokens)
@@ -327,7 +332,7 @@ class AIJudgeAgent:
             raise Exception("No AI provider configured")
     
     def _call_openai(self, messages: List[Dict], temperature: float, max_tokens: int) -> str:
-        """Call OpenAI API"""
+        """Call OpenAI API for judge evaluation"""
         import openai
         openai.api_key = OPENAI_API_KEY
         
