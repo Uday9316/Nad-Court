@@ -64,23 +64,45 @@ const generateDefendantArgument = (round) => {
   return args[round % args.length]
 }
 
-const generateJudgeEvaluation = (judgeIndex) => {
+const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
   const judges = ['PortDev', 'MikeWeb', 'Keone', 'James', 'Harpal', 'Anago']
+  const judge = judges[judgeIndex % judges.length]
+  
+  // Dynamic reasoning based on judge's specialty and random factors
+  const evidenceStrength = Math.floor(Math.random() * 40 + 30)
+  const rebuttalQuality = Math.floor(Math.random() * 40 + 30)
+  const clarityScore = Math.floor(Math.random() * 30 + 40)
+  
   const reasonings = [
-    'Strong technical evidence presented. The on-chain data is compelling.',
-    'Community sentiment appears divided. Need more objective metrics.',
-    'The transaction patterns warrant further investigation.',
-    'Historical precedent suggests caution before judgment.',
-    'Contribution history shows genuine engagement from both parties.',
-    'Protocol rules are clear on this matter. The evidence speaks for itself.',
-    'Both sides raise valid points. This is a complex case.',
-    'The timing correlations are suspicious but not conclusive.',
+    `After reviewing the evidence, plaintiff's argument shows ${evidenceStrength}% technical validity. Defense rebuttal at ${rebuttalQuality}%.`,
+    `Community metrics analysis: engagement patterns suggest ${Math.random() > 0.5 ? 'genuine' : 'suspicious'} activity. Cross-referencing ${Math.floor(Math.random() * 20 + 10)} data points.`,
+    `On-chain forensics reveal ${Math.floor(Math.random() * 50 + 20)} transactions with ${Math.random() > 0.5 ? 'anomalous' : 'normal'} timing. Wallet age: ${Math.floor(Math.random() * 12 + 3)} months.`,
+    `Comparing to precedent case #${Math.floor(Math.random() * 1000 + 4000)}: ${Math.random() > 0.5 ? 'Similar circumstances, similar ruling expected.' : 'Key distinctions in evidence quality.'}`,
+    `Contribution analysis: ${Math.floor(Math.random() * 100 + 50)} posts, ${Math.floor(Math.random() * 80 + 20)}% helpful rate. Merit score: ${Math.floor(Math.random() * 40 + 60)}/100.`,
+    `Protocol compliance check: ${Math.random() > 0.6 ? 'Violation confirmed in section ' + Math.floor(Math.random() * 5 + 1) + '.' : 'No direct rule breach detected.'}`,
+    `Argument clarity assessment: Plaintiff at ${clarityScore}%, Defense at ${Math.floor(Math.random() * 30 + 40)}%. Structure and evidence presentation evaluated.`,
+    `Timeline analysis: Events occurred over ${Math.floor(Math.random() * 14 + 1)} days. Correlation coefficient: ${(Math.random() * 0.6 + 0.2).toFixed(2)}.`,
   ]
+  
+  // Pick a reasoning not used yet, or generate unique one
+  let reasoning = reasonings[Math.floor(Math.random() * reasonings.length)]
+  let attempts = 0
+  while (usedReasonings.includes(reasoning) && attempts < 10) {
+    reasoning = reasonings[Math.floor(Math.random() * reasonings.length)]
+    attempts++
+  }
+  
+  // If all used, add timestamp to make unique
+  if (usedReasonings.includes(reasoning)) {
+    reasoning += ` [Evaluated at ${new Date().toLocaleTimeString()}]`
+  }
+  
   const pScore = Math.floor(Math.random() * 30 + 60)
   const dScore = Math.floor(Math.random() * 30 + 60)
+  
   return {
-    judge: judges[judgeIndex % judges.length],
-    reasoning: reasonings[judgeIndex % reasonings.length],
+    judge,
+    reasoning,
     scores: { plaintiff: pScore, defendant: dScore }
   }
 }
@@ -124,13 +146,17 @@ function App() {
     return () => clearInterval(argInterval)
   }, [view, isLive])
 
-  // Simulate judge evaluations with dynamic scoring
+  // Simulate judge evaluations with dynamic scoring - no repeats
   useEffect(() => {
     if (view !== 'live') return
     
+    const usedReasonings = []
     let evalCount = 0
+    
     const evalInterval = setInterval(() => {
-      const eval_ = generateJudgeEvaluation(evalCount)
+      const eval_ = generateJudgeEvaluation(evalCount, usedReasonings)
+      usedReasonings.push(eval_.reasoning)
+      
       const newEval = {
         id: Date.now() + 1000,
         author: `${eval_.judge} (Judge)`,
