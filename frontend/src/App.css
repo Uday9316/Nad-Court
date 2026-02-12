@@ -1074,6 +1074,23 @@ body {
   border-top: 1px solid var(--color-border);
   font-size: 12px;
   color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.moltbook-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-purple-light);
+  width: fit-content;
 }
 
 .turn-indicator {
