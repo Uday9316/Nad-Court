@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './AppFinal.css'
+import './App.css'
 
 // Sample data
 const CASES = [
