@@ -21,15 +21,15 @@ const COURT_LEVELS = [
 const EVIDENCE_CARDS = {
   plaintiff: [
     { id: "P-001", name: "Genesis Badge", rarity: "legendary", power: 95, type: "Authority", desc: "Proof of OG status since day 1", icon: "🏅" },
-    { id: "P-002", name: "Harassment Logs", rarity: "epic", power: 78, type: "Damage", desc: "Screenshots of toxic behavior", icon: "💬" },
-    { id: "P-003", name: "Community Vouch", rarity: "rare", power: 65, type: "Support", desc: "3 witnesses testify for you", icon: "👥" },
-    { id: "P-004", name: "Contribution History", rarity: "common", power: 45, type: "Buff", desc: "On-chain activity logs", icon: "📊" }
+    { id: "P-002", name: "Harassment Logs", rarity: "epic", power: 78, type: "Damage", desc: "Screenshots of toxic behavior", icon: "" },
+    { id: "P-003", name: "Community Vouch", rarity: "rare", power: 65, type: "Support", desc: "3 witnesses testify for you", icon: "" },
+    { id: "P-004", name: "Contribution History", rarity: "common", power: 45, type: "Buff", desc: "On-chain activity logs", icon: "" }
   ],
   defendant: [
-    { id: "D-001", name: "Kaito Crown", rarity: "legendary", power: 92, type: "Authority", desc: "Top 10 leaderboard ranking", icon: "👑" },
-    { id: "D-002", name: "Builder's Code", rarity: "epic", power: 82, type: "Utility", desc: "Open-source bot repository", icon: "💻" },
-    { id: "D-003", name: "Warning Records", rarity: "rare", power: 58, type: "Counter", desc: "Plaintiff's past violations", icon: "⚠️" },
-    { id: "D-004", name: "Engagement Stats", rarity: "common", power: 42, type: "Buff", desc: "High activity metrics", icon: "📈" }
+    { id: "D-001", name: "Kaito Crown", rarity: "legendary", power: 92, type: "Authority", desc: "Top 10 leaderboard ranking", icon: "" },
+    { id: "D-002", name: "Builder's Code", rarity: "epic", power: 82, type: "Utility", desc: "Open-source bot repository", icon: "" },
+    { id: "D-003", name: "Warning Records", rarity: "rare", power: 58, type: "Counter", desc: "Plaintiff's past violations", icon: "" },
+    { id: "D-004", name: "Engagement Stats", rarity: "common", power: 42, type: "Buff", desc: "High activity metrics", icon: "" }
   ]
 }
 
@@ -215,7 +215,7 @@ function Court() {
         {activeTab === 'arguments' && selectedCase && (
           <div className="arguments-battle">
             <div className="arguments-header">
-              <h2>💬 LEGAL ARGUMENTS</h2>
+              <h2> LEGAL ARGUMENTS</h2>
               <p>Both sides present their case</p>
             </div>
             

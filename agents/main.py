@@ -1,5 +1,5 @@
 """
-Agent Court - 3-Tier Judicial Hierarchy System
+Nad Court - 3-Tier Judicial Hierarchy System
 NAD Court with Local → High → Supreme appeal flow
 """
 
@@ -19,8 +19,8 @@ from courts.supreme_court import SupremeNADCourt
 class NADCourtSystem:
     """
     Complete 3-Tier Judicial System:
-    Tier 1: Local Agent Court (default, fast, cheap)
-    Tier 2: High Agent Court (appeals, stricter)
+    Tier 1: Local Nad Court (default, fast, cheap)
+    Tier 2: High Nad Court (appeals, stricter)
     Tier 3: Supreme NAD Court (final, precedents)
     """
     

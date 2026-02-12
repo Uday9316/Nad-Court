@@ -1,4 +1,4 @@
-/* Agent Court - Production Styles */
+/* Nad Court - Production Styles */
 /* Exact blueprint implementation */
 
 /* Page Layout */
@@ -18,7 +18,7 @@
   justify-content: space-between;
   padding: 20px 32px;
   background: rgba(0,0,0,0.4);
-  border-bottom: 2px solid #ffd700;
+  border-bottom: 2px solid var(--accent);
 }
 
 .court-brand {
@@ -34,8 +34,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, rgba(255,215,0,0.1), transparent);
-  border: 2px solid #ffd700;
+  background: radial-gradient(circle, rgba(124,58,237,0.15), transparent);
+  border: 2px solid var(--accent);
   border-radius: 50%;
 }
 
@@ -43,7 +43,7 @@
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .case-live {
@@ -67,12 +67,12 @@
 
 .round-badge {
   padding: 6px 14px;
-  background: rgba(255,215,0,0.1);
-  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(124,58,237,0.5);
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 /* Main 3-Column Layout */
@@ -254,7 +254,7 @@
   display: block;
   font-size: 36px;
   font-weight: 700;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .hp-label {
@@ -271,8 +271,8 @@
 .vs-text {
   font-size: 32px;
   font-weight: 900;
-  color: #ffd700;
-  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  color: var(--accent-light);
+  text-shadow: 0 0 20px rgba(124,58,237,0.6);
 }
 
 /* Health Bar */
@@ -351,7 +351,7 @@
 }
 
 .judge-card.evaluated {
-  border-left: 3px solid #ffd700;
+  border-left: 3px solid var(--accent);
 }
 
 .judge-header {

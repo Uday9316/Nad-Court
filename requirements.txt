@@ -1,4 +1,4 @@
-# Agent Court - Requirements
+# Nad Court - Requirements
 # Core dependencies for the multi-agent justice system
 
 # Blockchain interaction

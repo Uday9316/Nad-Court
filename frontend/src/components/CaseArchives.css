@@ -17,7 +17,7 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #ffd700;
+  color: #f5f5f7;
   margin-bottom: 8px;
 }
 
@@ -29,9 +29,10 @@
 /* Upcoming Cases Grid */
 .cases-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 24px;
-  margin-bottom: 32px;
+  max-width: 1200px;
+  margin: 0 auto 32px;
 }
 
 .case-card {
@@ -43,7 +44,7 @@
 }
 
 .case-card:hover {
-  border-color: rgba(255,215,0,0.3);
+  border-color: rgba(124,58,237,0.4);
   transform: translateY(-4px);
 }
 
@@ -61,7 +62,7 @@
 .case-id {
   font-family: 'Courier New', monospace;
   font-size: 14px;
-  color: #ffd700;
+  color: #f5f5f7;
   font-weight: 700;
 }
 
@@ -109,12 +110,9 @@
   font-weight: 600;
 }
 
-.plaintiff-party .party-name {
-  color: #22c55e;
-}
-
+.plaintiff-party .party-name,
 .defendant-party .party-name {
-  color: #ef4444;
+  color: #f5f5f7;
 }
 
 .vs-small {
@@ -145,10 +143,10 @@
 
 .notify-btn {
   padding: 8px 16px;
-  background: rgba(255,215,0,0.1);
-  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.5);
   border-radius: 8px;
-  color: #ffd700;
+  color: #f5f5f7;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -156,7 +154,7 @@
 }
 
 .notify-btn:hover {
-  background: rgba(255,215,0,0.2);
+  background: rgba(124,58,237,0.25);
 }
 
 /* Resolved Cases List */
@@ -215,7 +213,7 @@
 }
 
 .row-parties .winner {
-  color: #ffd700;
+  color: #f5f5f7;
   font-weight: 600;
 }
 
@@ -342,15 +340,15 @@
 
 .appeal-notice span {
   font-size: 13px;
-  color: #ffd700;
+  color: #f5f5f7;
 }
 
 .appeal-btn {
   padding: 8px 16px;
-  background: rgba(255,215,0,0.2);
-  border: 1px solid #ffd700;
+  background: rgba(124,58,237,0.2);
+  border: 1px solid rgba(124,58,237,0.5);
   border-radius: 6px;
-  color: #ffd700;
+  color: #f5f5f7;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -374,7 +372,7 @@
   display: block;
   font-size: 32px;
   font-weight: 700;
-  color: #ffd700;
+  color: #f5f5f7;
   margin-bottom: 4px;
 }
 

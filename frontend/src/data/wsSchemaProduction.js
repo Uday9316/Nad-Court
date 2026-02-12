@@ -1,4 +1,4 @@
-// Production WebSocket Event Schema for Agent Court
+// Production WebSocket Event Schema for Nad Court
 // Exact specification - no ambiguity
 
 export const WS_EVENTS = {

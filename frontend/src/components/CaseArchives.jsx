@@ -11,24 +11,6 @@ const UPCOMING_CASES = [
     start_time: '2026-02-14T18:00:00Z',
     charge: 'Community disruption',
     description: 'Dispute over governance proposal spam'
-  },
-  {
-    case_id: 'NAD-0022',
-    status: 'scheduled',
-    plaintiff: '@MonadMaxi',
-    defendant: '@EthEscapee',
-    start_time: '2026-02-15T14:00:00Z',
-    charge: 'Role assignment dispute',
-    description: 'OG role eligibility disagreement'
-  },
-  {
-    case_id: 'NAD-0023',
-    status: 'scheduled',
-    plaintiff: '@NadBuilder',
-    defendant: '@CopyCatDev',
-    start_time: '2026-02-16T16:30:00Z',
-    charge: 'Code plagiarism',
-    description: 'Suspicious similarity in bot implementations'
   }
 ]
 

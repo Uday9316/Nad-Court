@@ -1,5 +1,5 @@
 """
-Agent Court - Main Orchestrator
+Nad Court - Main Orchestrator
 Coordinates all engines for live case proceedings
 """
 
@@ -27,7 +27,7 @@ class AgentCourt:
     async def start(self):
         """Start the court system"""
         self.running = True
-        print("⚖️  Agent Court System Starting...")
+        print("⚖️  Nad Court System Starting...")
         
         # Start WebSocket server
         await self.ws_server.start()

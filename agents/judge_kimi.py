@@ -22,7 +22,7 @@ class JudgeAgent:
     def _call_ai(self, evidence: str) -> Dict:
         """
         Call AI (Kimi) ONCE per case
-        This is the ONLY AI call in the entire Agent Court system!
+        This is the ONLY AI call in the entire Nad Court system!
         """
         # Simulated AI response for demo
         # In production, this would call the actual AI API

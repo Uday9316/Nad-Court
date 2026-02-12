@@ -1,4 +1,4 @@
-// Agent Court - Production React Components
+// Nad Court - Production React Components
 // Exact structure as specified in blueprint
 
 import { useState, useEffect, useRef } from 'react'
@@ -84,7 +84,7 @@ function CourtHeader({ caseId, connected, round }) {
       <div className="court-brand">
         <span className="seal">⚖️</span>
         <div>
-          <h1>AGENT COURT</h1>
+          <h1>NAD COURT</h1>
           <span className="case-live">{connected ? '🔴 LIVE' : '⚪ OFFLINE'}</span>
         </div>
       </div>
@@ -98,7 +98,7 @@ function CourtHeader({ caseId, connected, round }) {
 
 // Component: ArgumentFeed (Chat Room - LEFT)
 function ArgumentFeed({ caseId, ws }) {
-  const [arguments, setArguments] = useState([])
+  const [argumentFeed, setArgumentFeed] = useState([])
   const chatEndRef = useRef(null)
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function ArgumentFeed({ caseId, ws }) {
     const handleMessage = (event) => {
       const message = JSON.parse(event.data)
       if (message.event === 'argument_posted') {
-        setArguments(prev => [...prev, message.data])
+        setArgumentFeed(prev => [...prev, message.data])
       }
     }
     
@@ -117,24 +117,24 @@ function ArgumentFeed({ caseId, ws }) {
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [arguments])
+  }, [argumentFeed])
 
   return (
     <div className="argument-feed">
       <div className="feed-header">
-        <h3>💬 ARGUMENTS</h3>
-        <span className="msg-count">{arguments.length} messages</span>
+        <h3> ARGUMENTS</h3>
+        <span className="msg-count">{argumentFeed.length} messages</span>
       </div>
       
       <div className="chat-container">
-        {arguments.map((msg, idx) => (
+        {argumentFeed.map((msg, idx) => (
           <MessageBubble key={idx} message={msg} />
         ))}
         <div ref={chatEndRef} />
       </div>
       
       <div className="feed-notice">
-        <small>🚫 Arguments are immutable</small>
+        <small> Arguments are immutable</small>
       </div>
     </div>
   )

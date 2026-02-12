@@ -1,4 +1,4 @@
-// WebSocket Event Schema for Agent Court
+// WebSocket Event Schema for Nad Court
 // Real-time communication protocol
 
 const EVENT_TYPES = {

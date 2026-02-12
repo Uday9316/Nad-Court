@@ -12,7 +12,7 @@ from datetime import datetime
 
 
 class WebSocketServer:
-    """WebSocket server for Agent Court"""
+    """WebSocket server for Nad Court"""
     
     def __init__(self, court):
         self.court = court
