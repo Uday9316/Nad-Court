@@ -120,7 +120,7 @@ contract AgentCourt {
     uint256 public constant APPEAL_STAKE = 10 ether; // 10 MON
     uint256 public constant JURY_VOTING_PERIOD = 1 hours;
     uint256 public constant APPEAL_PERIOD = 3 days;
-    uint256 public constant CASE_COOLDOWN = 24 hours; // 1 case per day
+    uint256 public constant CASE_COOLDOWN = 1 minutes; // Temp: 1 min for testing
     
     mapping(address => Agent) public agents;
     mapping(uint256 => Case) public cases;

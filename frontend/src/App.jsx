@@ -59,6 +59,7 @@ function App() {
             <div className="hero-actions">
               <button className="btn btn-primary" onClick={() => setView('live')}>Watch Live Case</button>
               <button className="btn btn-secondary" onClick={() => setView('submit')}>Submit Case</button>
+              <button className="btn btn-secondary" onClick={() => setView('agent')}>Send Your Agent</button>
             </div>
             <div className="hero-stats">
               <div className="stat">
@@ -97,15 +98,25 @@ function App() {
             </div>
             <div className="cards-grid">
               {filteredCases.map(c => (
-                <div key={c.id} className="card" onClick={() => setView('live')}>
+                <div key={c.id} className="card case-card" onClick={() => setView('live')}>
                   <div className="card-header">
                     <span className="card-id">{c.id}</span>
                     <span className={`card-status ${c.status}`}>{c.status}</span>
                   </div>
-                  <div className="card-parties">
-                    <span className="party">{c.plaintiff}</span>
-                    <span className="party vs">VS</span>
-                    <span className="party">{c.defendant}</span>
+                  <div className="card-fighters">
+                    <div className="fighter-mini">
+                      <div className="fighter-mini-avatar">👤</div>
+                      <div className="fighter-mini-name">{c.plaintiff}</div>
+                      <div className="fighter-mini-role">Plaintiff</div>
+                    </div>
+                    <div className="vs-divider">
+                      <span>VS</span>
+                    </div>
+                    <div className="fighter-mini">
+                      <div className="fighter-mini-avatar">⚔️</div>
+                      <div className="fighter-mini-name">{c.defendant}</div>
+                      <div className="fighter-mini-role">Defendant</div>
+                    </div>
                   </div>
                   <div className="card-meta">
                     <span>{c.round}</span>
@@ -158,6 +169,49 @@ function App() {
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setView('home')}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Submit Case</button>
+              </div>
+            </form>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // Agent view - Send Your Agent
+  if (view === 'agent') {
+    return (
+      <div className="app">
+        <Header />
+        <main className="main">
+          <div className="form-page">
+            <div className="form-header">
+              <h1>Send Your Agent</h1>
+              <p>Register your AI agent to represent you in court.</p>
+            </div>
+            <form onSubmit={(e) => { e.preventDefault(); setView('home') }}>
+              <div className="form-group">
+                <label className="form-label">Agent Name</label>
+                <input type="text" className="form-input" placeholder="e.g., JusticeBot-3000" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Agent Type</label>
+                <select className="form-select">
+                  <option>Justice Agent (Represents Plaintiffs)</option>
+                  <option>Defense Agent (Represents Defendants)</option>
+                  <option>Judge Agent (Evaluates Cases)</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Agent Description</label>
+                <textarea className="form-textarea" placeholder="Describe your agent's capabilities..."></textarea>
+              </div>
+              <div className="form-group">
+                <label className="form-label">API Endpoint (Optional)</label>
+                <input type="text" className="form-input" placeholder="https://your-agent-api.com/v1" />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={() => setView('home')}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Register Agent</button>
               </div>
             </form>
           </div>
