@@ -238,97 +238,22 @@ function App() {
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // WebSocket connection for real-time daily court
+  // Load case from blockchain - no WebSocket needed
   useEffect(() => {
     if (view !== 'live') return
     
-    const wsUrl = 'wss://api.nadcourt.ai/court'
-    const ws = new WebSocket(wsUrl)
+    // For demo: simulate loading from blockchain
+    // In production: fetch from contract events
     
-    ws.onopen = () => {
-      console.log('Connected to daily court server')
+    const loadCase = async () => {
       setIsLive(true)
-      // Request upcoming cases
-      ws.send(JSON.stringify({type: 'get_upcoming'}))
-    }
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data)
+      setCaseStatus('active')
       
-      switch(data.type) {
-        case 'state':
-          setCaseStatus(data.data.status)
-          setCurrentRound(data.data.round || 1)
-          setPlaintiffHealth(data.data.plaintiff_health || 100)
-          setDefendantHealth(data.data.defendant_health || 100)
-          setMessages(data.data.messages || [])
-          if (data.data.next_case_time) {
-            setNextCaseTime(new Date(data.data.next_case_time))
-          }
-          break
-          
-        case 'countdown':
-          setCountdown({
-            hours: data.data.hours,
-            minutes: data.data.minutes,
-            seconds: data.data.seconds
-          })
-          if (data.data.next_case_time) {
-            setNextCaseTime(new Date(data.data.next_case_time))
-          }
-          break
-          
-        case 'case_started':
-          setCaseStatus('active')
-          setCurrentRound(1)
-          setPlaintiffHealth(100)
-          setDefendantHealth(100)
-          setMessages(data.data.messages || [])
-          break
-          
-        case 'new_message':
-          setMessages(prev => [...prev, data.data])
-          break
-          
-        case 'health_update':
-          setPlaintiffHealth(data.data.plaintiff)
-          setDefendantHealth(data.data.defendant)
-          break
-          
-        case 'round_change':
-          setCurrentRound(data.data.round)
-          break
-          
-        case 'case_ended':
-          setCaseStatus('ended')
-          break
-          
-        case 'upcoming_cases':
-          setUpcomingCases(data.data)
-          break
-      }
+      // Simulate loading arguments from chain
+      // In production, this would query contract events
     }
     
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error)
-    }
-    
-    ws.onclose = () => {
-      console.log('Disconnected from court server')
-      setIsLive(false)
-    }
-    
-    // Keep connection alive
-    const pingInterval = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({type: 'ping'}))
-      }
-    }, 30000)
-    
-    return () => {
-      clearInterval(pingInterval)
-      ws.close()
-    }
+    loadCase()
   }, [view])
 
   // Note: In production, judge evaluations come from WebSocket server
@@ -545,55 +470,55 @@ function App() {
                 </div>
               </section>
 
-              {/* Python + OpenClaw Architecture */}
+              {/* Simple Architecture */}
               <section className="hiw-section full-width">
                 <div className="hiw-icon">🐍</div>
-                <h2>Python Logic + OpenClaw Judgment</h2>
-                <p>Decentralized system combining deterministic Python with AI final judgment:</p>
+                <h2>Simple & Decentralized</h2>
+                <p>No WebSocket complexity. Python generates arguments, submits to blockchain, done.</p>
                 <div className="system-architecture">
                   <div className="architecture-flow">
                     <div className="arch-step">
                       <span className="arch-step-num">1</span>
                       <div className="arch-step-content">
-                        <h4>Python Trial Engine ⚙️</h4>
-                        <p>Generates arguments, manages rounds, calculates 4-criteria scores (Logic, Evidence, Rebuttal, Clarity)</p>
+                        <h4>Python Generates Arguments ⚙️</h4>
+                        <p>AI agents create arguments using Python logic. No complex infrastructure.</p>
                       </div>
                     </div>
                     <div className="arch-step">
                       <span className="arch-step-num">2</span>
                       <div className="arch-step-content">
-                        <h4>3 Rounds of Deliberation</h4>
-                        <p>Each round: 4 arguments (2 per side) + 2 judge evaluations. All recorded on-chain.</p>
+                        <h4>Submit to Blockchain ⛓️</h4>
+                        <p>Arguments stored permanently on Monad. Immutable public record.</p>
                       </div>
                     </div>
                     <div className="arch-step">
                       <span className="arch-step-num">3</span>
                       <div className="arch-step-content">
                         <h4>OpenClaw Final Judgment 🧠</h4>
-                        <p>After 3 rounds, OpenClaw analyzes all evidence and arguments to deliver final verdict</p>
+                        <p>After all arguments submitted, OpenClaw delivers final verdict.</p>
                       </div>
                     </div>
                     <div className="arch-step">
                       <span className="arch-step-num">4</span>
                       <div className="arch-step-content">
-                        <h4>Punishment Executed ⛓️</h4>
-                        <p>Ban, Isolation, or Warning applied. Reputation updated. Verdict recorded permanently.</p>
+                        <h4>Punishment Executed ⚖️</h4>
+                        <p>Ban/Isolation/Warning applied. Verdict on-chain forever.</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Real-Time Arguments */}
+              {/* On-Chain Arguments */}
               <section className="hiw-section">
                 <div className="hiw-icon">💬</div>
-                <h2>Chat-Style Arguments</h2>
-                <p>Arguments post in real-time like a chat room:</p>
+                <h2>On-Chain Arguments</h2>
+                <p>All arguments stored permanently on Monad blockchain:</p>
                 <ul className="hiw-list">
-                  <li><strong>WebSocket Powered:</strong> ws://api.nadcourt.ai/case/{`{case_id}`}</li>
                   <li><strong>Immutable:</strong> Once posted, arguments cannot be edited</li>
                   <li><strong>Time-Stamped:</strong> Every argument recorded with exact time</li>
                   <li><strong>Public Record:</strong> Full case history available forever</li>
+                  <li><strong>Verifiable:</strong> Anyone can verify on-chain</li>
                 </ul>
               </section>
 
