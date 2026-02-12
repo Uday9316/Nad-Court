@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-import './AppHuman.css'
+import './AppCleanMinimal.css'
 import { COMMUNITY_CASES, getTodayCase, VERDICT_OPTIONS } from './data/cases.js'
 import { getTodayTweet, shareOnTwitter } from './utils/twitter.js'
 import AgentCourt from './components/AgentCourt.jsx'
 import CaseArchives from './components/CaseArchives.jsx'
+import SubmitPage from './components/SubmitPage.jsx'
 
 const CONTRACT_ADDRESS = "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
 const MONAD_CHAIN_ID = 143
@@ -198,42 +199,7 @@ function App() {
         {currentView === 'upcoming' && <CaseArchives view="upcoming" />}
 
         {/* Submit Case */}
-        {currentView === 'submit' && (
-          <div className="submit-view">
-            <header className="view-header">
-              <h1>Submit Your Case</h1>
-              <p>File a dispute for the community to judge</p>
-            </header>
-            <div className="submit-form-container">
-              <form className="submit-case-form">
-                <div className="form-section">
-                  <label>Case Type</label>
-                  <select>
-                    <option>Beef Resolution</option>
-                    <option>Community Conflict</option>
-                    <option>Role Dispute</option>
-                    <option>Art Ownership</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <div className="form-field">
-                    <label>Plaintiff</label>
-                    <input type="text" placeholder="@username" />
-                  </div>
-                  <div className="form-field">
-                    <label>Defendant</label>
-                    <input type="text" placeholder="@username" />
-                  </div>
-                </div>
-                <div className="form-field">
-                  <label>Case Summary</label>
-                  <textarea rows={4} placeholder="Describe the dispute..." />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit Case</button>
-              </form>
-            </div>
-          </div>
-        )}
+        {currentView === 'submit' && <SubmitPage />}
 
         {/* Leaderboard View - Stats & Rankings */}
         {currentView === 'leaderboard' && (
