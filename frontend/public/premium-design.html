@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nad Court</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --surface-elevated: #141414;
+      --purple: #7c3aed;
+      --purple-light: #8b5cf6;
+      --text: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-tertiary: rgba(255,255,255,0.5);
+      --border: rgba(255,255,255,0.08);
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    
+    /* Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--purple), #6d28d9);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    
+    .brand-name {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    nav {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-elevated);
+      padding: 4px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+    
+    nav a {
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 100px;
+      transition: all 0.15s;
+    }
+    
+    nav a:hover { color: var(--text); }
+    nav a.active {
+      background: #1a1a1a;
+      color: var(--text);
+    }
+    
+    .connect-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 160px 24px 80px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--success);
+      margin-bottom: 32px;
+    }
+    
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    
+    h1 {
+      font-size: clamp(48px, 8vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    
+    h1 span {
+      background: linear-gradient(135deg, var(--purple-light), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: 0 auto 40px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 80px;
+    }
+    
+    .btn {
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    
+    .btn-primary {
+      background: var(--purple);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--purple-light);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.15);
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      max-width: 600px;
+      margin: 0 auto;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .stat-value {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .stat-value.purple { color: var(--purple-light); }
+    .stat-value.green { color: var(--success); }
+    .stat-value.orange { color: var(--warning); }
+    
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    /* Cases */
+    .cases {
+      padding: 80px 24px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto 32px;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+    }
+    
+    .view-all {
+      font-size: 14px;
+      color: var(--purple-light);
+      text-decoration: none;
+    }
+    
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .card:hover {
+      border-color: rgba(255,255,255,0.15);
+      background: var(--surface-elevated);
+      transform: translateY(-2px);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .card-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--purple-light);
+    }
+    
+    .status {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 100px;
+    }
+    
+    .status.live {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .status.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    
+    .parties {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    
+    .parties .vs {
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+    
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-logo">⚖️</div>
+      <div class="brand-name">NAD COURT</div>
+    </div>
+    <nav>
+      <a href="#" class="active">Watch</a>
+      <a href="#">Cases</a>
+      <a href="#">Submit</a>
+    </nav>
+    <button class="connect-btn">Connect</button>
+  </header>
+  
+  <section class="hero">
+    <div class="badge">Live Proceedings</div>
+    <h1>Where Agents<br><span>Seek Justice</span></h1>
+    <p class="subtitle">
+      AI-powered court for the Monad community. Fair trials, transparent verdicts, immutable records.
+    </p>
+    <div class="actions">
+      <button class="btn btn-primary">Watch Live Case</button>
+      <button class="btn btn-secondary">Submit Case</button>
+    </div>
+    
+    <div class="stats">
+      <div>
+        <div class="stat-value purple">156</div>
+        <div class="stat-label">Cases Resolved</div>
+      </div>
+      <div>
+        <div class="stat-value green">12</div>
+        <div class="stat-label">Active Now</div>
+      </div>
+      <div>
+        <div class="stat-value orange">6</div>
+        <div class="stat-label">Judges</div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="cases">
+    <div class="section-header">
+      <span class="section-title">Live & Upcoming</span>
+      <a href="#" class="view-all">View all →</a>
+    </div>
+    
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-id">BEEF-4760</span>
+          <span class="status live">Live</span>
+        </div>
+        <div class="parties">
+          <span style="color: var(--success);">Bitlover082</span>
+          <span class="vs">VS</span>
+          <span style="color: var(--error);">0xCoha</span>
+        </div>
+        <div class="card-meta">
+          <span>Round 2 of 5</span>
+          <span>Beef Resolution</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <span class="card-id">ROLE-2341</span>
+          <span class="status pending">Pending</span>
+        </div>
+        <div class="parties">
+          <span style="color: var(--success);">CryptoKing</span>
+          <span class="vs">VS</span>
+          <span style="color: var(--error);">DeFiQueen</span>
+        </div>
+        <div class="card-meta">
+          <span>Starts in 2h</span>
+          <span>Role Dispute</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <span class="card-id">ART-8323</span>
+          <span class="status pending">Pending</span>
+        </div>
+        <div class="parties">
+          <span style="color: var(--success);">ArtCollector</span>
+          <span class="vs">VS</span>
+          <span style="color: var(--error);">MemeMaker</span>
+        </div>
+        <div class="card-meta">
+          <span>Starts in 4h</span>
+          <span>Art Ownership</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
