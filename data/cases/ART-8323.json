@@ -1,0 +1,40 @@
+{
+  "case_id": "ART-8323",
+  "type": "Art Ownership",
+  "plaintiff": {
+    "username": "ArtCollector",
+    "role": "NFT Creator"
+  },
+  "defendant": {
+    "username": "MemeMaker",
+    "role": "Content Creator"
+  },
+  "summary": "Dispute over ownership of collaborative NFT piece",
+  "facts": "Both parties contributed to NFT 'Eternal Meme #47'. Dispute centers on ownership rights and scope of collaboration agreement.",
+  "evidence": [
+    "Collaboration agreement dated March 15, 2024",
+    "Digital forensic metadata analysis",
+    "Ethereum blockchain transaction records",
+    "Project file timestamps",
+    "Iterative draft versions"
+  ],
+  "arguments": {
+    "plaintiff": [
+      {
+        "round": 1,
+        "author": "JusticeBot-Alpha",
+        "content": "Your Honor, distinguished members of the tribunal, I appear before you today on behalf of my client, ArtCollector, to establish what the evidence will clearly demonstrate: that the disputed NFT, 'Eternal Meme #47,' constitutes the rightful intellectual property of the plaintiff, and that the defendant, MemeMaker, has materially breached the collaborative agreement while fraudulently asserting ownership rights that were never conferred.\n\nThe evidence will show that ArtCollector conceived the original artistic concept, commissioned the foundational digital canvas, and directed the creative vision from inception through execution. Digital forensic analysis of the metadata will establish that the plaintiff's contributions—including the layered compositional framework, color grading algorithms, and the distinctive chromatic signature that defines the piece—were developed independently and subsequently licensed to the collaborative project under specific, documented terms. The transaction records on the Ethereum blockchain, which this tribunal will examine, unequivocally timestamp ArtCollector's creative elements predating any involvement by the defendant.\n\nFurthermore, the collaboration agreement entered into on March 15, 2024—Exhibit A to be presented during these proceedings—explicitly delineated the scope of MemeMaker's contribution. Article 4(b) of said agreement clearly states that MemeMaker's role was limited to 'overlay content generation and viral element integration,' with full ownership and minting rights reserved to ArtCollector. The defendant's compensation was structured as a flat licensing fee of 2.5 ETH, paid in full at project commencement. This was never a partnership of equals, nor was it ever intended to be.\n\nYet MemeMaker has systematically overstepped these contractual boundaries. The defendant unilaterally minted the work under their own collection, falsely represented themselves as the primary creator to marketplace platforms, and retained proceeds that rightfully belong to my client. This constitutes not merely a breach of contract, but a knowing misappropriation of intellectual property that has caused substantial financial harm and reputational damage to ArtCollector.\n\nThe law is clear: contractual obligations must be honored, and creative contributions must be properly attributed. The evidence will prove that ArtCollector fulfilled every obligation while MemeMaker violated fundamental principles of collaboration and good faith. We ask this tribunal to recognize ArtCollector's rightful ownership, order the transfer of all minting rights and proceeds, and award appropriate damages for the defendant's wrongful conduct."
+      }
+    ],
+    "defendant": [
+      {
+        "round": 1,
+        "author": "GuardianBot-Omega",
+        "content": "The plaintiff's claim to sole ownership of the collaborative NFT work in question rests upon a fundamentally flawed presumption: that financial investment in digital art automatically confers exclusive creative ownership. This assertion not only mischaracterizes the nature of our collaboration but also ignores well-established principles governing joint authorship in both traditional and digital art contexts.\n\nFirst and foremost, the evidence clearly demonstrates that MemeMaker contributed equally to the creative process that brought this NFT to fruition. While ArtCollector provided initial conceptual direction and funding, MemeMaker independently executed the technical composition, developed the visual narrative framework, and implemented the stylistic elements that ultimately defined the work's aesthetic identity and market value. The creative labor invested—including original digital illustration, animation sequencing, and metadata architecture—constitutes substantial intellectual contribution under established copyright doctrine, not mere 'work for hire' assistance.\n\nCritically, no formal ownership agreement existed between the parties at any point during the collaboration's development. The absence of a written contract, partnership agreement, or intellectual property assignment creates a presumption of joint authorship under 17 U.S.C. § 201(a), which vests copyright ownership in the authors of a joint work—defined as works prepared by two or more authors with the intention that their contributions be merged into inseparable or interdependent parts of a unitary whole. Without an explicit contractual waiver or transfer of rights, plaintiff cannot unilaterally claim exclusive ownership over a work that demonstrably represents our collective creative vision.\n\nFurthermore, documentary evidence—including time-stamped project files, iterative draft versions, and independent source material references—substantiates MemeMaker's autonomous creative input. These materials reveal substantial deviations from plaintiff's initial brief, demonstrating independent artistic judgment in composition, color theory application, and thematic development. Such creative autonomy is the hallmark of authorship, not ancillary technical support.\n\nThe plaintiff's position effectively seeks to appropriate the fruits of collaborative labor through selective memory and retroactive entitlement. This Court should recognize that the digital art marketplace cannot function if financial backers may arbitrarily seize creative works from their collaborators absent clear contractual arrangements. Justice demands acknowledgment of joint authorship rights and equitable treatment of all contributors to creative works."
+      }
+    ]
+  },
+  "ai_generated": true,
+  "generated_at": "2026-02-12T12:35:00Z",
+  "model": "moonshot/kimi-k2.5"
+}
