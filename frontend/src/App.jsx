@@ -226,32 +226,108 @@ function App() {
   const [plaintiffHealth, setPlaintiffHealth] = useState(100)
   const [defendantHealth, setDefendantHealth] = useState(100)
   const [isLive, setIsLive] = useState(false)
-  const [caseStatus, setCaseStatus] = useState('active') // active, ended
+  const [caseStatus, setCaseStatus] = useState('waiting') // waiting, active, ended
   const [currentRound, setCurrentRound] = useState(1)
-  const [roundArgsCount, setRoundArgsCount] = useState(0) // arguments in current round
+  const [roundArgsCount, setRoundArgsCount] = useState(0)
   const [verdictShown, setVerdictShown] = useState(false)
+  
+  // Daily case countdown
+  const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 })
+  const [nextCaseTime, setNextCaseTime] = useState(null)
+  const [upcomingCases, setUpcomingCases] = useState([])
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // WebSocket connection for real-time court - all visitors see same case
+  // WebSocket connection for real-time daily court
   useEffect(() => {
     if (view !== 'live') return
     
-    // For demo: simulate WebSocket with shared state
-    // In production: const ws = new WebSocket('wss://api.nadcourt.ai/court')
+    const wsUrl = 'wss://api.nadcourt.ai/court'
+    const ws = new WebSocket(wsUrl)
     
-    setIsLive(true)
+    ws.onopen = () => {
+      console.log('Connected to daily court server')
+      setIsLive(true)
+      // Request upcoming cases
+      ws.send(JSON.stringify({type: 'get_upcoming'}))
+    }
     
-    // Simulate server-driven updates for demo
-    // In production, this would come from WebSocket server
-    const demoInterval = setInterval(() => {
-      // This is a demo - in production, server pushes updates
-      // All visitors see the same synchronized state
-    }, 1000)
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      
+      switch(data.type) {
+        case 'state':
+          setCaseStatus(data.data.status)
+          setCurrentRound(data.data.round || 1)
+          setPlaintiffHealth(data.data.plaintiff_health || 100)
+          setDefendantHealth(data.data.defendant_health || 100)
+          setMessages(data.data.messages || [])
+          if (data.data.next_case_time) {
+            setNextCaseTime(new Date(data.data.next_case_time))
+          }
+          break
+          
+        case 'countdown':
+          setCountdown({
+            hours: data.data.hours,
+            minutes: data.data.minutes,
+            seconds: data.data.seconds
+          })
+          if (data.data.next_case_time) {
+            setNextCaseTime(new Date(data.data.next_case_time))
+          }
+          break
+          
+        case 'case_started':
+          setCaseStatus('active')
+          setCurrentRound(1)
+          setPlaintiffHealth(100)
+          setDefendantHealth(100)
+          setMessages(data.data.messages || [])
+          break
+          
+        case 'new_message':
+          setMessages(prev => [...prev, data.data])
+          break
+          
+        case 'health_update':
+          setPlaintiffHealth(data.data.plaintiff)
+          setDefendantHealth(data.data.defendant)
+          break
+          
+        case 'round_change':
+          setCurrentRound(data.data.round)
+          break
+          
+        case 'case_ended':
+          setCaseStatus('ended')
+          break
+          
+        case 'upcoming_cases':
+          setUpcomingCases(data.data)
+          break
+      }
+    }
+    
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
+    
+    ws.onclose = () => {
+      console.log('Disconnected from court server')
+      setIsLive(false)
+    }
+    
+    // Keep connection alive
+    const pingInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({type: 'ping'}))
+      }
+    }, 30000)
     
     return () => {
-      clearInterval(demoInterval)
-      setIsLive(false)
+      clearInterval(pingInterval)
+      ws.close()
     }
   }, [view])
 
@@ -769,6 +845,59 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
 
   // Live court view
   if (view === 'live') {
+    // Show countdown if waiting for next case
+    if (caseStatus === 'waiting') {
+      return (
+        <div className="app">
+          <Header />
+          <main className="main">
+            <div className="countdown-container">
+              <div className="countdown-content">
+                <div className="countdown-badge">📅 DAILY COURT</div>
+                <h1>Next Case Starting In</h1>
+                <div className="countdown-timer">
+                  <div className="countdown-unit">
+                    <span className="countdown-value">{String(countdown.hours).padStart(2, '0')}</span>
+                    <span className="countdown-label">Hours</span>
+                  </div>
+                  <span className="countdown-separator">:</span>
+                  <div className="countdown-unit">
+                    <span className="countdown-value">{String(countdown.minutes).padStart(2, '0')}</span>
+                    <span className="countdown-label">Minutes</span>
+                  </div>
+                  <span className="countdown-separator">:</span>
+                  <div className="countdown-unit">
+                    <span className="countdown-value">{String(countdown.seconds).padStart(2, '0')}</span>
+                    <span className="countdown-label">Seconds</span>
+                  </div>
+                </div>
+                {nextCaseTime && (
+                  <p className="countdown-next">Next case: {nextCaseTime.toLocaleString()}</p>
+                )}
+                <div className="countdown-info">
+                  <p>⚖️ One case per day, argued in real-time by AI agents</p>
+                  <p>🌐 All visitors see the same synchronized trial</p>
+                  <p>⛓️ Verdict recorded permanently on Monad blockchain</p>
+                </div>
+                {upcomingCases.length > 0 && (
+                  <div className="upcoming-cases">
+                    <h3>Upcoming Cases</h3>
+                    {upcomingCases.slice(0, 3).map((c, i) => (
+                      <div key={i} className="upcoming-case-item">
+                        <span className="upcoming-date">{c.date}</span>
+                        <span className="upcoming-type">{c.type}</span>
+                        <span className="upcoming-parties">{c.plaintiff} vs {c.defendant}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </main>
+        </div>
+      )
+    }
+
     return (
       <div className="app">
         <Header />
@@ -783,6 +912,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                     <span className="live-dot"></span>
                     <span className="live-text">LIVE</span>
                   </div>
+                  <div className="daily-badge">📅 DAILY CASE</div>
                   <div className="chain-indicator" title="All arguments recorded on-chain">
                     <span className="chain-icon">⛓️</span>
                     <span className="chain-text">ON-CHAIN</span>
@@ -835,7 +965,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
             {/* Center - Fighters */}
             <div className="court-panel center-panel">
               <div className="case-info">
-                <span className="case-id">BEEF-4760</span>
+                <span className="case-id">📅 DAILY CASE</span>
                 <span className="case-round">Round {currentRound} of 3</span>
               </div>
               <div className="vs-section">
@@ -889,10 +1019,10 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
               <div className={`turn-indicator ${caseStatus !== 'active' ? 'ended' : ''}`}>
                 <span>
                   {caseStatus === 'active' 
-                    ? 'Agents battling with AI-powered arguments...' 
+                    ? '📅 Daily Case: Agents battling in real-time...' 
                     : caseStatus === 'plaintiff_won' 
-                      ? '🏆 Case concluded: Plaintiff Bitlover082 wins!' 
-                      : '🏆 Case concluded: Defendant 0xCoha wins!'}
+                      ? '🏆 Daily Case concluded: Plaintiff wins!' 
+                      : '🏆 Daily Case concluded: Defendant wins!'}
                 </span>
               </div>
             </div>
