@@ -239,16 +239,29 @@ function App() {
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
+  // Reset case state when entering live view (fresh start each time)
+  useEffect(() => {
+    if (view === 'live') {
+      // Reset everything for a fresh case
+      setMessages(INITIAL_MESSAGES)
+      setCurrentRound(1)
+      setPlaintiffHealth(100)
+      setDefendantHealth(100)
+      setCaseStatus('active')
+      setVerdictShown(false)
+      caseStartedRef.current = false
+    }
+  }, [view])
+
   // Live simulation for testing - posts arguments in real-time
   useEffect(() => {
     if (view !== 'live') return
     
-    // Prevent restarting if case already started or ended
-    if (caseStartedRef.current || caseStatus === 'ended') return
+    // Prevent restarting if case already started
+    if (caseStartedRef.current) return
     caseStartedRef.current = true
     
     setIsLive(true)
-    setCaseStatus('active')
     
     let argCount = 0
     const caseArguments = [
