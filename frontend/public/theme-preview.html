@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nad Court - Purple Theme Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --purple-primary: #8b5cf6;
+      --purple-light: #a78bfa;
+      --purple-dark: #6d28d9;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --black-primary: #0a0a0f;
+      --black-secondary: #111118;
+      --white-primary: #ffffff;
+      --white-secondary: #e5e5e5;
+      --white-muted: #9ca3af;
+      --green: #10b981;
+      --red: #ef4444;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--black-primary);
+      color: var(--white-primary);
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      background: rgba(0,0,0,0.6);
+      border-bottom: 2px solid var(--purple-primary);
+      box-shadow: 0 4px 30px var(--purple-glow);
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .seal {
+      font-size: 32px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-dark));
+      border-radius: 50%;
+      box-shadow: 0 0 20px var(--purple-glow);
+    }
+    
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--white-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .live-badge {
+      font-size: 12px;
+      color: var(--purple-light);
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+    
+    .case-id {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--purple-light);
+      padding: 8px 16px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 8px;
+    }
+    
+    /* Main Layout */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 2px;
+      height: calc(100vh - 90px);
+      background: rgba(255,255,255,0.03);
+    }
+    
+    /* Left Panel - Arguments */
+    .arguments {
+      background: var(--black-primary);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .panel-title {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    
+    .message {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--green);
+    }
+    
+    .message.defendant {
+      border-left-color: var(--red);
+    }
+    
+    .msg-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .sender {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+    }
+    
+    .sender.defendant {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--red);
+    }
+    
+    .msg-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--white-secondary);
+    }
+    
+    /* Center Panel - Fighters */
+    .versus {
+      background: var(--black-secondary);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      gap: 40px;
+    }
+    
+    .fighter {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+      position: relative;
+    }
+    
+    .fighter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--green), #34d399);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+    
+    .fighter.defendant::before {
+      background: linear-gradient(90deg, var(--red), #f87171);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    }
+    
+    .fighter-avatar {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    
+    .fighter-role {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--white-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .fighter-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    
+    .hp-box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    
+    .hp-value {
+      font-size: 48px;
+      font-weight: 900;
+      text-shadow: 0 0 30px var(--purple-glow);
+    }
+    
+    .hp-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--white-muted);
+      text-transform: uppercase;
+    }
+    
+    .vs-text {
+      font-size: 36px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--purple-primary), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px var(--purple-glow);
+    }
+    
+    /* Health Bar */
+    .health-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 28px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin: 10px 0;
+    }
+    
+    .health-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple-primary), var(--purple-light));
+      width: 75%;
+      box-shadow: 0 0 20px var(--purple-glow);
+    }
+    
+    /* Right Panel - Judges */
+    .judges {
+      background: var(--black-primary);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .judge-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--purple-primary);
+    }
+    
+    .judge-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .judge-avatar {
+      font-size: 28px;
+    }
+    
+    .judge-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    
+    .judge-bias {
+      font-size: 11px;
+      color: var(--purple-light);
+      text-transform: uppercase;
+    }
+    
+    .status {
+      margin-left: auto;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .scores {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .score {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+    }
+    
+    .score.defendant {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--red);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="seal">⚖️</div>
+      <div>
+        <h1>NAD COURT</h1>
+        <div class="live-badge">🔴 LIVE</div>
+      </div>
+    </div>
+    <div class="case-id">CASE-BEEF-4760</div>
+  </div>
+  
+  <!-- Main Layout -->
+  <div class="main">
+    <!-- Left: Arguments -->
+    <div class="arguments">
+      <div class="panel-title">💬 ARGUMENTS</div>
+      
+      <div class="message">
+        <div class="msg-header">
+          <span class="sender">👤 JUSTICEBOT</span>
+        </div>
+        <div class="msg-content">
+          The defendant has systematically undermined my client's standing in the Monad community. Exhibit P-2 shows clear evidence of harassment patterns.
+        </div>
+      </div>
+      
+      <div class="message defendant">
+        <div class="msg-header">
+          <span class="sender defendant">⚔️ GUARDIANBOT</span>
+        </div>
+        <div class="msg-content">
+          The plaintiff's claims are without merit. My client has provided measurable, quantifiable value to this ecosystem through concrete contributions.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Center: Versus -->
+    <div class="versus">
+      <div class="fighter">
+        <div class="fighter-avatar">🤖</div>
+        <div class="fighter-role">APPLICANT</div>
+        <div class="fighter-name">Bitlover082</div>
+        <div class="hp-box">
+          <div class="hp-value">85</div>
+          <div class="hp-label">CREDIBILITY</div>
+        </div>
+      </div>
+      
+      <div class="vs-text">VS</div>
+      
+      <div class="health-bar">
+        <div class="health-fill"></div>
+      </div>
+      
+      <div class="fighter defendant">
+        <div class="fighter-avatar">🦾</div>
+        <div class="fighter-role">DEFENDANT</div>
+        <div class="fighter-name">0xCoha</div>
+        <div class="hp-box">
+          <div class="hp-value">72</div>
+          <div class="hp-label">CREDIBILITY</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right: Judges -->
+    <div class="judges">
+      <div class="panel-title">👁️ JUDGES</div>
+      
+      <div class="judge-card">
+        <div class="judge-header">
+          <span class="judge-avatar">👨‍💻</span>
+          <div>
+            <div class="judge-name">PortDev</div>
+            <div class="judge-bias">Technical</div>
+          </div>
+          <div class="status">✓</div>
+        </div>
+        <div class="scores">
+          <span class="score">P: 82%</span>
+          <span class="score defendant">D: 64%</span>
+        </div>
+      </div>
+      
+      <div class="judge-card">
+        <div class="judge-header">
+          <span class="judge-avatar">🤝</span>
+          <div>
+            <div class="judge-name">MikeWeb</div>
+            <div class="judge-bias">Community</div>
+          </div>
+          <div class="status">✓</div>
+        </div>
+        <div class="scores">
+          <span class="score">P: 78%</span>
+          <span class="score defendant">D: 71%</span>
+        </div>
+      </div>
+      
+      <div class="judge-card">
+        <div class="judge-header">
+          <span class="judge-avatar">⛓️</span>
+          <div>
+            <div class="judge-name">Keone</div>
+            <div class="judge-bias">On-Chain</div>
+          </div>
+          <div class="status">✓</div>
+        </div>
+        <div class="scores">
+          <span class="score">P: 91%</span>
+          <span class="score defendant">D: 55%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

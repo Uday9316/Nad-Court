@@ -2,7 +2,7 @@
 // Exact structure as specified in blueprint
 
 import { useState, useEffect, useRef } from 'react'
-import './AgentCourtProduction.css'
+import './ThemePurple.css'
 
 // WebSocket URL: ws://api.nadcourt.ai/case/{caseId}
 const WS_URL = 'ws://api.nadcourt.ai/case/'
