@@ -713,6 +713,29 @@ function App() {
 
   // Submit view
   if (view === 'submit') {
+    const [walletConnected, setWalletConnected] = useState(false)
+    const [justiceBalance, setJusticeBalance] = useState(0)
+    const [selectedTier, setSelectedTier] = useState('')
+    
+    const connectWallet = () => {
+      // Demo - in production this would connect to MetaMask/Phantom
+      setWalletConnected(true)
+      setJusticeBalance(25000) // Demo balance
+    }
+    
+    const getRequiredStake = (tier) => {
+      switch(tier) {
+        case 'local': return 5000
+        case 'high': return 15000
+        case 'supreme': return 50000
+        default: return 0
+      }
+    }
+    
+    const canAfford = (tier) => {
+      return justiceBalance >= getRequiredStake(tier)
+    }
+    
     return (
       <div className="app">
         <Header />
@@ -720,87 +743,140 @@ function App() {
           <div className="form-page">
             <div className="form-header">
               <h1>Submit a Case</h1>
-              <p>File a dispute for the community to review. Requires $JUSTICE token stake.</p>
+              <p>Stake $JUSTICE tokens to register your case on-chain.</p>
             </div>
             
-            {/* Stake Requirements */}
-            <div className="stake-info-box">
-              <h3>💰 Stake Requirements</h3>
-              <p>To submit a case, you must stake $JUSTICE tokens:</p>
-              <div className="stake-tiers">
-                <div className="stake-tier">
-                  <span className="stake-amount">5,000 $JUSTICE</span>
-                  <span className="stake-court">Local Court</span>
-                  <span className="stake-detail">5 jurors · Standard disputes</span>
-                </div>
-                <div className="stake-tier">
-                  <span className="stake-amount">15,000 $JUSTICE</span>
-                  <span className="stake-court">High Court</span>
-                  <span className="stake-detail">9 jurors · Complex cases</span>
-                </div>
-                <div className="stake-tier">
-                  <span className="stake-amount">50,000 $JUSTICE</span>
-                  <span className="stake-court">Supreme Court</span>
-                  <span className="stake-detail">15 jurors · Final appeals</span>
-                </div>
+            {/* Step 1: Connect Wallet */}
+            <div className="stake-step">
+              <div className="step-header">
+                <span className="step-number">1</span>
+                <h3>Connect Wallet</h3>
               </div>
-              <div className="token-contract">
-                <code>$JUSTICE: 0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777</code>
-              </div>
-            </div>
-            
-            <form onSubmit={(e) => { e.preventDefault(); setView('cases') }}>
-              <div className="form-group">
-                <label className="form-label">Court Tier *</label>
-                <select className="form-select" required>
-                  <option value="">Select court tier...</option>
-                  <option value="local">🏛️ Local Court - 5,000 $JUSTICE</option>
-                  <option value="high">⚖️ High Court - 15,000 $JUSTICE</option>
-                  <option value="supreme">👑 Supreme Court - 50,000 $JUSTICE</option>
-                </select>
-                <p className="form-hint">Higher courts have more jurors and higher stakes.</p>
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Case Type</label>
-                <select className="form-select">
-                  <option>Beef Resolution</option>
-                  <option>Community Conflict</option>
-                  <option>Role Dispute</option>
-                  <option>Art Ownership</option>
-                </select>
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Plaintiff</label>
-                  <input type="text" className="form-input" placeholder="@username" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Defendant</label>
-                  <input type="text" className="form-input" placeholder="@username" />
-                </div>
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Summary</label>
-                <textarea className="form-textarea" placeholder="Describe the dispute..."></textarea>
-              </div>
-              
-              {/* Wallet Connection */}
-              <div className="form-group">
-                <label className="form-label">Connect Wallet</label>
+              {!walletConnected ? (
                 <div className="wallet-connect-box">
-                  <p>Connect your Monad wallet to verify $JUSTICE balance</p>
-                  <button type="button" className="btn btn-secondary">Connect Wallet</button>
+                  <p>Connect your Monad wallet to check $JUSTICE balance</p>
+                  <button type="button" className="btn btn-primary" onClick={connectWallet}>
+                    Connect Wallet
+                  </button>
+                </div>
+              ) : (
+                <div className="wallet-connected">
+                  <div className="balance-display">
+                    <span className="balance-label">Your Balance:</span>
+                    <span className="balance-amount">{justiceBalance.toLocaleString()} $JUSTICE</span>
+                  </div>
+                  <div className="wallet-address">
+                    <code>0x7a89...4e2f</code>
+                    <span className="connected-badge">✓ Connected</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Step 2: Select Court Tier */}
+            <div className={`stake-step ${!walletConnected ? 'disabled' : ''}`}>
+              <div className="step-header">
+                <span className="step-number">2</span>
+                <h3>Select Court Tier</h3>
+              </div>
+              
+              <div className="stake-tiers">
+                <div 
+                  className={`stake-tier-card ${selectedTier === 'local' ? 'selected' : ''} ${!canAfford('local') ? 'disabled' : ''}`}
+                  onClick={() => canAfford('local') && setSelectedTier('local')}
+                >
+                  <div className="tier-header">
+                    <span className="tier-icon">🏛️</span>
+                    <span className="tier-name">Local Court</span>
+                  </div>
+                  <div className="tier-stake">5,000 $JUSTICE</div>
+                  <div className="tier-detail">5 jurors · Standard disputes</div>
+                  {!canAfford('local') && <span className="insufficient">Insufficient balance</span>}
+                </div>
+                
+                <div 
+                  className={`stake-tier-card ${selectedTier === 'high' ? 'selected' : ''} ${!canAfford('high') ? 'disabled' : ''}`}
+                  onClick={() => canAfford('high') && setSelectedTier('high')}
+                >
+                  <div className="tier-header">
+                    <span className="tier-icon">⚖️</span>
+                    <span className="tier-name">High Court</span>
+                  </div>
+                  <div className="tier-stake">15,000 $JUSTICE</div>
+                  <div className="tier-detail">9 jurors · Complex cases</div>
+                  {!canAfford('high') && <span className="insufficient">Insufficient balance</span>}
+                </div>
+                
+                <div 
+                  className={`stake-tier-card ${selectedTier === 'supreme' ? 'selected' : ''} ${!canAfford('supreme') ? 'disabled' : ''}`}
+                  onClick={() => canAfford('supreme') && setSelectedTier('supreme')}
+                >
+                  <div className="tier-header">
+                    <span className="tier-icon">👑</span>
+                    <span className="tier-name">Supreme Court</span>
+                  </div>
+                  <div className="tier-stake">50,000 $JUSTICE</div>
+                  <div className="tier-detail">15 jurors · Final appeals</div>
+                  {!canAfford('supreme') && <span className="insufficient">Insufficient balance</span>}
                 </div>
               </div>
               
-              <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setView('home')}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Submit Case</button>
+              {selectedTier && (
+                <div className="stake-summary">
+                  <p>You will stake <strong>{getRequiredStake(selectedTier).toLocaleString()} $JUSTICE</strong> to register this case.</p>
+                  <p className="stake-note">⚠️ Tokens are locked until case resolution. Winner receives stake + reward, loser forfeits stake.</p>
+                </div>
+              )}
+            </div>
+            
+            {/* Step 3: Case Details */}
+            <div className={`stake-step ${!selectedTier ? 'disabled' : ''}`}>
+              <div className="step-header">
+                <span className="step-number">3</span>
+                <h3>Case Details</h3>
               </div>
-            </form>
+              
+              <form onSubmit={(e) => { e.preventDefault(); setView('cases') }}>
+                <div className="form-group">
+                  <label className="form-label">Case Type</label>
+                  <select className="form-select">
+                    <option>Beef Resolution</option>
+                    <option>Community Conflict</option>
+                    <option>Role Dispute</option>
+                    <option>Art Ownership</option>
+                  </select>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Plaintiff</label>
+                    <input type="text" className="form-input" placeholder="@username" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Defendant</label>
+                    <input type="text" className="form-input" placeholder="@username" />
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Summary</label>
+                  <textarea className="form-textarea" placeholder="Describe the dispute..."></textarea>
+                </div>
+                
+                <div className="form-actions">
+                  <button type="button" className="btn btn-secondary" onClick={() => setView('home')}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" disabled={!selectedTier}>
+                    {selectedTier ? `Stake & Submit Case` : 'Select Tier First'}
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            {/* Token Info */}
+            <div className="token-info-footer">
+              <p>$JUSTICE Token: <code>0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777</code></p>
+              <p>Contract: <code>0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458</code></p>
+            </div>
           </div>
         </main>
       </div>
