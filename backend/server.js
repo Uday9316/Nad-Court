@@ -15,10 +15,15 @@ app.use(cors({
 
 app.use(express.json());
 
-// API Keys from environment
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+// API Keys from environment - trim whitespace
+const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY ? process.env.MOONSHOT_API_KEY.trim() : null;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.trim() : null;
 const AI_PROVIDER = process.env.AI_PROVIDER || 'moonshot';
+
+console.log('API Key check:');
+console.log('- MOONSHOT_API_KEY exists:', !!MOONSHOT_API_KEY);
+console.log('- MOONSHOT_API_KEY length:', MOONSHOT_API_KEY ? MOONSHOT_API_KEY.length : 0);
+console.log('- MOONSHOT_API_KEY prefix:', MOONSHOT_API_KEY ? MOONSHOT_API_KEY.substring(0, 15) + '...' : 'none');
 
 // Judge profiles
 const JUDGE_PROFILES = {
@@ -84,7 +89,7 @@ async function callMoonshotAPI(systemPrompt, userPrompt, maxTokens = 800) {
       headers: {
         'Authorization': `Bearer ${MOONSHOT_API_KEY}`,
         'Content-Type': 'application/json',
-        'Content-Length': data.length
+        'Content-Length': Buffer.byteLength(data)
       }
     };
 
