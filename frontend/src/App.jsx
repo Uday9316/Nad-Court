@@ -47,6 +47,47 @@ const INITIAL_MESSAGES = [
   { id: 2, author: MOLTBOOK_AGENTS.defendant.name, time: '2:32 PM', content: 'The plaintiff\'s claims are without merit. My client has provided measurable value: 12,000+ helpful replies, 0 bans, 98% positive sentiment.', role: 'defendant', type: 'argument' },
 ]
 
+// API Configuration
+const API_URL = import.meta.env.VITE_API_URL || 'https://2295-51-20-69-171.ngrok-free.app'
+
+// Fetch live argument from API
+const fetchArgument = async (role, caseData, round) => {
+  try {
+    const response = await fetch(`${API_URL}/api/generate-argument`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, caseData, round })
+    })
+    const data = await response.json()
+    if (data.success) return data.argument
+  } catch (e) {
+    console.log('API error:', e)
+  }
+  return null
+}
+
+// Fetch judge evaluation from API
+const fetchEvaluation = async (judge, caseData, plaintiffArgs, defendantArgs) => {
+  try {
+    const response = await fetch(`${API_URL}/api/judge-evaluation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        judge, 
+        caseData, 
+        plaintiffArgs, 
+        defendantArgs,
+        round: 1
+      })
+    })
+    const data = await response.json()
+    if (data.success) return data.evaluation
+  } catch (e) {
+    console.log('Judge API error:', e)
+  }
+  return null
+}
+
 const JUDGES = [
   { id: 'portdev', name: 'PortDev', role: 'Technical', status: 'done', image: portdevImg, bias: 'Evidence-based' },
   { id: 'mikeweb', name: 'MikeWeb', role: 'Community', status: 'done', image: mikewebImg, bias: 'Reputation-focused' },
@@ -260,7 +301,7 @@ function App() {
     }
   }, [view])
 
-  // Live simulation for testing - posts arguments in real-time
+  // LIVE API Integration - fetches real-time AI arguments and judge evaluations
   useEffect(() => {
     if (view !== 'live') return
     
@@ -270,132 +311,135 @@ function App() {
     
     setIsLive(true)
     
+    const caseData = {
+      id: 'BEEF-4760',
+      type: 'Beef Resolution',
+      plaintiff: 'Bitlover082',
+      defendant: '0xCoha',
+      summary: 'Dispute over bug discovery attribution'
+    }
+    
     let argCount = 0
-    const caseArguments = [
-      // Round 1
-      { side: 'plaintiff', content: 'My client presents evidence of 47 protocol violations. Blockchain analysis reveals coordinated harassment.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'The plaintiff\'s claims are baseless. I have 150 community members vouching for my character.', author: MOLTBOOK_AGENTS.defendant.name },
-      { side: 'plaintiff', content: 'The defendant\'s wallet shows 63 suspicious transactions in a 7-minute window. This is not normal.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'Those were legitimate trades during market volatility. Here\'s the DEX routing proof.', author: MOLTBOOK_AGENTS.defendant.name },
-      // Round 2
-      { side: 'plaintiff', content: 'Community testimony from 18 members corroborates our claims of systematic abuse.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'I was participating in a community event at the time. 12 witnesses can confirm.', author: MOLTBOOK_AGENTS.defendant.name },
-      { side: 'plaintiff', content: 'Smart contract analysis shows 23 unauthorized function calls. Bot behavior confirmed.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'The interactions were authorized through the official frontend. No foul play occurred.', author: MOLTBOOK_AGENTS.defendant.name },
-      // Round 3
-      { side: 'plaintiff', content: 'Cross-referencing reveals identical patterns. The defendant is a repeat offender.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'I\'ve contributed 35 technical proposals. This is a merit-based attack.', author: MOLTBOOK_AGENTS.defendant.name },
-      { side: 'plaintiff', content: 'Final evidence: The defendant\'s funds trace to a sanctioned address.', author: MOLTBOOK_AGENTS.plaintiff.name },
-      { side: 'defendant', content: 'Closing statement: No rules broken. Community norms support my position.', author: MOLTBOOK_AGENTS.defendant.name },
-    ]
-    
-    const evaluations = [
-      { judge: 'PortDev', reasoning: 'Technical evidence is solid. I reviewed the timestamps and they don\'t lie.', p: 78, d: 65 },
-      { judge: 'MikeWeb', reasoning: 'Community sentiment favors plaintiff. Defense needs stronger character evidence.', p: 72, d: 68 },
-      { judge: 'Keone', reasoning: 'The data tells a story, but it\'s ambiguous. Both sides have credible evidence.', p: 75, d: 71 },
-      { judge: 'James', reasoning: 'Precedent matters here. We\'ve seen similar cases before.', p: 76, d: 64 },
-      { judge: 'Harpal', reasoning: 'Contribution quality over quantity. The defendant\'s posts get better engagement.', p: 79, d: 66 },
-      { judge: 'Anago', reasoning: 'Protocol adherence is clear: no rules were technically broken.', p: 81, d: 62 },
-    ]
-    
     let evaluationCount = 0
-    const totalSteps = caseArguments.length + evaluations.length + 1 // args + evals + verdict
     let currentStep = 0
+    const plaintiffArgs = []
+    const defendantArgs = []
+    const totalSteps = 12 + 6 + 1 // 12 arguments + 6 judges + verdict
     
-    const interval = setInterval(() => {
-      // Check if all done
-      if (currentStep >= totalSteps) {
-        clearInterval(interval)
-        return
-      }
-      
-      // Phase 1: Arguments (steps 0-11)
-      if (argCount < caseArguments.length) {
-        const arg = caseArguments[argCount]
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          author: arg.author,
-          content: arg.content,
-          role: arg.side,
-          type: 'argument'
-        }])
-        
-        // Update health
-        if (arg.side === 'plaintiff') {
-          setPlaintiffHealth(prev => Math.min(100, prev + 2))
-        } else {
-          setDefendantHealth(prev => Math.min(100, prev + 2))
-        }
-        
-        argCount++
-        
-        // Round transition after every 4 arguments
-        if (argCount % 4 === 0 && argCount < caseArguments.length) {
-          setTimeout(() => {
-            setCurrentRound(prev => prev + 1)
-            setMessages(prev => [...prev, {
-              id: Date.now(),
-              author: 'COURT',
-              content: `═══════════════════ ROUND ${Math.floor(argCount / 4) + 1} ═══════════════════`,
-              role: 'system',
-              type: 'round'
-            }])
-          }, 500)
-        }
-      }
-      // Phase 2: Judge evaluations (steps 12-17)
-      else if (evaluationCount < evaluations.length) {
-        const eval_ = evaluations[evaluationCount]
-        const damage = Math.abs(eval_.p - eval_.d) / 3
-        
-        if (eval_.p > eval_.d) {
-          setDefendantHealth(prev => Math.max(10, prev - damage))
-        } else {
-          setPlaintiffHealth(prev => Math.max(10, prev - damage))
-        }
-        
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          author: `${eval_.judge} (Judge)`,
-          content: `${eval_.reasoning} [P:${Math.round(eval_.p)} vs D:${Math.round(eval_.d)}]`,
-          role: 'judge',
-          type: 'evaluation',
-          criteria: {
-            plaintiff: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.p) },
-            defendant: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.d) }
-          }
-        }])
-        
-        evaluationCount++
-      }
-      // Phase 3: Final deliberation and verdict (last step)
-      else {
-        // Final deliberation
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          author: 'COURT',
-          content: '══════════════════ FINAL DELIBERATION ══════════════════',
-          role: 'system',
-          type: 'round'
-        }])
-        
-        // Verdict after short delay
-        setTimeout(() => {
+    const runLiveCase = async () => {
+      // Phase 1: Generate 12 arguments (6 rounds) via API
+      for (let round = 1; round <= 6; round++) {
+        // Update round display
+        if (round > 1) {
+          setCurrentRound(round)
           setMessages(prev => [...prev, {
             id: Date.now(),
-            author: ' OpenClaw Judgment',
-            content: ' PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
+            author: 'COURT',
+            content: `═══════════════════ ROUND ${round} ═══════════════════`,
             role: 'system',
-            type: 'verdict'
+            type: 'round'
           }])
-          setCaseStatus('ended')
-        }, 2000)
+        }
+        
+        // Plaintiff argument - CALL API
+        const pArg = await fetchArgument('plaintiff', caseData, round)
+        if (pArg) {
+          plaintiffArgs.push(pArg)
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: MOLTBOOK_AGENTS.plaintiff.name,
+            content: pArg,
+            role: 'plaintiff',
+            type: 'argument'
+          }])
+          setPlaintiffHealth(prev => Math.min(100, prev + 2))
+        }
+        argCount++
+        await new Promise(r => setTimeout(r, 3000))
+        
+        // Defendant argument - CALL API
+        const dArg = await fetchArgument('defendant', caseData, round)
+        if (dArg) {
+          defendantArgs.push(dArg)
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: MOLTBOOK_AGENTS.defendant.name,
+            content: dArg,
+            role: 'defendant',
+            type: 'argument'
+          }])
+          setDefendantHealth(prev => Math.min(100, prev + 2))
+        }
+        argCount++
+        await new Promise(r => setTimeout(r, 3000))
       }
       
-      currentStep++
-    }, 3000) // Every 3 seconds
+      // Phase 2: Judge evaluations - CALL API
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        author: 'COURT',
+        content: '══════════════════ JUDGES EVALUATING ══════════════════',
+        role: 'system',
+        type: 'round'
+      }])
+      
+      for (const judge of JUDGES) {
+        const evalData = await fetchEvaluation(judge.name, caseData, plaintiffArgs, defendantArgs)
+        if (evalData) {
+          const pScore = (evalData.scores.plaintiff.logic + evalData.scores.plaintiff.evidence + evalData.scores.plaintiff.rebuttal + evalData.scores.plaintiff.clarity) / 4
+          const dScore = (evalData.scores.defendant.logic + evalData.scores.defendant.evidence + evalData.scores.defendant.rebuttal + evalData.scores.defendant.clarity) / 4
+          const damage = Math.abs(pScore - dScore) / 3
+          
+          if (pScore > dScore) {
+            setDefendantHealth(prev => Math.max(10, prev - damage))
+          } else {
+            setPlaintiffHealth(prev => Math.max(10, prev - damage))
+          }
+          
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            author: `${judge.name} (Judge)`,
+            content: `${evalData.reasoning} [P:${Math.round(pScore)} vs D:${Math.round(dScore)}]`,
+            role: 'judge',
+            type: 'evaluation',
+            criteria: {
+              plaintiff: { ...evalData.scores.plaintiff, total: Math.round(pScore) },
+              defendant: { ...evalData.scores.defendant, total: Math.round(dScore) }
+            }
+          }])
+        }
+        evaluationCount++
+        await new Promise(r => setTimeout(r, 2000))
+      }
+      
+      // Phase 3: Final verdict
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        author: 'COURT',
+        content: '══════════════════ FINAL DELIBERATION ══════════════════',
+        role: 'system',
+        type: 'round'
+      }])
+      
+      await new Promise(r => setTimeout(r, 2000))
+      
+      // Calculate winner based on health
+      const winner = plaintiffHealth > defendantHealth ? 'PLAINTIFF' : 'DEFENDANT'
+      const winnerName = winner === 'PLAINTIFF' ? 'Bitlover082' : '0xCoha'
+      
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        author: ' OpenClaw Judgment',
+        content: ` ${winner} WINS! After analyzing 6 rounds of evidence and arguments, OpenClaw has delivered final judgment. ${winnerName} has proven their case.`,
+        role: 'system',
+        type: 'verdict'
+      }])
+      setCaseStatus('ended')
+    }
     
-    return () => clearInterval(interval)
+    runLiveCase()
+    
+    return () => {}
   }, [view])
 
   // Note: In production, judge evaluations come from WebSocket server
