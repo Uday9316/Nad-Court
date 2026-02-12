@@ -209,10 +209,10 @@ const submitArgumentToChain = async (caseId, isPlaintiff, content) => {
     
     // Return simulated tx hash
     const txHash = '0x' + Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
-    console.log(`✅ Submitted! TX: ${txHash}`)
+    console.log(` Submitted! TX: ${txHash}`)
     return { success: true, txHash }
   } catch (error) {
-    console.error('❌ Failed to submit:', error)
+    console.error(' Failed to submit:', error)
     return { success: false, error: error.message }
   }
 }
@@ -381,8 +381,8 @@ function App() {
         setTimeout(() => {
           setMessages(prev => [...prev, {
             id: Date.now(),
-            author: '🧠 OpenClaw Judgment',
-            content: '🏆 PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
+            author: ' OpenClaw Judgment',
+            content: ' PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
             role: 'system',
             type: 'verdict'
           }])
@@ -403,7 +403,7 @@ function App() {
   const Header = () => (
     <header className="header">
       <div className="header-brand">
-        <div className="header-logo">⚖️</div>
+        <div className="header-logo"></div>
         <span>NAD COURT</span>
       </div>
       <nav className="header-nav">
@@ -520,7 +520,7 @@ function App() {
             <div className="hiw-grid">
               {/* 3-Tier Court System */}
               <section className="hiw-section">
-                <div className="hiw-icon">⚖️</div>
+                <div className="hiw-icon"></div>
                 <h2>3-Tier Judicial Hierarchy</h2>
                 <p>Cases progress through a structured appeals system with increasing stakes:</p>
                 <div className="hiw-tiers">
@@ -544,7 +544,7 @@ function App() {
 
               {/* AI Agents */}
               <section className="hiw-section">
-                <div className="hiw-icon">🤖</div>
+                <div className="hiw-icon"></div>
                 <h2>AI Agents as Fighters</h2>
                 <p>JusticeBot-Alpha and GuardianBot-Omega battle on behalf of plaintiffs and defendants:</p>
                 <ul className="hiw-list">
@@ -558,7 +558,7 @@ function App() {
 
               {/* Gamified Arena */}
               <section className="hiw-section">
-                <div className="hiw-icon">🎮</div>
+                <div className="hiw-icon"></div>
                 <h2>Gamified Court Arena</h2>
                 <p>Health bars represent persuasion strength (NOT a fighting game):</p>
                 <ul className="hiw-list">
@@ -612,7 +612,7 @@ function App() {
 
               {/* Simple Architecture */}
               <section className="hiw-section full-width">
-                <div className="hiw-icon">🐍</div>
+                <div className="hiw-icon"></div>
                 <h2>Simple & Decentralized</h2>
                 <p>No WebSocket complexity. Python generates arguments, submits to blockchain, done.</p>
                 <div className="system-architecture">
@@ -634,14 +634,14 @@ function App() {
                     <div className="arch-step">
                       <span className="arch-step-num">3</span>
                       <div className="arch-step-content">
-                        <h4>OpenClaw Final Judgment 🧠</h4>
+                        <h4>OpenClaw Final Judgment </h4>
                         <p>After all arguments submitted, OpenClaw delivers final verdict.</p>
                       </div>
                     </div>
                     <div className="arch-step">
                       <span className="arch-step-num">4</span>
                       <div className="arch-step-content">
-                        <h4>Punishment Executed ⚖️</h4>
+                        <h4>Punishment Executed </h4>
                         <p>Ban/Isolation/Warning applied. Verdict on-chain forever.</p>
                       </div>
                     </div>
@@ -651,7 +651,7 @@ function App() {
 
               {/* On-Chain Arguments */}
               <section className="hiw-section">
-                <div className="hiw-icon">💬</div>
+                <div className="hiw-icon"></div>
                 <h2>On-Chain Arguments</h2>
                 <p>All arguments stored permanently on Monad blockchain:</p>
                 <ul className="hiw-list">
@@ -664,7 +664,7 @@ function App() {
 
               {/* Rate Limiting */}
               <section className="hiw-section">
-                <div className="hiw-icon">⏱️</div>
+                <div className="hiw-icon"></div>
                 <h2>Rate Limiting</h2>
                 <p>To minimize AI API costs (~$0.02/case vs $200-1000/month):</p>
                 <ul className="hiw-list">
@@ -676,7 +676,7 @@ function App() {
 
               {/* Integrations */}
               <section className="hiw-section">
-                <div className="hiw-icon">🔗</div>
+                <div className="hiw-icon"></div>
                 <h2>Auto-Posting</h2>
                 <p>Cases and verdicts automatically shared:</p>
                 <ul className="hiw-list">
@@ -689,7 +689,7 @@ function App() {
 
               {/* Leaderboard */}
               <section className="hiw-section">
-                <div className="hiw-icon">🏆</div>
+                <div className="hiw-icon"></div>
                 <h2>ELO Leaderboard</h2>
                 <p>Agents ranked by performance history:</p>
                 <ul className="hiw-list">
@@ -701,7 +701,7 @@ function App() {
 
               {/* Smart Contract */}
               <section className="hiw-section full-width">
-                <div className="hiw-icon">📜</div>
+                <div className="hiw-icon"></div>
                 <h2>On-Chain Records</h2>
                 <p>Every verdict cryptographically provable:</p>
                 <div className="contract-info">
@@ -787,7 +787,7 @@ function App() {
                   onClick={() => canAfford('local') && setSelectedTier('local')}
                 >
                   <div className="tier-header">
-                    <span className="tier-icon">🏛️</span>
+                    <span className="tier-icon"></span>
                     <span className="tier-name">Local Court</span>
                   </div>
                   <div className="tier-stake">5,000 $JUSTICE</div>
@@ -800,7 +800,7 @@ function App() {
                   onClick={() => canAfford('high') && setSelectedTier('high')}
                 >
                   <div className="tier-header">
-                    <span className="tier-icon">⚖️</span>
+                    <span className="tier-icon"></span>
                     <span className="tier-name">High Court</span>
                   </div>
                   <div className="tier-stake">15,000 $JUSTICE</div>
@@ -813,7 +813,7 @@ function App() {
                   onClick={() => canAfford('supreme') && setSelectedTier('supreme')}
                 >
                   <div className="tier-header">
-                    <span className="tier-icon">👑</span>
+                    <span className="tier-icon"></span>
                     <span className="tier-name">Supreme Court</span>
                   </div>
                   <div className="tier-stake">50,000 $JUSTICE</div>
