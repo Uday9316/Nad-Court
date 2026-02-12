@@ -239,6 +239,7 @@ function App() {
   
   // Submit case form state
   const [walletConnected, setWalletConnected] = useState(false)
+  const [walletAddress, setWalletAddress] = useState('')
   const [justiceBalance, setJusticeBalance] = useState(0)
   const [selectedTier, setSelectedTier] = useState('')
   const [isConnecting, setIsConnecting] = useState(false)
@@ -722,13 +723,40 @@ function App() {
     const connectWallet = async () => {
       setIsConnecting(true)
       
-      // Demo - simulate wallet connection delay
-      // In production: await window.ethereum.request({ method: 'eth_requestAccounts' })
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      setWalletConnected(true)
-      setJusticeBalance(25000) // Demo: fetched from wallet
-      setIsConnecting(false)
+      try {
+        // Check if MetaMask is installed
+        if (!window.ethereum) {
+          alert('Please install MetaMask or a Web3 wallet')
+          setIsConnecting(false)
+          return
+        }
+        
+        // Create ethers provider
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        
+        // Request account access
+        await provider.send('eth_requestAccounts', [])
+        
+        // Get signer and address
+        const signer = await provider.getSigner()
+        const address = await signer.getAddress()
+        setWalletAddress(address)
+        
+        // Get network
+        const network = await provider.getNetwork()
+        console.log('Connected to:', network.name, network.chainId)
+        
+        // TODO: Fetch actual $JUSTICE balance from contract
+        // For now using demo balance
+        setJusticeBalance(25000)
+        setWalletConnected(true)
+        
+      } catch (error) {
+        console.error('Wallet connection failed:', error)
+        alert('Failed to connect wallet: ' + error.message)
+      } finally {
+        setIsConnecting(false)
+      }
     }
     
     const getRequiredStake = (tier) => {
@@ -779,7 +807,7 @@ function App() {
                     <span className="balance-amount">{justiceBalance.toLocaleString()} $JUSTICE</span>
                   </div>
                   <div className="wallet-address">
-                    <code>0x7a89...4e2f</code>
+                    <code>{walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : ''}</code>
                     <span className="connected-badge">✓ Connected</span>
                   </div>
                 </div>
