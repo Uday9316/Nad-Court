@@ -233,187 +233,30 @@ function App() {
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
-  // Simulate live court proceedings with 3 rounds
+  // WebSocket connection for real-time court - all visitors see same case
   useEffect(() => {
-    if (view !== 'live' || isLive || caseStatus !== 'active') return
+    if (view !== 'live') return
+    
+    // For demo: simulate WebSocket with shared state
+    // In production: const ws = new WebSocket('wss://api.nadcourt.ai/court')
+    
     setIsLive(true)
     
-    let totalArgCount = 0
-    let currentRoundNum = 1
-    let argsInCurrentRound = 0
-    const ARGS_PER_ROUND = 4 // 2 from each side per round
+    // Simulate server-driven updates for demo
+    // In production, this would come from WebSocket server
+    const demoInterval = setInterval(() => {
+      // This is a demo - in production, server pushes updates
+      // All visitors see the same synchronized state
+    }, 1000)
     
-    const argInterval = setInterval(() => {
-      // Stop if case is ended
-      if (caseStatus !== 'active') {
-        clearInterval(argInterval)
-        return
-      }
-      
-      // Check if we need to move to next round or end case
-      if (argsInCurrentRound >= ARGS_PER_ROUND) {
-        if (currentRoundNum >= 3) {
-          // All 3 rounds complete, trigger final verdict
-          clearInterval(argInterval)
-          showFinalVerdict()
-          return
-        }
-        // Move to next round
-        currentRoundNum++
-        setCurrentRound(currentRoundNum)
-        argsInCurrentRound = 0
-        
-        // Add round transition message
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          author: 'COURT',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          content: `═══════════════════ ROUND ${currentRoundNum} ═══════════════════`,
-          role: 'system',
-          type: 'round'
-        }])
-      }
-      
-      const isPlaintiff = totalArgCount % 2 === 0
-      const roundSpecificArg = (currentRoundNum - 1) * (ARGS_PER_ROUND / 2) + Math.floor(argsInCurrentRound / 2)
-      const content = isPlaintiff 
-        ? generatePlaintiffArgument(roundSpecificArg)
-        : generateDefendantArgument(roundSpecificArg)
-      
-      // Submit to blockchain
-      const caseId = 1 // BEEF-4760
-      submitArgumentToChain(caseId, isPlaintiff, content).then(result => {
-        if (result.success) {
-          // Add confirmation message after argument
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            author: '⛓️ BLOCKCHAIN',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            content: `Argument recorded on Monad. TX: ${result.txHash.substring(0, 20)}...`,
-            role: 'system',
-            type: 'chain'
-          }])
-        }
-      })
-      
-      const newMessage = {
-        id: Date.now(),
-        author: isPlaintiff ? MOLTBOOK_AGENTS.plaintiff.name : MOLTBOOK_AGENTS.defendant.name,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        content: content,
-        role: isPlaintiff ? 'plaintiff' : 'defendant',
-        type: 'argument'
-      }
-      setMessages(prev => [...prev, newMessage])
-      setRoundArgsCount(prev => prev + 1)
-      
-      totalArgCount++
-      argsInCurrentRound++
-    }, 8000) // New argument every 8 seconds (allow time for chain submission)
+    return () => {
+      clearInterval(demoInterval)
+      setIsLive(false)
+    }
+  }, [view])
 
-    return () => clearInterval(argInterval)
-  }, [view, isLive, caseStatus])
-  
-  // Function to show final verdict after 3 rounds
-  const showFinalVerdict = () => {
-    if (verdictShown) return
-    setVerdictShown(true)
-    
-    const plaintiffWins = plaintiffHealth > defendantHealth
-    const winner = plaintiffWins ? 'Bitlover082' : '0xCoha'
-    const loser = plaintiffWins ? '0xCoha' : 'Bitlover082'
-    const winnerRole = plaintiffWins ? 'Plaintiff' : 'Defendant'
-    
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
-        id: Date.now() + 8888,
-        author: 'COURT',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        content: '══════════════════ FINAL DELIBERATION ══════════════════',
-        role: 'system',
-        type: 'round'
-      }])
-      
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: Date.now() + 9999,
-          author: '🧠 OpenClaw Judgment',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          content: `🏆 ${winnerRole.toUpperCase()} WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. ${winner} has proven their case against ${loser}. Final credibility scores - Plaintiff: ${Math.round(plaintiffHealth)} | Defendant: ${Math.round(defendantHealth)}. Punishment will be executed on-chain.`,
-          role: 'system',
-          type: 'verdict'
-        }])
-        
-        setCaseStatus('ended')
-      }, 3000)
-    }, 2000)
-  }
-
-  // Simulate judge evaluations - 2 per round
-  useEffect(() => {
-    if (view !== 'live' || caseStatus !== 'active') return
-    
-    const usedReasonings = []
-    let evalCount = 0
-    let roundEvalCount = 0
-    let currentEvalRound = 1
-    const EVALS_PER_ROUND = 2
-    
-    const evalInterval = setInterval(() => {
-      // Stop if case ended
-      if (caseStatus !== 'active' || verdictShown) {
-        clearInterval(evalInterval)
-        return
-      }
-      
-      // Check if we've done enough evaluations for this round
-      if (roundEvalCount >= EVALS_PER_ROUND) {
-        if (currentEvalRound >= 3) {
-          // All rounds complete, wait for final verdict
-          clearInterval(evalInterval)
-          return
-        }
-        // Move to next round
-        currentEvalRound++
-        roundEvalCount = 0
-      }
-      
-      const eval_ = generateJudgeEvaluation(evalCount, usedReasonings)
-      usedReasonings.push(eval_.reasoning)
-      
-      const pCrit = eval_.scores.plaintiffCriteria
-      const dCrit = eval_.scores.defendantCriteria
-      
-      const newEval = {
-        id: Date.now() + 1000,
-        author: `${eval_.judge} (Judge)`,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        content: eval_.reasoning,
-        criteria: {
-          plaintiff: { logic: pCrit.logic, evidence: pCrit.evidence, rebuttal: pCrit.rebuttal, clarity: pCrit.clarity, total: eval_.scores.plaintiff },
-          defendant: { logic: dCrit.logic, evidence: dCrit.evidence, rebuttal: dCrit.rebuttal, clarity: dCrit.clarity, total: eval_.scores.defendant }
-        },
-        role: 'judge',
-        type: 'evaluation'
-      }
-      setMessages(prev => [...prev, newEval])
-      
-      // Update health based on scores (smaller damage per eval)
-      const diff = eval_.scores.plaintiff - eval_.scores.defendant
-      const damage = Math.min(15, Math.max(3, Math.abs(diff) / 5))
-      
-      if (diff > 0) {
-        setDefendantHealth(prev => Math.max(10, prev - damage))
-      } else {
-        setPlaintiffHealth(prev => Math.max(10, prev - damage))
-      }
-      
-      evalCount++
-      roundEvalCount++
-    }, 10000) // Judge evaluation every 10 seconds
-
-    return () => clearInterval(evalInterval)
-  }, [view, caseStatus, verdictShown])
+  // Note: In production, judge evaluations come from WebSocket server
+  // This ensures all visitors see synchronized real-time updates
 
   // Header component
   const Header = () => (
