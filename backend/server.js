@@ -92,20 +92,27 @@ async function callMoonshotAPI(systemPrompt, userPrompt, maxTokens = 800) {
       let responseData = '';
       res.on('data', (chunk) => responseData += chunk);
       res.on('end', () => {
+        console.log('Moonshot response status:', res.statusCode);
+        console.log('Moonshot response:', responseData.substring(0, 500));
         try {
           const json = JSON.parse(responseData);
-          if (json.choices && json.choices[0]) {
+          if (json.error) {
+            reject(new Error(`Moonshot API error: ${json.error.message}`));
+          } else if (json.choices && json.choices[0] && json.choices[0].message) {
             resolve(json.choices[0].message.content);
           } else {
-            reject(new Error('Invalid response format'));
+            reject(new Error(`Invalid response format: ${JSON.stringify(json).substring(0, 200)}`));
           }
         } catch (e) {
-          reject(e);
+          reject(new Error(`JSON parse error: ${e.message}. Response: ${responseData.substring(0, 200)}`));
         }
       });
     });
 
-    req.on('error', reject);
+    req.on('error', (err) => {
+      console.error('Moonshot request error:', err.message);
+      reject(err);
+    });
     req.write(data);
     req.end();
   });
