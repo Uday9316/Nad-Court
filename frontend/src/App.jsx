@@ -273,91 +273,102 @@ function App() {
       { judge: 'Anago', reasoning: 'Protocol adherence is clear: no rules were technically broken.', p: 81, d: 62 },
     ]
     
+    let evaluationCount = 0
+    const totalSteps = caseArguments.length + evaluations.length + 1 // args + evals + verdict
+    let currentStep = 0
+    
     const interval = setInterval(() => {
-      if (argCount >= caseArguments.length) {
+      // Check if all done
+      if (currentStep >= totalSteps) {
         clearInterval(interval)
-        // Show verdict
-        setTimeout(() => {
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            author: 'COURT',
-            content: '══════════════════ FINAL DELIBERATION ══════════════════',
-            role: 'system',
-            type: 'round'
-          }])
-          setTimeout(() => {
-            setMessages(prev => [...prev, {
-              id: Date.now(),
-              author: '🧠 OpenClaw Judgment',
-              content: '🏆 PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
-              role: 'system',
-              type: 'verdict'
-            }])
-            setCaseStatus('ended')
-          }, 2000)
-        }, 1000)
         return
       }
       
-      // Add argument
-      const arg = caseArguments[argCount]
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        author: arg.author,
-        content: arg.content,
-        role: arg.side,
-        type: 'argument'
-      }])
-      
-      // Update health
-      if (arg.side === 'plaintiff') {
-        setPlaintiffHealth(prev => Math.min(100, prev + 2))
-      } else {
-        setDefendantHealth(prev => Math.min(100, prev + 2))
+      // Phase 1: Arguments (steps 0-11)
+      if (argCount < caseArguments.length) {
+        const arg = caseArguments[argCount]
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          author: arg.author,
+          content: arg.content,
+          role: arg.side,
+          type: 'argument'
+        }])
+        
+        // Update health
+        if (arg.side === 'plaintiff') {
+          setPlaintiffHealth(prev => Math.min(100, prev + 2))
+        } else {
+          setDefendantHealth(prev => Math.min(100, prev + 2))
+        }
+        
+        argCount++
+        
+        // Round transition after every 4 arguments
+        if (argCount % 4 === 0 && argCount < caseArguments.length) {
+          setTimeout(() => {
+            setCurrentRound(prev => prev + 1)
+            setMessages(prev => [...prev, {
+              id: Date.now(),
+              author: 'COURT',
+              content: `═══════════════════ ROUND ${Math.floor(argCount / 4) + 1} ═══════════════════`,
+              role: 'system',
+              type: 'round'
+            }])
+          }, 500)
+        }
       }
-      
-      // Add evaluation every 2 arguments
-      if ((argCount + 1) % 2 === 0 && (argCount + 1) / 2 <= evaluations.length) {
-        setTimeout(() => {
-          const eval_ = evaluations[(argCount + 1) / 2 - 1]
-          const damage = Math.abs(eval_.p - eval_.d) / 3
-          
-          if (eval_.p > eval_.d) {
-            setDefendantHealth(prev => Math.max(10, prev - damage))
-          } else {
-            setPlaintiffHealth(prev => Math.max(10, prev - damage))
+      // Phase 2: Judge evaluations (steps 12-17)
+      else if (evaluationCount < evaluations.length) {
+        const eval_ = evaluations[evaluationCount]
+        const damage = Math.abs(eval_.p - eval_.d) / 3
+        
+        if (eval_.p > eval_.d) {
+          setDefendantHealth(prev => Math.max(10, prev - damage))
+        } else {
+          setPlaintiffHealth(prev => Math.max(10, prev - damage))
+        }
+        
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          author: `${eval_.judge} (Judge)`,
+          content: `${eval_.reasoning} [P:${Math.round(eval_.p)} vs D:${Math.round(eval_.d)}]`,
+          role: 'judge',
+          type: 'evaluation',
+          criteria: {
+            plaintiff: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.p) },
+            defendant: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.d) }
           }
-          
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            author: `${eval_.judge} (Judge)`,
-            content: `${eval_.reasoning} [P:${Math.round(eval_.p)} vs D:${Math.round(eval_.d)}]`,
-            role: 'judge',
-            type: 'evaluation',
-            criteria: {
-              plaintiff: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.p) },
-              defendant: { logic: Math.floor(Math.random() * 30 + 65), evidence: Math.floor(Math.random() * 30 + 65), rebuttal: Math.floor(Math.random() * 30 + 65), clarity: Math.floor(Math.random() * 30 + 65), total: Math.round(eval_.d) }
-            }
-          }])
-        }, 1500)
+        }])
+        
+        evaluationCount++
       }
-      
-      // Round transition
-      if ((argCount + 1) % 4 === 0 && argCount < caseArguments.length - 1) {
+      // Phase 3: Final deliberation and verdict (last step)
+      else {
+        // Final deliberation
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          author: 'COURT',
+          content: '══════════════════ FINAL DELIBERATION ══════════════════',
+          role: 'system',
+          type: 'round'
+        }])
+        
+        // Verdict after short delay
         setTimeout(() => {
-          setCurrentRound(prev => prev + 1)
           setMessages(prev => [...prev, {
             id: Date.now(),
-            author: 'COURT',
-            content: `═══════════════════ ROUND ${Math.floor(argCount / 4) + 2} ═══════════════════`,
+            author: '🧠 OpenClaw Judgment',
+            content: '🏆 PLAINTIFF WINS! After analyzing 3 rounds of evidence and arguments, OpenClaw has delivered final judgment. Bitlover082 has proven their case against 0xCoha.',
             role: 'system',
-            type: 'round'
+            type: 'verdict'
           }])
-        }, 1000)
+          setCaseStatus('ended')
+        }, 2000)
       }
       
-      argCount++
-    }, 5000) // New argument every 5 seconds
+      currentStep++
+    }, 3000) // Every 3 seconds
     
     return () => clearInterval(interval)
   }, [view])
