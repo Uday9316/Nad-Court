@@ -1258,6 +1258,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                       {/* Meme reaction for arguments */}
                       {m.type === 'argument' && m.memeUrl && (
                         <div className="meme-reaction">
+                          <span className="meme-label">💭 Reaction:</span>
                           <img src={m.memeUrl} alt="Reaction" loading="lazy" />
                         </div>
                       )}
