@@ -48,8 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - ngrok HTTPS endpoint (updates every 2 hours)
-const API_URL = 'https://ca6f-51-20-69-171.ngrok-free.app'
+// Backend API URL - Your custom domain
+const API_URL = 'https://backend.udaybuilds.in'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
