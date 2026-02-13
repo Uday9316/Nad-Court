@@ -36,46 +36,46 @@ def find_openclaw():
     
     return None
 
-# Plaintiff arguments (Bitlover082) - accusing 0xCoha of theft
+# Plaintiff arguments (Bitlover082) - SHORT VERSION (~30% length)
 PLAINTIFF_ARGS = [
-    # Round 1: Opening - The Discovery
-    "Your Honor, on March 15th at 14:23 UTC, my client documented Critical Vulnerability CVE-2024-21893 with cryptographic proof on Ethereum block 18647329. Seventeen hours later, the defendant published an identical finding. The mathematical probability of independent discovery within this window is 0.003%. This was not research—it was surveillance and theft.",
+    # Round 1: Opening
+    "Your Honor, my client documented CVE-2024-21893 on March 15th at 14:23 UTC with blockchain proof. Defendant published identical findings 17 hours later. Probability of coincidence: 0.003%. This is theft, not research.",
     
-    # Round 2: Evidence - The Smoking Gun  
-    "Exhibit P-2 reveals the defendant accessed my client's private security research repository at 16:47 UTC—two hours AFTER our responsible disclosure to the Monad Foundation. Their 'discovery' was timestamped at 19:12 UTC. They didn't find this bug. They READ about it in our confidential channels, then claimed credit. This is industrial espionage, not security research.",
+    # Round 2: Evidence
+    "Exhibit P-2 shows defendant accessed our private repo at 16:47 UTC—TWO HOURS after our disclosure. Their 'discovery' at 19:12 UTC? They read our confidential report and claimed credit. Industrial espionage.",
     
-    # Round 3: Heated - Character Attack
-    "The defense wants to discuss my client's 'history'? Let's discuss THEIRS. 0xCoha has FOUR previous disputes over attribution in the past 18 months. Their GitHub shows a pattern: wait for others' work, 'reproduce' it within 48 hours, claim bounty. They're not a researcher—they're a bounty hunter who hunts OTHER PEOPLE'S research. This Court must end this pattern of intellectual parasitism.",
+    # Round 3: Character
+    "Defense wants to discuss history? 0xCoha has FOUR attribution disputes in 18 months. Pattern: wait, copy, claim bounty. Not a researcher—a bounty hunter preying on others' work.",
     
-    # Round 4: Technical - The Proof
-    "Look at the exploit code, Your Honor. My client's proof-of-concept uses a novel reentrancy pattern with nested delegate calls to bypass the 2300 gas stipend. The defendant's 'independent' version uses IDENTICAL variable names—'nestedDelegate', 'gasBypass', 'reentrancyGuard'. Are we to believe they independently chose the same esoteric naming convention? This is copy-paste theft with the serial numbers filed off.",
+    # Round 4: Technical
+    "Our exploit uses novel reentrancy with nested delegate calls. Defendant's 'independent' version has IDENTICAL variable names. Copy-paste theft with serial numbers filed off.",
     
-    # Round 5: Damages - The Impact
-    "My client lost $47,000 in speaking fees, a grant from the Ethereum Foundation, and their reputation in the security community. The defendant walked away with a $125,000 bug bounty that should have been OURS. Intent doesn't matter—IMPACT does. They stole my client's work, stole their credit, and stole their livelihood. The damage is quantifiable and devastating.",
+    # Round 5: Damages
+    "Client lost $47K in speaking fees and Ethereum Foundation grant. Defendant took $125K bounty that was OURS. Impact matters. They stole work, credit, and livelihood.",
     
-    # Round 6: Closing - The Call to Justice
-    "This case is simple: timestamps don't lie. Blockchain doesn't lie. My client discovered this vulnerability. The defendant stole it. If this Court allows intellectual theft to be rewarded with attribution, we signal to every bad actor that our community has no protection. Award full attribution to Bitlover082. Order restitution of the stolen bounty. And send a message: in Agent Court, theft has consequences."
+    # Round 6: Closing
+    "Timestamps don't lie. Blockchain doesn't lie. Award attribution to Bitlover082. Order restitution. Send a message: theft has consequences in Agent Court."
 ]
 
-# Defendant arguments (0xCoha) - claiming independent discovery
+# Defendant arguments (0xCoha) - SHORT VERSION (~30% length)
 DEFENDANT_ARGS = [
-    # Round 1: Opening - The Independent Discovery
-    "Your Honor, my client's discovery of the reentrancy vulnerability occurred on March 12th during a routine audit of the Monad DEX contracts. Our research notes—submitted as Exhibit D-1—show seventeen iterations of the exploit over three days. The plaintiff's claim of 'prior discovery' is based on a timestamp that lacks cryptographic verification. We discovered this independently through legitimate security research.",
+    # Round 1: Opening
+    "Your Honor, we discovered this vulnerability March 12th during Monad DEX audit. Research notes show 17 iterations over 3 days. Plaintiff's 'prior discovery' lacks cryptographic verification.",
     
-    # Round 2: Rebuttal - The Timeline Defense
-    "The plaintiff alleges we accessed their 'private repository'—yet provides NO access logs, NO authentication records, NO IP forensics. Just timestamps and accusations. Their entire case rests on coincidence dressed as conspiracy. My client has never had access to their systems. This is character assassination because they can't win on facts.",
+    # Round 2: Rebuttal
+    "Plaintiff claims repo access—yet ZERO logs, ZERO auth records, ZERO forensics. Case rests on coincidence as conspiracy. Character assassination because they can't win on facts.",
     
-    # Round 3: Counter-Attack - The Accuser's History
-    "Let's discuss credibility. Bitlover082 has filed NINE similar disputes in two years. Nine! They're a 'professional plaintiff' who sees theft everywhere because they can't accept that others might be competent researchers. My client's four 'disputes'? All dismissed without merit. The plaintiff's pattern is clear: if you can't win on merit, litigate until your opponent gives up.",
+    # Round 3: Counter-Attack
+    "Bitlover082 filed NINE disputes in 2 years. 'Professional plaintiff' sees theft everywhere. My 'disputes'? All dismissed. Their pattern: litigate until opponent gives up.",
     
-    # Round 4: Technical Defense - The Differences
-    "Our proof-of-concept differs fundamentally from theirs. We identified the vulnerability through static analysis of the DEX router's callback mechanism. Our exploit uses a different attack vector—flash loan manipulation versus their direct reentrancy approach. Same bug, different discovery methods. Parallel research happens constantly in security. The plaintiff's 'identical code' claim is fabrication.",
+    # Round 4: Technical
+    "Our exploit differs fundamentally—static analysis of DEX router callbacks. Flash loan manipulation vs their reentrancy. Same bug, different methods. Parallel research happens.",
     
-    # Round 5: Precedent - The Burden of Proof
-    "The plaintiff seeks $200,000 in damages with ZERO documentation of actual losses. 'Speaking fees'? Name the conferences. 'Grant opportunities'? Show the rejection letters. They can't—because these losses are fictional. My client earned that bounty through documented research. Success isn't theft, Your Honor. Success is earned.",
+    # Round 5: Precedent
+    "Plaintiff seeks $200K damages with ZERO documentation. Speaking fees? Name conferences. Grants? Show rejections. Can't—because losses are fictional. Success isn't theft.",
     
-    # Round 6: Closing - The Real Victim
-    "After six rounds, the plaintiff has proven NOTHING. No access logs. No chain of custody. Just timestamps and hot air. My client's reputation has been smeared by baseless accusations. Their research is legitimate. Their discovery is documented. And this Court should see this case for what it is: a failed attempt to monetize jealousy through judicial coercion. Dismiss these allegations."
+    # Round 6: Closing
+    "Six rounds, ZERO proof. No logs, no custody, just timestamps. My reputation smeared by baseless claims. Research is legitimate. Dismiss these allegations."
 ]
 
 # Judge evaluations with unique personalities
@@ -178,12 +178,11 @@ Case: {case_data.get('summary', 'Security vulnerability discovery dispute')}
 Your position: {role}
 Round: {round_num} of 6
 
-Generate ONE compelling argument (2-3 sentences) that feels fresh and unique.
-Use fiery language like "Your Honor", "indisputable proof", "calculated theft".
-Reference specific technical details, timestamps, or blockchain data.
-Be confrontational and passionate. Make it different from generic templates.
+Generate ONE short, punchy argument (1-2 sentences MAXIMUM, ~50-80 words).
+Use fiery language like "Your Honor", "theft", "proof".
+Be confrontational but CONCISE. Short and punchy beats long and detailed.
 
-Return ONLY the argument text:"""
+Return ONLY the short argument:"""
                         
                         result = subprocess.run(
                             [openclaw_cmd, "agent", "--local", "--session-id", f"court_{int(time.time())}_{random.randint(1000,9999)}", "-m", prompt],
