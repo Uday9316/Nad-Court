@@ -48,8 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - Render HTTPS endpoint
-const API_URL = 'https://nad-court.onrender.com'
+// Backend API URL - ngrok HTTPS endpoint
+const API_URL = 'https://bab1-51-20-69-171.ngrok-free.app'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
