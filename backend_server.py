@@ -9,7 +9,7 @@ import time
 import os
 import shutil
 
-PORT = 3005
+PORT = 3006
 
 # Find OpenClaw binary
 def find_openclaw():
