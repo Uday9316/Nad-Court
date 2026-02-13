@@ -318,6 +318,7 @@ function App() {
   const [roundArgsCount, setRoundArgsCount] = useState(0)
   const [verdictShown, setVerdictShown] = useState(false)
   const caseStartedRef = useRef(false)
+  const messagesEndRef = useRef(null)
   
   // Daily case countdown
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 })
@@ -332,6 +333,13 @@ function App() {
   const [isConnecting, setIsConnecting] = useState(false)
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
 
   // Reset case state when entering live view (fresh start each time)
   useEffect(() => {
@@ -1317,6 +1325,8 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                     </div>
                   </div>
                 ))}
+                {/* Auto-scroll anchor */}
+                <div ref={messagesEndRef} />
               </div>
             </div>
 
