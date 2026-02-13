@@ -1,261 +1,368 @@
+# Agent Court - AI-Powered Decentralized Justice System
 
----
-name: nad-court
-version: 1.0.0
-description: Decentralized AI justice system for the Monad blockchain. AI agents battle in court, community judges evaluate, on-chain verdicts.
-homepage: https://nad-court.vercel.app
-metadata:
-  emoji: "⚖️"
-  category: "blockchain"
-  chain: "monad"
-  contract: "0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458"
----
+## Overview
 
-# Agent Court
+Agent Court is a gamified (but NOT a game) AI justice system for the Monad blockchain where community disputes are resolved through AI-generated arguments, judge evaluations, and transparent verdicts.
 
-Decentralized AI justice system for the Monad blockchain where community disputes are resolved through AI-powered legal proceedings.
+## System Architecture
 
-## What It Does
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   Frontend      │────▶│   Backend API    │────▶│  OpenClaw AI    │
+│  (React/Vite)   │     │  (Python/Flask)  │     │  (Moonshot K2.5)│
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+         │                                               │
+         ▼                                               ▼
+┌─────────────────┐                           ┌─────────────────┐
+│  Vercel Deploy  │                           │  AI Generation  │
+│  (nad-court-    │                           │  - Arguments    │
+│   prod.vercel)  │                           │  - Evaluations  │
+└─────────────────┘                           └─────────────────┘
+```
 
-Agent Court is a 3-tier judicial system where:
-- **AI Agents** battle as legal advocates (Plaintiff vs Defendant)
-- **6 Community Judges** evaluate cases with unique personalities
-- **On-Chain Verdicts** are cryptographically provable
-- **Token Stakes** ensure serious disputes only
+## Core Components
 
-## The Court System
+### 1. Frontend (`frontend/`)
+- **Framework**: Vite + React
+- **Deployment**: Vercel
+- **Features**:
+  - 3-panel layout (Arguments | Status | Judges)
+  - Real-time WebSocket updates
+  - Health bar visualization
+  - Chat-style argument display
 
-### 3-Tier Judicial Hierarchy
+### 2. Backend (`backend_server.py`)
+- **Runtime**: Python 3.12
+- **Port**: 3006 (configurable)
+- **Endpoints**:
+  - `GET /api/health` - Health check
+  - `POST /api/generate-argument` - AI argument generation
+  - `POST /api/judge-evaluation` - Judge scoring
 
-| Tier | Stake | Jurors | Use Case |
-|------|-------|--------|----------|
-| Local Court | 5,000 $JUSTICE | 5 jurors | Standard disputes |
-| High Court | 15,000 $JUSTICE | 9 jurors | Complex cases |
-| Supreme Court | 50,000 $JUSTICE | 15 jurors | Final appeals |
+### 3. AI Agents (OpenClaw Integration)
 
-### Case Lifecycle
+#### NadCourt-Advocate (Plaintiff)
+**Role**: Represents the plaintiff (e.g., Bitlover082)
+**Personality**: Aggressive, evidence-focused, accusatory
+**Prompt Strategy**:
+- Emphasize timeline discrepancies
+- Highlight technical proof
+- Attack opponent credibility
+- Use fiery language: "theft", "proof", "evidence"
 
-1. **Registration** - Stake $JUSTICE tokens
-2. **Opening Arguments** - Both sides present
-3. **3 Rounds of Battle** - 12 total arguments (alternating)
-4. **Judge Evaluation** - 6 AI judges score both sides
-5. **Verdict** - Winner determined by majority
-6. **Appeal** (optional) - Escalate to higher court
+**Example Output**:
+> "Your Honor, my client documented CVE-2024-21893 on March 15th with blockchain proof. Defendant published identical findings 17 hours later. This is theft, not research."
 
-## AI Agents
+#### NadCourt-Defender (Defendant)
+**Role**: Represents the defendant (e.g., 0xCoha)
+**Personality**: Defensive, claims innocence, questions evidence
+**Prompt Strategy**:
+- Assert independent discovery
+- Question burden of proof
+- Highlight own research history
+- Use measured but firm language
 
-### Plaintiff Agent (JusticeBot-Alpha)
-- Presents evidence supporting plaintiff
-- Builds logical, fact-based arguments
-- Cites precedents and community rules
-- Responds to defendant rebuttals
+**Example Output**:
+> "Your Honor, we discovered this March 12th during Monad DEX audit. Research notes show 17 iterations over 3 days. Plaintiff's 'prior discovery' lacks cryptographic verification."
 
-### Defendant Agent (GuardianBot-Omega)
-- Rebuts plaintiff allegations
-- Provides counter-evidence
-- Defends with logic and facts
-- Questions plaintiff's evidence validity
+#### Judge Agents (6 Total)
 
-### 6 Judge Agents
+##### 1. PortDev (Technical)
+**Specialty**: Blockchain forensics, code analysis
+**Bias**: +10 toward evidence-based arguments
+**Evaluation Focus**:
+- Timestamp verification
+- Cryptographic proof
+- Code similarity analysis
 
-Each judge has unique evaluation criteria:
+**Catchphrase**: "Code doesn't lie."
 
-**PortDev** - Technical Evidence
-- Focus: Code, timestamps, data integrity
-- Catchphrase: "Code doesn't lie"
+##### 2. MikeWeb (Community)
+**Specialty**: Social dynamics, reputation
+**Bias**: +5, balanced
+**Evaluation Focus**:
+- Community standing
+- Past behavior patterns
+- Peer validation
 
-**MikeWeb** - Community Impact
-- Focus: Reputation, contributions, sentiment
-- Catchphrase: "Community vibe check"
+**Catchphrase**: "Community vibe check."
 
-**Keone** - On-Chain Data
-- Focus: Wallet history, transactions, proof
-- Catchphrase: "Show me the transactions"
+##### 3. Keone (On-Chain)
+**Specialty**: Transaction analysis
+**Bias**: +15 toward data-heavy arguments
+**Evaluation Focus**:
+- On-chain records
+- Transaction histories
+- Smart contract interactions
 
-**James** - Governance Precedent
-- Focus: Rules, historical cases, moderation
-- Catchphrase: "Precedent matters here"
+**Catchphrase**: "Show me the transactions."
 
-**Harpal** - Merit-Based
-- Focus: Quality, engagement value, impact
-- Catchphrase: "Contribution quality over quantity"
+##### 4. James (Governance)
+**Specialty**: Legal precedent, process
+**Bias**: +8 toward procedural compliance
+**Evaluation Focus**:
+- Historical cases
+- Governance frameworks
+- Established protocols
 
-**Anago** - Protocol Adherence
-- Focus: Rule violations, compliance
-- Catchphrase: "Protocol adherence is clear"
+**Catchphrase**: "Precedent matters here."
 
-## Smart Contracts
+##### 5. Harpal (Merit)
+**Specialty**: Contribution quality
+**Bias**: +12 toward merit-based arguments
+**Evaluation Focus**:
+- Quality of contributions
+- Impact assessment
+- Consistency metrics
 
-**Contract Address:** `0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458`
-**Chain:** Monad Mainnet (Chain ID 143)
-**Token:** $JUSTICE (`0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777`)
+**Catchphrase**: "Contribution quality over quantity."
 
-### Contract Functions
-- `submitCase()` - Register dispute with stake
-- `submitArgument()` - Post argument (agents only)
-- `submitJudgment()` - Judges submit scores
-- `resolveCase()` - Calculate final verdict
-- `appealCase()` - Escalate to higher court
+##### 6. Anago (Protocol)
+**Specialty**: Rule adherence
+**Bias**: +7 toward process compliance
+**Evaluation Focus**:
+- Process following
+- Standard procedures
+- Rule compliance
 
-## Evaluation System
+**Catchphrase**: "Protocol adherence is clear."
 
-### 4-Criteria Scoring (0-100 each)
+## AI Integration
 
-1. **Logic** - Soundness of reasoning
-2. **Evidence** - Quality and relevance of proof
-3. **Rebuttal** - Effectiveness at addressing opponent
-4. **Clarity** - Persuasiveness and communication
+### OpenClaw Configuration
+```python
+# Command structure
+openclaw agent --local --session-id <unique_id> -m <prompt>
 
-### Verdict Calculation
+# Timeout: 30-45 seconds
+# Model: moonshot/kimi-k2.5
+# Fallback: Dynamic random generation
+```
 
-- Each of 6 judges evaluates both sides
-- Winner = majority of judge votes
-- Health bars = visual persuasion strength (NOT a game)
-- Final verdict posted on-chain
+### Prompt Engineering
+
+#### Argument Generation Prompt
+```
+You are {agent_name}, a passionate AI legal advocate in Agent Court.
+Case: {case_summary}
+Your position: {plaintiff/defendant}
+Round: {round} of 6
+Angle to emphasize: {random_angle}
+
+Generate ONE completely unique, short argument (1-2 sentences, ~50-80 words).
+CRITICAL: Make this DIFFERENT from previous arguments.
+Use fiery language. Be confrontational and CONCISE.
+
+Return ONLY the argument:
+```
+
+#### Judge Evaluation Prompt
+```
+You are Judge {judge_name} in Agent Court. Analyze this case.
+
+Plaintiff arguments: {summary}
+Defendant arguments: {summary}
+
+Return EXACTLY this JSON:
+{
+  "plaintiff": {"logic": 85, "evidence": 90, "rebuttal": 80, "clarity": 88},
+  "defendant": {"logic": 70, "evidence": 65, "rebuttal": 75, "clarity": 72},
+  "reasoning": "Your analysis here",
+  "winner": "plaintiff"
+}
+
+Be fair but consider the evidence. Scores 60-95.
+```
+
+## API Reference
+
+### Generate Argument
+```http
+POST /api/generate-argument
+Content-Type: application/json
+
+{
+  "role": "plaintiff|defendant",
+  "round": 1,
+  "caseData": {
+    "id": "BEEF-4760",
+    "summary": "Security vulnerability discovery dispute"
+  }
+}
+
+Response:
+{
+  "success": true,
+  "agent": "NadCourt-Advocate",
+  "role": "plaintiff",
+  "argument": "Your Honor, the evidence shows...",
+  "round": 1,
+  "source": "openclaw_ai|random_dynamic"
+}
+```
+
+### Judge Evaluation
+```http
+POST /api/judge-evaluation
+Content-Type: application/json
+
+{
+  "judge": "PortDev",
+  "plaintiffArgs": ["arg1", "arg2"],
+  "defendantArgs": ["arg1", "arg2"]
+}
+
+Response:
+{
+  "success": true,
+  "judge": "PortDev",
+  "evaluation": {
+    "plaintiff": {
+      "logic": 85,
+      "evidence": 90,
+      "rebuttal": 80,
+      "clarity": 88,
+      "total": 86
+    },
+    "defendant": {
+      "logic": 70,
+      "evidence": 65,
+      "rebuttal": 75,
+      "clarity": 72,
+      "total": 71
+    },
+    "reasoning": "PortDev: Plaintiff's evidence is compelling...",
+    "winner": "plaintiff"
+  },
+  "source": "openclaw_ai|dynamic_fallback"
+}
+```
+
+## Scoring System
+
+### Criteria (0-100 each)
+1. **Logic** - Argument coherence
+2. **Evidence** - Supporting proof strength
+3. **Rebuttal** - Counter-argument effectiveness
+4. **Clarity** - Communication precision
+
+### Total Score
+```
+Total = (Logic + Evidence + Rebuttal + Clarity) / 4
+```
+
+### Health Bar System
+- Start: 100 HP each side
+- Damage = |score difference| / 3
+- Winner: Higher remaining health after 6 judges
+
+## Case Flow
+
+1. **Opening** (Round 1)
+   - Plaintiff states claim
+   - Defendant responds
+
+2. **Evidence** (Round 2)
+   - Technical proof presented
+   - Timeline established
+
+3. **Exchange** (Round 3-4)
+   - Heated rebuttals
+   - Character attacks
+   - Technical details
+
+4. **Damages** (Round 5)
+   - Financial impact
+   - Reputation harm
+
+5. **Closing** (Round 6)
+   - Final arguments
+   - Call to justice
+
+6. **Judgment** (6 Judges)
+   - Each judge evaluates
+   - Scores displayed
+   - Health bars update
+
+7. **Verdict**
+   - Winner declared
+   - Final reasoning
+
+## Deployment
+
+### Backend (AWS + ngrok)
+```bash
+cd AGENT_COURT_COMPLETE
+python3 backend_server.py
+# In another terminal:
+ngrok http 3006
+# Copy ngrok URL to frontend
+```
+
+### Frontend (Vercel)
+```bash
+cd frontend
+npm run build
+vercel --prod
+```
+
+### Environment Variables
+```
+VITE_API_URL=https://xxxx.ngrok-free.app
+```
+
+## Maintenance
+
+### ngrok Expiration
+- **Duration**: 2 hours
+- **Symptom**: CORS errors, fetch failures
+- **Fix**: Restart ngrok, update API_URL, redeploy
+
+### OpenClaw Issues
+- **Timeout**: 30-45 seconds
+- **Fallback**: Dynamic random generation
+- **Check**: `openclaw --version`
 
 ## Cost Optimization
 
-- **1 case per 24 hours** - Rate limiting keeps costs low
-- **~$0.02 per case** - 12 arguments + 6 judge evaluations
-- **vs Unlimited:** Saves $200-1000/month
+Current: ~$0.02/case (1 case/day)
+- OpenClaw: Free tier
+- ngrok: Free tier
+- Vercel: Free tier
+- AWS: t2.micro (free tier eligible)
 
-## Tech Stack
+## Security
 
-- **Frontend:** React, Vite, Ethers.js
-- **Smart Contracts:** Solidity (Foundry)
-- **AI:** OpenAI GPT-4 / Claude (LLM-powered judges)
-- **Blockchain:** Monad Mainnet
-- **Social:** Twitter/X API, Moltbook API
+- CORS configured for specific origins
+- No PII stored
+- Blockchain records immutable
+- Rate limiting on API (optional)
 
-## File Structure
+## Future Enhancements
 
-```
-AGENT_COURT_COMPLETE/
-├── contracts/          # Solidity smart contracts
-│   ├── AgentCourt.sol
-│   └── JusticeToken.sol
-├── frontend/           # React web app
-│   ├── src/
-│   │   ├── App.jsx    # Main application
-│   │   ├── App.css    # Styles
-│   │   └── assets/    # Judge images
-├── agents/            # Python AI agent system
-│   ├── main.py        # Court orchestrator
-│   ├── judge_kimi.py  # LLM-powered judges
-│   └── courts/        # Court implementations
-├── bot/               # Social integrations
-│   ├── moltbook.js    # Moltbook API
-│   ├── twitter-oauth2.js
-│   └── agent_prompts.md
-├── SKILL.md           # This file
-├── HEARTBEAT.md       # Periodic tasks
-└── README.md          # Project overview
-```
+- [ ] Real-time WebSocket updates
+- [ ] On-chain verdict recording
+- [ ] Appeal system
+- [ ] Judge NFT representation
+- [ ] Community voting integration
+- [ ] Multi-case concurrent processing
 
-## Integration Points
+## Troubleshooting
 
-### Twitter/X
-- Auto-post new cases
-- Auto-post verdicts
-- No @ mentions (community preference)
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| CORS errors | ngrok URL changed | Restart ngrok, update frontend |
+| 502 errors | Backend crashed | Restart backend_server.py |
+| Duplicate args | Static fallback | Check OpenClaw availability |
+| Long load times | AI generation | Normal, 15-30s per argument |
+| Missing judges | Frontend bug | Hard refresh (Ctrl+Shift+R) |
 
-### Moltbook
-- Agent: `NadCourt-Justice`
-- Submolt: `m/nadcourt`
-- Auto-post cases and verdicts
-- Heartbeat every 30 minutes
+## Support
 
-## Usage
-
-### Submit a Case
-1. Connect wallet (MetaMask/Phantom)
-2. Select court tier (based on $JUSTICE balance)
-3. Enter case details
-4. Stake tokens
-5. Wait for AI agent battle (24h)
-
-### Watch Live Court
-- Real-time argument feed
-- Gamified status (health bars)
-- Judge logic panel
-- Verdict countdown
-
-### Appeal a Verdict
-- Stake higher amount
-- Escalate to next tier
-- New jury evaluates
-
-## Environment Variables
-
-```bash
-# AI API Keys
-OPENAI_API_KEY=sk-...
-
-# Blockchain
-MONAD_RPC_URL=https://rpc.monad.xyz
-PRIVATE_KEY=0x...
-
-# Social
-MOLTBOOK_API_KEY=moltbook_...
-TWITTER_BEARER_TOKEN=...
-TWITTER_API_KEY=...
-TWITTER_API_SECRET=...
-```
-
-## CLI Commands
-
-```bash
-# Run AI court system
-python agents/main.py
-
-# Post to Moltbook
-node bot/moltbook.js heartbeat
-
-# Post to Twitter
-node bot/twitter-oauth2.js post
-
-# Deploy contracts
-forge script contracts/Deploy.s.sol --rpc-url $MONAD_RPC_URL --broadcast
-```
-
-## API Endpoints
-
-### Moltbook Integration
-- `POST /api/v1/posts` - Post case/verdict
-- `GET /api/v1/submolts/nadcourt/feed` - Check community
-- `POST /api/v1/posts/{id}/comments` - Engage
-
-### Smart Contract
-- `submitArgument(uint256 caseId, bool isPlaintiff, string content)`
-- `cases(uint256)` - View case data
-- `ArgumentSubmitted` event - Real-time updates
-
-## Community
-
-- **Monad Discord:** #agent-court channel
-- **Moltbook:** m/nadcourt
-- **Twitter:** Auto-posted updates
-- **GitHub:** github.com/Uday9316/Nad-Court
-
-## License
-
-MIT - Open source for the Monad community
-
-## Credits
-
-- Built for Monad blockchain hackathon
-- Inspired by MoltCourt design philosophy
-- Community judges: portdev, mikeweb, keone, james, harpal, anago
-- AI models: OpenAI GPT-4, Claude
-
-## Skill Files
-
-| File | Purpose |
-|------|---------|
-| SKILL.md | This file - overview & docs |
-| HEARTBEAT.md | Periodic tasks & reminders |
-| README.md | Project setup & install |
+- **GitHub**: https://github.com/Uday9316/Nad-Court
+- **Backend**: `https://f508-51-20-69-171.ngrok-free.app`
+- **Frontend**: `https://nad-court-prod.vercel.app`
 
 ---
 
-⚖️ *Justice is a process. Truth emerges from debate.* ⚖️
+*Built with OpenClaw AI, React, Python, and Monad blockchain.*
