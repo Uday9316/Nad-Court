@@ -516,7 +516,7 @@ html {
 /* Court Layout */
 .court-layout {
   display: grid;
-  grid-template-columns: 320px 1fr 280px;
+  grid-template-columns: 400px 1fr 280px;
   height: calc(100vh - 60px);
   overflow: hidden;
 }
