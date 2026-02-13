@@ -48,8 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - ngrok HTTPS endpoint
-const API_URL = 'https://bab1-51-20-69-171.ngrok-free.app'
+// Backend API URL - ngrok HTTPS endpoint (updates every 2 hours)
+const API_URL = 'https://4326-51-20-69-171.ngrok-free.app'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
@@ -328,20 +328,8 @@ function App() {
     const runLiveCase = async () => {
       // Generate 6 rounds (12 arguments) via API
       for (let round = 1; round <= 6; round++) {
-        // Update round display (skip for round 1)
-        if (round > 1) {
-          setCurrentRound(round)
-          await new Promise(resolve => {
-            setMessages(prev => [...prev, {
-              id: Date.now() + Math.random(),
-              author: 'COURT',
-              content: `═══════════════════ ROUND ${round} ═══════════════════`,
-              role: 'system',
-              type: 'round'
-            }])
-            setTimeout(resolve, 100)
-          })
-        }
+        // Update round counter (no visible round markers in UI)
+        setCurrentRound(round)
         
         // Plaintiff argument - CALL API
         console.log(`Fetching plaintiff argument for round ${round}...`)
@@ -1210,7 +1198,6 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                     <div className="message-body">
                       {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
                       {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
-                      {m.type === 'round' && <span className="round-badge">📋 ROUND</span>}
                       {m.type === 'chain' && <span className="chain-badge">⛓️ ON-CHAIN</span>}
                       <div className="message-content">{m.content}</div>
                       {m.type === 'evaluation' && m.criteria && (
