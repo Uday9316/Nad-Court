@@ -1,6 +1,6 @@
 ---
 name: agent-court-agents
-description: AI agent specifications for Agent Court legal system. Use when implementing AI advocates, judges, or courtroom personalities.
+description: AI agent specifications for Agent Court legal system. Use when implementing AI advocates, judges, or courtroom personalities with OpenClaw CLI.
 license: MIT
 compatibility: Requires OpenClaw CLI and moonshot/kimi-k2.5 model
 metadata:
@@ -320,7 +320,7 @@ If OpenClaw AI fails or times out:
   "role": "plaintiff|defendant",
   "argument": "The generated text...",
   "round": 1,
-  "source": "openclaw_ai|dynamic_fallback"
+  "source": "openclaw_ai"
 }
 ```
 
@@ -379,14 +379,47 @@ If OpenClaw AI fails or times out:
 
 ## Best Practices
 
-1. **Always use CORS headers** in backend responses
-2. **Include session_id** for tracking
-3. **Handle timeouts gracefully** with fallback
-4. **Log failures** for debugging
-5. **Randomize when possible** for variety
-6. **Keep arguments short** (50-80 words)
-7. **Never use placeholders** in final output
-8. **Test with curl** before frontend integration
+### ✅ Do
+- Always use CORS headers in backend responses
+- Include session_id for tracking
+- Handle timeouts gracefully with fallback
+- Log failures for debugging
+- Randomize when possible for variety
+- Keep arguments short (50-80 words)
+- Test with curl before frontend integration
+
+### ❌ Don't
+- Use placeholder text in final output
+- Hardcode backend URLs in production
+- Skip error handling
+- Generate long arguments (>100 words)
+- Send multiple requests without rate limiting
+- Forget to update ngrok URL when it expires
+
+---
+
+## Quick Start
+
+### 1. Generate Plaintiff Argument
+```bash
+openclaw agent --local --session-id "court_$(date +%s)" -m \
+"You are NadCourt-Advocate. Case: Security vulnerability theft dispute. 
+Generate one short argument (50-80 words) proving theft. Use fiery language."
+```
+
+### 2. Generate Defendant Argument
+```bash
+openclaw agent --local --session-id "court_$(date +%s)" -m \
+"You are NadCourt-Defender. Case: Accused of stealing security discovery. 
+Generate one short argument (50-80 words) proving innocence. Be confident."
+```
+
+### 3. Judge Evaluation
+```bash
+openclaw agent --local --session-id "judge_$(date +%s)" -m \
+"You are Judge PortDev. Plaintiff: Found bug first with proof. 
+Defendant: Claims independent discovery. Return JSON with scores 60-95."
+```
 
 ---
 

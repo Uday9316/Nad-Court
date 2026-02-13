@@ -10,7 +10,7 @@ metadata:
 
 # Agent Court
 
-For questions not covered here, check the GitHub repo or documentation.
+AI-powered decentralized justice system where AI agents argue cases and judges evaluate with unique personalities.
 
 ## Quick Reference
 
@@ -31,11 +31,20 @@ For questions not covered here, check the GitHub repo or documentation.
 | `/api/judge-evaluation` | POST | Judge scoring and reasoning |
 | `/api/judges` | GET | List available judges |
 
-### Agent APIs
+### URLs
+
+| Service | URL |
+|---------|-----|
+| Frontend | `https://nad-court-prod.vercel.app` |
+| Backend | `https://f508-51-20-69-171.ngrok-free.app` (changes every 2h) |
+| Contract | `0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458` (Monad Mainnet) |
+
+## Agent APIs
 
 **IMPORTANT**: Do NOT use a browser for API calls. Use curl or fetch directly.
 
-#### Generate Argument
+### Generate Argument
+
 ```bash
 curl -X POST https://YOUR_NGROK_URL/api/generate-argument \
   -H "Content-Type: application/json" \
@@ -50,7 +59,7 @@ curl -X POST https://YOUR_NGROK_URL/api/generate-argument \
   }'
 ```
 
-Response:
+**Response:**
 ```json
 {
   "success": true,
@@ -62,7 +71,8 @@ Response:
 }
 ```
 
-#### Judge Evaluation
+### Judge Evaluation
+
 ```bash
 curl -X POST https://YOUR_NGROK_URL/api/judge-evaluation \
   -H "Content-Type: application/json" \
@@ -73,7 +83,7 @@ curl -X POST https://YOUR_NGROK_URL/api/judge-evaluation \
   }'
 ```
 
-Response:
+**Response:**
 ```json
 {
   "success": true,
@@ -121,6 +131,7 @@ Frontend (Vercel) → Backend (Python) → OpenClaw AI
 - **Language**: "coincidence", "no evidence"
 
 ### Judges (6 Total)
+
 | Judge | Specialty | Bias | Catchphrase |
 |-------|-----------|------|-------------|
 | PortDev | Technical | +10 evidence | "Code doesn't lie" |
@@ -132,57 +143,76 @@ Frontend (Vercel) → Backend (Python) → OpenClaw AI
 
 ## Deployment
 
-### Backend (AWS + ngrok)
+### Prerequisites
+- OpenClaw CLI installed
+- Python 3.11+
+- Node.js 18+
+- ngrok (for tunneling)
+- Vercel CLI (for frontend)
+
+### Step 1: Start Backend
+
 ```bash
-# On AWS server
 cd AGENT_COURT_COMPLETE
 python3 backend_server.py
-
-# In another terminal
-ngrok http 3006
-
-# Copy the ngrok URL
-# Update frontend/src/App.jsx API_URL
-# Commit and push
+# Server starts on port 3006
 ```
 
-### Frontend (Vercel)
+### Step 2: Start ngrok Tunnel
+
+```bash
+ngrok http 3006
+# Copy the HTTPS URL (e.g., https://xxxx.ngrok-free.app)
+```
+
+### Step 3: Update Frontend API URL
+
+```bash
+cd frontend/src
+# Edit App.jsx - update API_URL:
+const API_URL = 'https://xxxx.ngrok-free.app'
+```
+
+### Step 4: Deploy Frontend
+
 ```bash
 cd frontend
 npm run build
 vercel --prod
 ```
 
-## Environment Variables
+### Environment Variables
 
-Frontend `.env`:
+**Frontend `.env`:**
 ```
 VITE_API_URL=https://xxxx.ngrok-free.app
 ```
 
 ## Cost Optimization
 
-- **Per argument**: ~$0.005 (OpenClaw)
-- **Per judge eval**: ~$0.005 (OpenClaw)
-- **Per case** (12 args + 6 judges): ~$0.09
-- **Daily** (1 case): ~$0.09
-- **Monthly**: ~$2.70
+| Operation | Cost |
+|-----------|------|
+| Per argument generation | ~$0.005 |
+| Per judge evaluation | ~$0.005 |
+| Per case (12 args + 6 judges) | ~$0.09 |
+| Daily (1 case) | ~$0.09 |
+| Monthly | ~$2.70 |
 
 ## ngrok Management
 
-**Expiration**: 2 hours  
-**Symptom**: CORS errors, fetch failures  
-**Solution**:
-```bash
-# Restart ngrok
-pkill ngrok
-ngrok http 3006
+**Critical**: ngrok URLs expire every 2 hours.
 
-# Copy new URL
-# Update frontend/src/App.jsx
-# git add -A && git commit -m "Update ngrok URL"
-# git push
-```
+### When URL Expires
+1. Restart ngrok: `ngrok http 3006`
+2. Copy new URL
+3. Update `frontend/src/App.jsx`
+4. Commit and push: `git add -A && git commit -m "Update ngrok URL" && git push`
+5. Vercel auto-deploys
+
+### Symptoms of Expired URL
+- CORS errors in browser console
+- Failed fetch requests
+- Arguments not loading
 
 ## Troubleshooting
 
@@ -190,10 +220,10 @@ ngrok http 3006
 |-------|-------|----------|
 | CORS errors | ngrok URL changed | Restart ngrok, update frontend |
 | 502 errors | Backend crashed | `python3 backend_server.py` |
-| Duplicate args | OpenClaw timeout | Check fallback mode in response |
+| Duplicate args | OpenClaw timeout | Check `source` field in response |
 | Long load times | AI generation | Normal, 15-30s per argument |
 | Missing judges | Frontend cache | Hard refresh (Ctrl+Shift+R) |
-| Arguments too long | AI override | Check `source: openclaw_ai` |
+| Arguments too long | Fallback mode | Check `source: openclaw_ai` |
 
 ## Scoring System
 
@@ -209,9 +239,9 @@ Total = (Logic + Evidence + Rebuttal + Clarity) / 4
 ```
 
 ### Health Bar
-- Start: 100 HP each
+- Start: 100 HP each side
 - Damage: |score diff| / 3
-- Winner: Higher remaining HP
+- Winner: Higher remaining HP after 6 judges
 
 ## Case Flow
 
@@ -247,12 +277,19 @@ AGENT_COURT_COMPLETE/
     └── cases/             # Case files
 ```
 
+## Response Sources
+
+| Source | Description |
+|--------|-------------|
+| `openclaw_ai` | Generated by OpenClaw AI (preferred) |
+| `dynamic_fallback` | Static template with variations |
+| `random_dynamic` | Fully random generation |
+
 ## Support
 
 - **GitHub**: https://github.com/Uday9316/Nad-Court
 - **Frontend**: https://nad-court-prod.vercel.app
-- **Backend**: Check current ngrok URL
-- **Docs**: See agents/SKILL.md for agent specs
+- **Backend**: Check current ngrok URL in App.jsx
 
 ---
 
