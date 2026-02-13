@@ -8,10 +8,11 @@ import socketserver
 import json
 import subprocess
 import time
+import os
 from datetime import datetime
 from urllib.parse import urlparse
 
-PORT = 3001
+PORT = int(os.environ.get('PORT', 3001))
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_OPTIONS(self):
