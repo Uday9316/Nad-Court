@@ -631,7 +631,7 @@ function App() {
   // How It Works view
   if (view === 'how-it-works') {
     return (
-      <div className="app">
+      <div className="app app-scrollable">
         <Header />
         <main className="main">
           <div className="how-it-works">
@@ -894,7 +894,7 @@ function App() {
     }
     
     return (
-      <div className="app">
+      <div className="app app-scrollable">
         <Header />
         <main className="main">
           <div className="form-page">
