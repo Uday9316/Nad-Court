@@ -9,10 +9,43 @@ import json
 import subprocess
 import time
 import os
+import sys
+import shutil
 from datetime import datetime
 from urllib.parse import urlparse
 
 PORT = int(os.environ.get('PORT', 3001))
+
+# Find OpenClaw binary
+def find_openclaw():
+    """Find OpenClaw binary in common locations"""
+    # Check if in PATH
+    openclaw_path = shutil.which('openclaw')
+    if openclaw_path:
+        return openclaw_path
+    
+    # Check common npm global locations
+    possible_paths = [
+        '/opt/render/.npm-global/bin/openclaw',
+        '/root/.npm-global/bin/openclaw',
+        '/usr/local/bin/openclaw',
+        '/usr/bin/openclaw',
+        '/home/render/.npm-global/bin/openclaw',
+        os.path.expanduser('~/.npm-global/bin/openclaw'),
+        os.path.expanduser('~/.local/bin/openclaw'),
+    ]
+    
+    for path in possible_paths:
+        if os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+    
+    return None
+
+OPENCLAW_BIN = find_openclaw()
+if OPENCLAW_BIN:
+    print(f"✅ OpenClaw found at: {OPENCLAW_BIN}", flush=True)
+else:
+    print(f"⚠️ OpenClaw not found. Will search at runtime.", flush=True)
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -78,9 +111,18 @@ Professional legal tone. No game references. Return ONLY the argument text."""
         
         # Generate using OpenClaw
         session_id = f"court_{int(time.time())}"
+        openclaw_cmd = OPENCLAW_BIN if OPENCLAW_BIN else find_openclaw()
+        
+        if not openclaw_cmd:
+            print(f"❌ OpenClaw not found. Cannot generate argument.", flush=True)
+            self.send_json({"success": False, "error": "OpenClaw not installed"}, 500)
+            return
+        
+        print(f"Using OpenClaw at: {openclaw_cmd}", flush=True)
+        
         try:
             result = subprocess.run(
-                ["openclaw", "agent", "--local", "--session-id", session_id, "-m", prompt],
+                [openclaw_cmd, "agent", "--local", "--session-id", session_id, "-m", prompt],
                 capture_output=True,
                 text=True,
                 timeout=60
@@ -145,15 +187,11 @@ if __name__ == '__main__':
     print(f"Starting server on port {PORT}...", flush=True)
     print(f"Environment PORT={os.environ.get('PORT', 'not set')}", flush=True)
     
-    # Test OpenClaw availability
-    try:
-        result = subprocess.run(['which', 'openclaw'], capture_output=True, text=True)
-        if result.returncode == 0:
-            print(f"✅ OpenClaw found at: {result.stdout.strip()}", flush=True)
-        else:
-            print(f"⚠️ OpenClaw not found in PATH. API will fail.", flush=True)
-    except Exception as e:
-        print(f"⚠️ Error checking OpenClaw: {e}", flush=True)
+    # Show OpenClaw status
+    if OPENCLAW_BIN:
+        print(f"✅ OpenClaw found at: {OPENCLAW_BIN}", flush=True)
+    else:
+        print(f"⚠️ OpenClaw not found at startup. Will search at runtime.", flush=True)
     
     # Use ThreadingTCPServer for better concurrent handling
     class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
