@@ -645,6 +645,22 @@ body {
   display: block;
 }
 
+/* Verdict Meme (Final Judgment) */
+.verdict-meme {
+  margin-top: var(--space-md);
+  max-width: 250px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--color-purple);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.verdict-meme img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Fighter Card */
 .fighter-card {
   background: var(--color-surface-elevated);
