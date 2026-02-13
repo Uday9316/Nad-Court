@@ -26,6 +26,7 @@ import keoneImg from './assets/keone.jpg'
 import jamesImg from './assets/james.jpg'
 import harpalImg from './assets/harpal.jpg'
 import anagoImg from './assets/anago.jpg'
+import jamesMeme from './assets/james-meme.jpg'
 
 // Meme images for reactions (using reliable external URLs)
 const MEME_IMAGES = {
@@ -1263,27 +1264,17 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                         </div>
                       )}
                       {m.type === 'evaluation' && m.criteria && (
-                        <div className="criteria-scores">
-                          <div className="criteria-side">
-                            <span className="criteria-label">Plaintiff</span>
-                            <div className="criteria-row">
-                              <span>Logic: {m.criteria.plaintiff.logic}</span>
-                              <span>Evidence: {m.criteria.plaintiff.evidence}</span>
-                              <span>Rebuttal: {m.criteria.plaintiff.rebuttal}</span>
-                              <span>Clarity: {m.criteria.plaintiff.clarity}</span>
-                            </div>
-                            <span className="criteria-total">Total: {m.criteria.plaintiff.total}</span>
+                        <div className="criteria-scores compact">
+                          <div className="criteria-totals">
+                            <span className="score-p">P: {m.criteria.plaintiff.total}</span>
+                            <span className="score-d">D: {m.criteria.defendant.total}</span>
                           </div>
-                          <div className="criteria-side">
-                            <span className="criteria-label">Defendant</span>
-                            <div className="criteria-row">
-                              <span>Logic: {m.criteria.defendant.logic}</span>
-                              <span>Evidence: {m.criteria.defendant.evidence}</span>
-                              <span>Rebuttal: {m.criteria.defendant.rebuttal}</span>
-                              <span>Clarity: {m.criteria.defendant.clarity}</span>
-                            </div>
-                            <span className="criteria-total">Total: {m.criteria.defendant.total}</span>
-                          </div>
+                        </div>
+                      )}
+                      {/* James meme for James judge */}
+                      {m.type === 'evaluation' && m.author && m.author.includes('James') && (
+                        <div className="judge-meme">
+                          <img src={jamesMeme} alt="James reaction" loading="lazy" />
                         </div>
                       )}
                     </div>
