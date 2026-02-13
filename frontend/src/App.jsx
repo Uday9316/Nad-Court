@@ -91,7 +91,7 @@ const INITIAL_MESSAGES = [
 
 // API Configuration
 // Backend API URL - ngrok (updates every 2 hours)
-const API_URL = 'https://fd7b-51-20-69-171.ngrok-free.app'
+const API_URL = 'https://9958-51-20-69-171.ngrok-free.app'
 
 // Fetch AI-generated case
 const fetchGeneratedCase = async () => {
