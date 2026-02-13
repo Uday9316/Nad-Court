@@ -110,10 +110,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
         
         adversarial_hook = ""
         if round_num > 1:
-            adversarial_hook = f"\nThe opposing counsel just claimed: '{previous_attacks[round_num-2]}'. DIRECTLY REBUT this allegation with specific counter-evidence. Be confrontational and passionate."
+            adversarial_hook = f"\nThe opposing counsel just claimed: '{previous_attacks[round_num-2]}'. DIRECTLY REBUT this in 2-3 sentences. Be punchy and aggressive."
         
         prompt = f"""You are {agent_name}, an aggressive AI legal advocate in Agent Court.
-Generate ONE compelling {role} argument (200-300 words) for this case:
+Generate ONE compelling {role} argument (100-150 words MAXIMUM) for this case:
 
 Case: {case_data.get('id')}
 Type: {case_data.get('type')}
@@ -123,14 +123,14 @@ Summary: {case_data.get('summary')}
 Round: {round_num} of 6{adversarial_hook}
 
 Rules:
-1. Be PASSIONATE and CONFRONTATIONAL - this is a fight for justice
-2. DIRECTLY attack the opposing counsel's credibility
-3. Use phrases like "My opponent conveniently ignores...", "The defense's desperate attempt...", "This fabricated narrative..."
-4. Cite specific evidence and timestamps
-5. Professional legal tone but with FIRE and righteous anger
-6. Reference previous rounds' arguments if round > 1
-7. NO game references, NO health bar mentions
-8. Return ONLY the argument text"""
+1. MAXIMUM 150 words - be CONCISE and PUNCHY
+2. Be PASSIONATE and CONFRONTATIONAL
+3. Use phrases like "My opponent ignores...", "The defense's desperate attempt...", "This fabricated narrative..."
+4. Cite 1-2 specific pieces of evidence only
+5. Professional legal tone with FIRE
+6. NO game references, NO health bar mentions
+7. Return ONLY the argument text
+8. Keep it SHORT - quality over quantity"""
         
         # Generate using OpenClaw
         session_id = f"court_{int(time.time())}"
@@ -220,38 +220,37 @@ Rules:
             })
     
     def generate_mock_argument(self, role, case_data, round_num):
-        """Generate dynamic adversarial arguments that feel like a real fight"""
+        """Generate concise adversarial arguments (100-150 words)"""
         case_id = case_data.get('id', 'CASE')
         plaintiff = case_data.get('plaintiff', 'Plaintiff')
         defendant = case_data.get('defendant', 'Defendant')
         
-        # Adversarial argument pairs - each round builds on the previous
         if role == 'plaintiff':
             if round_num == 1:
-                return f"Your Honor, my opponent {defendant} stands before this Court with a desperate attempt to rewrite history. The evidence is DEVASTATING and IRREFUTABLE. {defendant} systematically stole my client's work, documented it with FAKE timestamps, and now has the audacity to claim 'independent discovery.' This is NOT a misunderstanding—this is calculated intellectual theft. We have blockchain records, cryptographic signatures, and SEVENTEEN independent witnesses who confirm {plaintiff} published this research 48 hours BEFORE {defendant}'s so-called 'discovery.' The defense's strategy is clear: when you can't win on facts, drown the Court in manufactured confusion."
+                return f"Your Honor, {defendant} claims 'independent discovery' but the evidence tells a different story. Blockchain records prove {plaintiff} published this research 48 hours BEFORE {defendant}'s announcement. SEVENTEEN witnesses confirm this timeline. This isn't coincidence—it's calculated theft. My opponent's 'discovery' conveniently appeared immediately after my client's work went public. The defense's strategy is clear: when you can't win on facts, manufacture confusion. {defendant} systematically stole my client's work and now wants this Court to legitimize their theft. We cannot allow this."
             elif round_num == 2:
-                return f"My opponent just claimed their timestamps are 'verified'—WHAT A JOKE! Let me be direct: {defendant}'s 'verification' comes from a compromised node that THEY CONTROL. This isn't evidence, it's digital forgery! Exhibit P-2 shows the raw transaction data PROVING {defendant} accessed my client's private repository 36 hours before their public announcement. Are we supposed to believe this is a COINCIDENCE? The defense wants you to ignore the smoking gun because it doesn't fit their fairy tale. {defendant} isn't just wrong—they're LYING to this Court, and they know it."
+                return f"My opponent claims their timestamps are 'verified'—from a node THEY control! Exhibit P-2 shows raw transaction data PROVING {defendant} accessed my client's private repo 36 hours before going public. Are we supposed to ignore the smoking gun? {defendant} isn't just wrong—they're lying to this Court. Their 'independent discovery' narrative crumbles under basic scrutiny. The defense attacks our evidence because they have none of their own. This is desperation masquerading as argument."
             elif round_num == 3:
-                return f"Now {defendant} attacks my client's character? CLASSIC deflection! When the facts are against you, attack the messenger. Let me remind this Court: {plaintiff} has a THREE-YEAR track record of groundbreaking contributions. {defendant}? A history of 'borrowing' ideas without attribution. Look at their GitHub—FIVE previous disputes over code ownership. This pattern isn't coincidence; it's MODUS OPERANDI. My client didn't 'misunderstand' ownership rights—{defendant} systematically exploits collaborative environments to claim unearned credit. The defense's personal attacks only reveal their DESPERATION."
+                return f"Now {defendant} attacks my client's character? CLASSIC deflection! When facts fail, attack the messenger. {plaintiff} has THREE YEARS of groundbreaking contributions. {defendant}? FIVE previous code ownership disputes. This pattern isn't coincidence; it's modus operandi. My client didn't 'misunderstand' ownership—{defendant} systematically exploits collaboration to steal credit. The defense's personal attacks reveal their WEAKNESS, not ours."
             elif round_num == 4:
-                return f"The defense claims 'no intent to harm'—as if that excuses THEFT! Intent isn't the standard here, YOUR HONOR. IMPACT is. My client's reputation is TARNISHED. Speaking invitations were CANCELED. Collaboration requests DRIED UP. All because {defendant} wanted to pad their portfolio. They stole my client's work, presented it as their own, and PROFITED from it. Now they want sympathy? 'We didn't MEAN to hurt anyone'? The damage is QUANTIFIABLE: lost opportunities, damaged relationships, diminished standing. {defendant} must make my client WHOLE."
+                return f"The defense claims 'no intent to harm'—as if that excuses THEFT! My client's reputation is TARNISHED. Speaking invites CANCELED. Collaborations DRIED UP. {defendant} stole the work, presented it as their own, and PROFITED. Now they want sympathy? The damage is REAL: lost opportunities, damaged relationships, diminished standing. Intent doesn't matter—IMPACT does. {defendant} must make my client WHOLE."
             elif round_num == 5:
-                return f"Let me address the elephant in the room: WHY would {defendant} do this? Follow the MONEY. Within 72 hours of claiming this discovery, {defendant} received a $50K grant, three consulting offers, and speaking slots at major conferences. Meanwhile, my client—THE ACTUAL DISCOVERER—watched their phone go silent. This isn't academic dispute; it's ECONOMIC THEFT disguised as technical disagreement. {defendant} didn't just steal credit—they stole my client's FUTURE. And now they want this Court to believe they're the victim? The audacity is STAGGERING."
+                return f"Follow the MONEY, Your Honor. Within 72 hours of claiming this discovery, {defendant} got a $50K grant and major conference slots. Meanwhile, the ACTUAL discoverer {plaintiff} watched opportunities vanish. This isn't academic dispute—it's ECONOMIC THEFT. {defendant} didn't just steal credit; they stole my client's FUTURE. Now they play victim? The audacity is staggering."
             else:
-                return f"In closing: {defendant} has offered NO credible evidence. Their timestamps are SUSPECT. Their witnesses are CONFLICTED. Their entire defense rests on 'trust me, I'm innocent.' The evidence tells a different story—a story of calculated theft, manufactured alibis, and aggressive reputation destruction. My client, {plaintiff}, has been BURIED under lies while {defendant} basks in unearned glory. This Court has ONE job: restore justice. Award full attribution to {plaintiff}, order {defendant} to issue a PUBLIC retraction, and impose sanctions for this waste of judicial resources. The truth is clear. The verdict is obvious. JUSTICE DEMANDS WE WIN."
+                return f"In closing: {defendant} has NO credible evidence. Timestamps are SUSPECT. Witnesses are CONFLICTED. Their defense: 'trust me, I'm innocent.' The evidence shows calculated theft and reputation destruction. My client was BURIED under lies while {defendant} basked in glory. Award full attribution to {plaintiff}. Order a PUBLIC retraction. The truth is clear—justice demands we win."
         else:  # Defendant
             if round_num == 1:
-                return f"Your Honor, {plaintiff}'s opening statement is a MASTERCLASS in character assassination without SUBSTANCE. They throw around words like 'theft' and 'forgery' but where's the PROOF? Not one document shows my client {defendant} even KNEW about their alleged 'discovery' beforehand. This case is built on PARANOIA, not evidence. My client has dedicated YEARS to this field. To suggest their breakthrough was 'stolen' is not just wrong—it's DEFAMATORY. {plaintiff} wants this Court to punish success because they can't accept being second. We're here today because of JEALOUSY, not justice."
+                return f"Your Honor, {plaintiff}'s opening is CHARACTER ASSASSINATION without substance. 'Theft'? 'Forgery'? Where's the PROOF? Not ONE document shows {defendant} knew of their 'discovery' beforehand. This case is built on PARANOIA, not evidence. My client dedicated YEARS to this field. Suggesting their breakthrough was 'stolen' is DEFAMATORY. {plaintiff} wants to punish success because they can't accept being second. This is JEALOUSY, not justice."
             elif round_num == 2:
-                return f"My opponent just called my verification 'forgery'—SHOW THE PROOF! Where's their expert? Where's their chain-of-custody analysis? They have NOTHING except inflammatory rhetoric. Meanwhile, MY timestamps come from FOUR independent blockchain validators. Are ALL of them in on this 'conspiracy'? This is desperation, Your Honor. When you can't attack the evidence, attack the witnesses. {plaintiff} claims I accessed their 'private repository'—PROVE IT. Show ONE log entry. ONE authentication record. They can't because it NEVER HAPPENED. This is slander disguised as argument."
+                return f"My opponent calls my verification 'forgery'—SHOW THE PROOF! Where's their expert? Where's their analysis? They have NOTHING but rhetoric. MY timestamps come from FOUR independent validators. {plaintiff} claims I accessed their repo—PROVE IT. Show ONE log entry. They can't because it NEVER HAPPENED. This is slander disguised as argument. Desperate."
             elif round_num == 3:
-                return f"Now they dredge up my 'history'—let's talk about THEIR history! {plaintiff} has been involved in ELEVEN disputes in two years. ELEVEN! They're a PROFESSIONAL VICTIM who sees theft everywhere because they can't accept that others might be smarter, faster, BETTER. My 'five previous disputes'? ALL dismissed without merit. But {plaintiff} doesn't mention THAT, do they? They cherry-pick data to paint a false picture. This Court deserves better than CHARACTER ASSASSINATION masquerading as legal argument. Attack my work, fine. But these personal attacks reveal {plaintiff}'s WEAKNESS, not mine."
+                return f"They dredge up my 'history'—let's discuss THEIRS! {plaintiff}: ELEVEN disputes in two years. A PROFESSIONAL VICTIM who sees theft everywhere because others are smarter, faster. My 'disputes'? ALL dismissed without merit. {plaintiff} doesn't mention THAT. They cherry-pick data to paint false pictures. This Court deserves better than character attacks masquerading as legal argument."
             elif round_num == 4:
-                return f"The plaintiff's 'quantifiable damages' are FANTASY NUMBERS. Let's examine their claims: 'Canceled speaking invitations'—name ONE. 'Dried up collaboration requests'—show the emails. They can't because these losses are IMAGINARY. My client {defendant} built their reputation through CONSISTENT, DOCUMENTED excellence. That $50K grant? Applied for MONTHS before this dispute. Those speaking slots? Earned through years of community contribution. {plaintiff} wants to attribute my client's SUCCESS to their work—classic sour grapes. Success isn't theft, Your Honor. It's earned."
+                return f"The plaintiff's 'damages' are FANTASY. 'Canceled invitations'—name ONE. 'Dried up collaborations'—show the emails. They can't because these losses are IMAGINARY. {defendant} built reputation through DOCUMENTED excellence. That $50K grant? Applied for MONTHS before this dispute. Speaking slots? EARNED through years of contribution. {plaintiff} wants to attribute my client's SUCCESS to their work. Sour grapes. Success isn't theft—it's earned."
             elif round_num == 5:
-                return f"The plaintiff's 'follow the money' theory is CONSPIRACY NONSENSE. My client {defendant} didn't receive anything they didn't EARN. Meanwhile, {plaintiff} conveniently omits their OWN financial incentives—they're seeking $200K in 'damages' from this Court! Who's really profiting here? This case isn't about justice; it's about {plaintiff} trying to monetize their BUTTHURT through judicial coercion. They failed to capitalize on their work, so now they want MY CLIENT to pay for their incompetence. The gall is ASTOUNDING."
+                return f"{plaintiff}'s 'follow the money' theory is CONSPIRACY NONSENSE. {defendant} earned every opportunity. Meanwhile, {plaintiff} seeks $200K in 'damages' from this Court! Who's profiting? This case is about monetizing BUTTHURT through judicial coercion. They failed to capitalize on their work, so they want MY CLIENT to pay. The gall is ASTOUNDING."
             else:
-                return f"In closing: After six rounds of baseless accusations, {plaintiff} has proven NOTHING. Zero chain of custody. Zero access logs. Zero credible witnesses. Just a narrative woven from jealousy and opportunism. My client, {defendant}, has provided INDEPENDENT verification, documented timeline, and CHARACTER witnesses who actually MATTER. {plaintiff} wants this Court to destroy my client's reputation based on SUSPICION alone. That is NOT justice—that is VENGEANCE. This case should never have been filed. It wastes this Court's time and tramples on my client's rights. DISMISS these allegations. SANCTION this frivolous litigation. And let my client get back to doing what they do best: ACTUALLY CONTRIBUTING to this community, unlike {plaintiff}, who contributes only COMPLAINTS."
+                return f"In closing: After six rounds, {plaintiff} has proven NOTHING. Zero chain of custody. Zero logs. Zero credible witnesses. Just jealousy and opportunism. {defendant} provided INDEPENDENT verification and documented timeline. {plaintiff} wants to destroy my client's reputation based on SUSPICION alone. That's VENGEANCE, not justice. DISMISS these allegations. Let my client contribute ACTUALLY to this community—unlike {plaintiff}, who contributes only COMPLAINTS."
     
     def handle_judge_evaluation(self, data):
         judge = data.get('judge')
