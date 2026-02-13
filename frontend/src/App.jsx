@@ -397,8 +397,8 @@ function App() {
       for (const judge of JUDGES) {
         const evalData = await fetchEvaluation(judge.name, caseData, plaintiffArgs, defendantArgs)
         if (evalData) {
-          const pScore = (evalData.scores.plaintiff.logic + evalData.scores.plaintiff.evidence + evalData.scores.plaintiff.rebuttal + evalData.scores.plaintiff.clarity) / 4
-          const dScore = (evalData.scores.defendant.logic + evalData.scores.defendant.evidence + evalData.scores.defendant.rebuttal + evalData.scores.defendant.clarity) / 4
+          const pScore = (evalData.plaintiff.logic + evalData.plaintiff.evidence + evalData.plaintiff.rebuttal + evalData.plaintiff.clarity) / 4
+          const dScore = (evalData.defendant.logic + evalData.defendant.evidence + evalData.defendant.rebuttal + evalData.defendant.clarity) / 4
           const damage = Math.abs(pScore - dScore) / 3
           
           if (pScore > dScore) {
@@ -414,8 +414,8 @@ function App() {
             role: 'judge',
             type: 'evaluation',
             criteria: {
-              plaintiff: { ...evalData.scores.plaintiff, total: Math.round(pScore) },
-              defendant: { ...evalData.scores.defendant, total: Math.round(dScore) }
+              plaintiff: { ...evalData.plaintiff, total: Math.round(pScore) },
+              defendant: { ...evalData.defendant, total: Math.round(dScore) }
             }
           }])
         }
