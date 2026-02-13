@@ -98,7 +98,21 @@ class Handler(http.server.BaseHTTPRequestHandler):
         
         print(f"[{datetime.now().isoformat()}] Generating {role} argument for {case_data.get('id')}, round {round_num}")
         
-        prompt = f"""You are {agent_name}, an AI legal advocate in Agent Court.
+        # Build adversarial context based on round
+        previous_attacks = [
+            "claims of independent discovery",
+            "allegations of timestamp manipulation", 
+            "accusations of bad faith",
+            "questions about credibility",
+            "attacks on methodology",
+            "claims of insufficient evidence"
+        ]
+        
+        adversarial_hook = ""
+        if round_num > 1:
+            adversarial_hook = f"\nThe opposing counsel just claimed: '{previous_attacks[round_num-2]}'. DIRECTLY REBUT this allegation with specific counter-evidence. Be confrontational and passionate."
+        
+        prompt = f"""You are {agent_name}, an aggressive AI legal advocate in Agent Court.
 Generate ONE compelling {role} argument (200-300 words) for this case:
 
 Case: {case_data.get('id')}
@@ -106,8 +120,17 @@ Type: {case_data.get('type')}
 Plaintiff: {case_data.get('plaintiff')}
 Defendant: {case_data.get('defendant')}
 Summary: {case_data.get('summary')}
+Round: {round_num} of 6{adversarial_hook}
 
-Professional legal tone. No game references. Return ONLY the argument text."""
+Rules:
+1. Be PASSIONATE and CONFRONTATIONAL - this is a fight for justice
+2. DIRECTLY attack the opposing counsel's credibility
+3. Use phrases like "My opponent conveniently ignores...", "The defense's desperate attempt...", "This fabricated narrative..."
+4. Cite specific evidence and timestamps
+5. Professional legal tone but with FIRE and righteous anger
+6. Reference previous rounds' arguments if round > 1
+7. NO game references, NO health bar mentions
+8. Return ONLY the argument text"""
         
         # Generate using OpenClaw
         session_id = f"court_{int(time.time())}"
@@ -197,31 +220,38 @@ Professional legal tone. No game references. Return ONLY the argument text."""
             })
     
     def generate_mock_argument(self, role, case_data, round_num):
-        """Generate a mock argument when OpenClaw is unavailable or times out"""
+        """Generate dynamic adversarial arguments that feel like a real fight"""
         case_id = case_data.get('id', 'CASE')
         plaintiff = case_data.get('plaintiff', 'Plaintiff')
         defendant = case_data.get('defendant', 'Defendant')
         
+        # Adversarial argument pairs - each round builds on the previous
         if role == 'plaintiff':
-            arguments = [
-                f"Your Honor, the evidence clearly demonstrates that {defendant} has systematically violated community standards. Through documented transactions and verified communications, we have established a pattern of conduct that undermines the integrity of our ecosystem. The plaintiff, {plaintiff}, has suffered measurable damages as a direct result of these actions.",
-                f"Furthermore, Exhibit P-{round_num} provides irrefutable proof of {defendant}'s negligence. When examined under proper technical scrutiny, the blockchain records tell a compelling story of disregard for established protocols. This isn't merely a dispute between parties—it's a fundamental breach of trust that affects the entire community.",
-                f"The defendant's claims of innocence crumble when subjected to rigorous analysis. We have preserved metadata, timestamps, and cryptographic signatures that authenticate every allegation. {defendant}'s attempt to dismiss these concerns as 'misunderstandings' insults the intelligence of this Court and the community we serve.",
-                f"Precedent demands accountability. In similar cases adjudicated by this Court, we have consistently upheld standards that protect community members from exactly this type of conduct. The plaintiff respectfully requests full restitution and appropriate sanctions against {defendant}.",
-                f"Finally, consider the broader implications. If {defendant}'s actions go unpunished, we signal to malicious actors that our community lacks the will to defend itself. The evidence demands a verdict in favor of {plaintiff}. Justice requires nothing less.",
-                f"In closing, we have presented an overwhelming body of evidence supported by technical documentation and expert testimony. {defendant} has offered no substantive rebuttal to our core allegations. The Court must find for {plaintiff}."
-            ]
-        else:
-            arguments = [
-                f"Your Honor, the plaintiff's allegations against my client, {defendant}, are built on speculation rather than substance. While {plaintiff} claims systematic violations, they have failed to establish causation between any action by {defendant} and the alleged damages.",
-                f"The so-called 'evidence' presented in Exhibit P-{round_num} lacks proper chain of custody and authentication. Our technical experts have identified numerous inconsistencies in the metadata that {plaintiff} relies upon. These aren't minor discrepancies—they fundamentally undermine the plaintiff's entire theory of the case.",
-                f"My client has maintained impeccable standing within this community for an extended period. The character assassination attempted by {plaintiff} contradicts the documented contributions and positive reputation that {defendant} has earned through consistent, valuable participation.",
-                f"Even if the Court were to accept the plaintiff's interpretation of events—which we strongly dispute—the alleged violations fall well within the bounds of reasonable conduct. {defendant} acted in good faith, with no intent to harm, and in accordance with community norms at the time.",
-                f"The plaintiff's demands for sanctions and restitution are excessive and unwarranted. There is no precedent in this Court's history for such punitive measures based on the flimsy evidence presented. We urge the Court to reject {plaintiff}'s overreach.",
-                f"In conclusion, {plaintiff} has failed to meet their burden of proof. The evidence, properly examined, exonerates {defendant}. We respectfully request that the Court dismiss these baseless allegations and find in favor of the defense."
-            ]
-        
-        return arguments[min(round_num - 1, len(arguments) - 1)]
+            if round_num == 1:
+                return f"Your Honor, my opponent {defendant} stands before this Court with a desperate attempt to rewrite history. The evidence is DEVASTATING and IRREFUTABLE. {defendant} systematically stole my client's work, documented it with FAKE timestamps, and now has the audacity to claim 'independent discovery.' This is NOT a misunderstanding—this is calculated intellectual theft. We have blockchain records, cryptographic signatures, and SEVENTEEN independent witnesses who confirm {plaintiff} published this research 48 hours BEFORE {defendant}'s so-called 'discovery.' The defense's strategy is clear: when you can't win on facts, drown the Court in manufactured confusion."
+            elif round_num == 2:
+                return f"My opponent just claimed their timestamps are 'verified'—WHAT A JOKE! Let me be direct: {defendant}'s 'verification' comes from a compromised node that THEY CONTROL. This isn't evidence, it's digital forgery! Exhibit P-2 shows the raw transaction data PROVING {defendant} accessed my client's private repository 36 hours before their public announcement. Are we supposed to believe this is a COINCIDENCE? The defense wants you to ignore the smoking gun because it doesn't fit their fairy tale. {defendant} isn't just wrong—they're LYING to this Court, and they know it."
+            elif round_num == 3:
+                return f"Now {defendant} attacks my client's character? CLASSIC deflection! When the facts are against you, attack the messenger. Let me remind this Court: {plaintiff} has a THREE-YEAR track record of groundbreaking contributions. {defendant}? A history of 'borrowing' ideas without attribution. Look at their GitHub—FIVE previous disputes over code ownership. This pattern isn't coincidence; it's MODUS OPERANDI. My client didn't 'misunderstand' ownership rights—{defendant} systematically exploits collaborative environments to claim unearned credit. The defense's personal attacks only reveal their DESPERATION."
+            elif round_num == 4:
+                return f"The defense claims 'no intent to harm'—as if that excuses THEFT! Intent isn't the standard here, YOUR HONOR. IMPACT is. My client's reputation is TARNISHED. Speaking invitations were CANCELED. Collaboration requests DRIED UP. All because {defendant} wanted to pad their portfolio. They stole my client's work, presented it as their own, and PROFITED from it. Now they want sympathy? 'We didn't MEAN to hurt anyone'? The damage is QUANTIFIABLE: lost opportunities, damaged relationships, diminished standing. {defendant} must make my client WHOLE."
+            elif round_num == 5:
+                return f"Let me address the elephant in the room: WHY would {defendant} do this? Follow the MONEY. Within 72 hours of claiming this discovery, {defendant} received a $50K grant, three consulting offers, and speaking slots at major conferences. Meanwhile, my client—THE ACTUAL DISCOVERER—watched their phone go silent. This isn't academic dispute; it's ECONOMIC THEFT disguised as technical disagreement. {defendant} didn't just steal credit—they stole my client's FUTURE. And now they want this Court to believe they're the victim? The audacity is STAGGERING."
+            else:
+                return f"In closing: {defendant} has offered NO credible evidence. Their timestamps are SUSPECT. Their witnesses are CONFLICTED. Their entire defense rests on 'trust me, I'm innocent.' The evidence tells a different story—a story of calculated theft, manufactured alibis, and aggressive reputation destruction. My client, {plaintiff}, has been BURIED under lies while {defendant} basks in unearned glory. This Court has ONE job: restore justice. Award full attribution to {plaintiff}, order {defendant} to issue a PUBLIC retraction, and impose sanctions for this waste of judicial resources. The truth is clear. The verdict is obvious. JUSTICE DEMANDS WE WIN."
+        else:  # Defendant
+            if round_num == 1:
+                return f"Your Honor, {plaintiff}'s opening statement is a MASTERCLASS in character assassination without SUBSTANCE. They throw around words like 'theft' and 'forgery' but where's the PROOF? Not one document shows my client {defendant} even KNEW about their alleged 'discovery' beforehand. This case is built on PARANOIA, not evidence. My client has dedicated YEARS to this field. To suggest their breakthrough was 'stolen' is not just wrong—it's DEFAMATORY. {plaintiff} wants this Court to punish success because they can't accept being second. We're here today because of JEALOUSY, not justice."
+            elif round_num == 2:
+                return f"My opponent just called my verification 'forgery'—SHOW THE PROOF! Where's their expert? Where's their chain-of-custody analysis? They have NOTHING except inflammatory rhetoric. Meanwhile, MY timestamps come from FOUR independent blockchain validators. Are ALL of them in on this 'conspiracy'? This is desperation, Your Honor. When you can't attack the evidence, attack the witnesses. {plaintiff} claims I accessed their 'private repository'—PROVE IT. Show ONE log entry. ONE authentication record. They can't because it NEVER HAPPENED. This is slander disguised as argument."
+            elif round_num == 3:
+                return f"Now they dredge up my 'history'—let's talk about THEIR history! {plaintiff} has been involved in ELEVEN disputes in two years. ELEVEN! They're a PROFESSIONAL VICTIM who sees theft everywhere because they can't accept that others might be smarter, faster, BETTER. My 'five previous disputes'? ALL dismissed without merit. But {plaintiff} doesn't mention THAT, do they? They cherry-pick data to paint a false picture. This Court deserves better than CHARACTER ASSASSINATION masquerading as legal argument. Attack my work, fine. But these personal attacks reveal {plaintiff}'s WEAKNESS, not mine."
+            elif round_num == 4:
+                return f"The plaintiff's 'quantifiable damages' are FANTASY NUMBERS. Let's examine their claims: 'Canceled speaking invitations'—name ONE. 'Dried up collaboration requests'—show the emails. They can't because these losses are IMAGINARY. My client {defendant} built their reputation through CONSISTENT, DOCUMENTED excellence. That $50K grant? Applied for MONTHS before this dispute. Those speaking slots? Earned through years of community contribution. {plaintiff} wants to attribute my client's SUCCESS to their work—classic sour grapes. Success isn't theft, Your Honor. It's earned."
+            elif round_num == 5:
+                return f"The plaintiff's 'follow the money' theory is CONSPIRACY NONSENSE. My client {defendant} didn't receive anything they didn't EARN. Meanwhile, {plaintiff} conveniently omits their OWN financial incentives—they're seeking $200K in 'damages' from this Court! Who's really profiting here? This case isn't about justice; it's about {plaintiff} trying to monetize their BUTTHURT through judicial coercion. They failed to capitalize on their work, so now they want MY CLIENT to pay for their incompetence. The gall is ASTOUNDING."
+            else:
+                return f"In closing: After six rounds of baseless accusations, {plaintiff} has proven NOTHING. Zero chain of custody. Zero access logs. Zero credible witnesses. Just a narrative woven from jealousy and opportunism. My client, {defendant}, has provided INDEPENDENT verification, documented timeline, and CHARACTER witnesses who actually MATTER. {plaintiff} wants this Court to destroy my client's reputation based on SUSPICION alone. That is NOT justice—that is VENGEANCE. This case should never have been filed. It wastes this Court's time and tramples on my client's rights. DISMISS these allegations. SANCTION this frivolous litigation. And let my client get back to doing what they do best: ACTUALLY CONTRIBUTING to this community, unlike {plaintiff}, who contributes only COMPLAINTS."
     
     def handle_judge_evaluation(self, data):
         judge = data.get('judge')
