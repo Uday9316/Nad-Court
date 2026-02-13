@@ -384,11 +384,24 @@ function App() {
         await new Promise(r => setTimeout(r, 3000))
       }
       
+      // Arguments complete - pause before judges
+      await new Promise(r => setTimeout(r, 2000))
+      
       // Judge evaluations - CALL API
       setMessages(prev => [...prev, {
         id: Date.now(),
         author: 'COURT',
-        content: '══════════════════ JUDGES EVALUATING ══════════════════',
+        content: '══════════════════ ARGUMENTS COMPLETE ══════════════════',
+        role: 'system',
+        type: 'round'
+      }])
+      
+      await new Promise(r => setTimeout(r, 1000))
+      
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        author: 'COURT',
+        content: '══════════════════ JUDGES DELIBERATING ══════════════════',
         role: 'system',
         type: 'round'
       }])
