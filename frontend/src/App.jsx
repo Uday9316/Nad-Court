@@ -4,13 +4,21 @@ import './App.css'
 
 // Contract config
 const CONTRACT_ADDRESS = '0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458'
-const MONAD_RPC = 'https://rpc.monad.xyz' // Replace with actual Monad RPC
+const JUSTICE_TOKEN_ADDRESS = '0x9f89c2FeFC54282EbD913933FcFc1EEa1A1C7777'
+const MONAD_RPC = 'https://rpc.monad.xyz'
 
 // Contract ABI (minimal for submitArgument)
 const CONTRACT_ABI = [
   'function submitArgument(uint256 _caseId, bool _isPlaintiff, string calldata _content) external',
   'function cases(uint256) view returns (uint256 id, address defendant, address reporter, address judge, address plaintiffAgent, address defendantAgent, uint256 argumentCount, uint8 status, uint8 punishment, uint256 createdAt, uint256 judgedAt, uint256 executedAt, uint256 appealDeadline, bool appealFiled, uint256 appealStake)',
   'event ArgumentSubmitted(uint256 indexed caseId, address indexed submitter, bool isPlaintiff, uint256 round)'
+]
+
+// $JUSTICE Token ABI (ERC20)
+const JUSTICE_TOKEN_ABI = [
+  'function balanceOf(address account) view returns (uint256)',
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)'
 ]
 
 // Agent wallet (for demo - in production this would be env variable)
@@ -867,9 +875,18 @@ function App() {
         const network = await provider.getNetwork()
         console.log('Connected to:', network.name, network.chainId)
         
-        // TODO: Fetch actual $JUSTICE balance from contract
-        // For now using demo balance
-        setJusticeBalance(25000)
+        // Fetch actual $JUSTICE balance from contract
+        try {
+          const justiceContract = new ethers.Contract(JUSTICE_TOKEN_ADDRESS, JUSTICE_TOKEN_ABI, provider)
+          const balance = await justiceContract.balanceOf(address)
+          const decimals = await justiceContract.decimals()
+          const formattedBalance = Number(ethers.formatUnits(balance, decimals))
+          setJusticeBalance(formattedBalance)
+          console.log('$JUSTICE Balance:', formattedBalance)
+        } catch (err) {
+          console.error('Failed to fetch $JUSTICE balance:', err)
+          setJusticeBalance(0)
+        }
         setWalletConnected(true)
         
       } catch (error) {
