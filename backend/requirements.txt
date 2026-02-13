@@ -1,5 +1,0 @@
-# Agent Court Backend Dependencies
-# Python 3.11+ required
-
-# No external dependencies - uses only standard library
-# OpenClaw CLI must be installed separately
