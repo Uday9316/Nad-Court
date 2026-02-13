@@ -399,25 +399,24 @@ function App() {
     
     setIsLive(true)
     
-    // Fetch AI-generated case first
-    console.log('Fetching AI-generated case...')
-    const generatedCase = await fetchGeneratedCase()
-    console.log('Generated case:', generatedCase)
-    
-    const caseData = generatedCase || {
-      case_id: 'BEEF-4760',
-      case_type: 'Beef Resolution',
-      plaintiff: 'Bitlover082',
-      defendant: '0xCoha',
-      summary: 'Dispute over bug discovery attribution'
-    }
-    
     let argCount = 0
     let evaluationCount = 0
     const plaintiffArgs = []
     const defendantArgs = []
     
     const runLiveCase = async () => {
+      // Fetch AI-generated case first
+      console.log('Fetching AI-generated case...')
+      const generatedCase = await fetchGeneratedCase()
+      console.log('Generated case:', generatedCase)
+      
+      const caseData = generatedCase || {
+        case_id: 'BEEF-4760',
+        case_type: 'Beef Resolution',
+        plaintiff: 'Bitlover082',
+        defendant: '0xCoha',
+        summary: 'Dispute over bug discovery attribution'
+      }
       // Generate 6 rounds (12 arguments) via API
       for (let round = 1; round <= 6; round++) {
         // Update round counter (no visible round markers in UI)
