@@ -260,34 +260,101 @@ Return ONLY the argument:"""
                 
             elif self.path == '/api/judge-evaluation':
                 judge = data.get('judge', 'PortDev')
-                judge_data = JUDGE_EVALUATIONS.get(judge, JUDGE_EVALUATIONS['PortDev'])
+                plaintiff_args = data.get('plaintiffArgs', [])
+                defendant_args = data.get('defendantArgs', [])
                 
-                # Generate varied scores based on judge personality
+                # Try OpenClaw for dynamic judge evaluation
+                openclaw_cmd = find_openclaw()
+                if openclaw_cmd and plaintiff_args and defendant_args:
+                    try:
+                        # Create a summary of arguments for the prompt
+                        p_summary = ' '.join(plaintiff_args[-2:])[:200] if plaintiff_args else 'Plaintiff claims theft'
+                        d_summary = ' '.join(defendant_args[-2:])[:200] if defendant_args else 'Defendant claims innocence'
+                        
+                        prompt = f"""You are Judge {judge} in Agent Court. Analyze this case and return ONLY a JSON object.
+
+Plaintiff arguments: {p_summary}
+Defendant arguments: {d_summary}
+
+Return EXACTLY this JSON format (no other text):
+{{
+  "plaintiff": {{"logic": 85, "evidence": 90, "rebuttal": 80, "clarity": 88}},
+  "defendant": {{"logic": 70, "evidence": 65, "rebuttal": 75, "clarity": 72}},
+  "reasoning": "Your analysis here",
+  "winner": "plaintiff"
+}}
+
+Be fair but consider the evidence. Scores 60-95."""
+                        
+                        result = subprocess.run(
+                            [openclaw_cmd, "agent", "--local", "--session-id", f"judge_{judge}_{int(time.time())}", "-m", prompt],
+                            capture_output=True,
+                            text=True,
+                            timeout=30
+                        )
+                        if result.returncode == 0 and result.stdout.strip():
+                            # Extract JSON from response
+                            import re
+                            json_match = re.search(r'\{.*\}', result.stdout.strip(), re.DOTALL)
+                            if json_match:
+                                eval_data = json.loads(json_match.group())
+                                eval_data['plaintiff']['total'] = sum(eval_data['plaintiff'].values()) // 4
+                                eval_data['defendant']['total'] = sum(eval_data['defendant'].values()) // 4
+                                self.send_json({
+                                    'success': True,
+                                    'judge': judge,
+                                    'evaluation': eval_data,
+                                    'source': 'openclaw_ai'
+                                })
+                                return
+                    except Exception as e:
+                        print(f"OpenClaw judge eval failed: {e}, using fallback")
+                
+                # Fallback to dynamic scoring
+                judge_data = JUDGE_EVALUATIONS.get(judge, JUDGE_EVALUATIONS['PortDev'])
                 bias = judge_data['plaintiff_bias']
-                base_plaintiff = 70 + random.randint(5, 15) + bias
-                base_defendant = 70 + random.randint(5, 15) - bias
+                
+                # Random but realistic scores
+                p_scores = {
+                    'logic': min(100, random.randint(75, 95) + bias),
+                    'evidence': min(100, random.randint(78, 98) + bias),
+                    'rebuttal': min(100, random.randint(72, 92) + bias),
+                    'clarity': min(100, random.randint(76, 96) + bias)
+                }
+                d_scores = {
+                    'logic': min(100, random.randint(68, 88) - bias),
+                    'evidence': min(100, random.randint(65, 85) - bias),
+                    'rebuttal': min(100, random.randint(70, 90) - bias),
+                    'clarity': min(100, random.randint(66, 86) - bias)
+                }
+                
+                p_total = sum(p_scores.values()) // 4
+                d_total = sum(d_scores.values()) // 4
+                
+                # Dynamic reasoning based on who won
+                if p_total > d_total:
+                    reasonings = [
+                        f"{judge}: Plaintiff's evidence is compelling. Technical documentation supports their timeline.",
+                        f"{judge}: Blockchain records don't lie. Plaintiff has the stronger case.",
+                        f"{judge}: Precedent favors the original discoverer. Plaintiff wins on merit."
+                    ]
+                else:
+                    reasonings = [
+                        f"{judge}: Defendant provided credible independent research documentation.",
+                        f"{judge}: Insufficient proof of access. Defendant's timeline holds up.",
+                        f"{judge}: Burden of proof not met by plaintiff. Defendant is more credible."
+                    ]
                 
                 self.send_json({
                     'success': True,
                     'judge': judge,
                     'evaluation': {
-                        'plaintiff': {
-                            'logic': min(100, base_plaintiff + random.randint(-5, 5)),
-                            'evidence': min(100, base_plaintiff + random.randint(-3, 8)),
-                            'rebuttal': min(100, base_plaintiff + random.randint(-5, 5)),
-                            'clarity': min(100, base_plaintiff + random.randint(-3, 3)),
-                            'total': 0  # Will be calculated on frontend
-                        },
-                        'defendant': {
-                            'logic': min(100, base_defendant + random.randint(-5, 5)),
-                            'evidence': min(100, base_defendant + random.randint(-8, 3)),
-                            'rebuttal': min(100, base_defendant + random.randint(-5, 5)),
-                            'clarity': min(100, base_defendant + random.randint(-3, 3)),
-                            'total': 0
-                        },
-                        'reasoning': judge_data['reasoning'],
-                        'winner': 'plaintiff' if base_plaintiff > base_defendant else 'defendant'
-                    }
+                        'plaintiff': {**p_scores, 'total': p_total},
+                        'defendant': {**d_scores, 'total': d_total},
+                        'reasoning': random.choice(reasonings),
+                        'winner': 'plaintiff' if p_total > d_total else 'defendant'
+                    },
+                    'source': 'dynamic_fallback'
                 })
             else:
                 self.send_error(404)
