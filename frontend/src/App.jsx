@@ -90,8 +90,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - ngrok (updates every 2 hours)
-const API_URL = 'https://9958-51-20-69-171.ngrok-free.app'
+// Backend API URL - from environment variable or fallback
+const API_URL = import.meta.env.VITE_API_URL || 'https://9958-51-20-69-171.ngrok-free.app'
 
 // Fetch AI-generated case
 const fetchGeneratedCase = async () => {
