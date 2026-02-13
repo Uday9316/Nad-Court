@@ -27,6 +27,34 @@ import jamesImg from './assets/james.jpg'
 import harpalImg from './assets/harpal.jpg'
 import anagoImg from './assets/anago.jpg'
 
+// Meme images for reactions (using reliable external URLs)
+const MEME_IMAGES = {
+  plaintiff: [
+    'https://i.imgflip.com/30b1gx.jpg', // Drake pointing (yes)
+    'https://i.imgflip.com/1bij.jpg',   // Disaster girl
+    'https://i.imgflip.com/26am.jpg',   // Y U No
+    'https://i.imgflip.com/1otk96.jpg', // Mocking Spongebob
+    'https://i.imgflip.com/4t0m5.jpg',  // Roll Safe
+    'https://i.imgflip.com/1ur9b0.jpg', // Expanding brain
+  ],
+  defendant: [
+    'https://i.imgflip.com/1bgw.jpg',   // Philosoraptor
+    'https://i.imgflip.com/26br.jpg',   // Skeptical Fry
+    'https://i.imgflip.com/1bhk.jpg',   // Conspiracy Keanu
+    'https://i.imgflip.com/9ehk.jpg',   // This is fine dog
+    'https://i.imgflip.com/3lmzyx.jpg', // Panik Kalm Panik
+    'https://i.imgflip.com/1wz1x.jpg',  // Distracted boyfriend
+  ],
+  spicy: [
+    'https://i.imgflip.com/1ii4cw.jpg', // Surprised Pikachu
+    'https://i.imgflip.com/1bgs.jpg',   // Foul bachelor frog
+    'https://i.imgflip.com/3oevdk.jpg', // Always has been
+    'https://i.imgflip.com/24y43o.jpg', // Buff Doge vs Cheems
+    'https://i.imgflip.com/23ls.jpg',   // Success kid
+    'https://i.imgflip.com/1bh8.jpg',   // Scumbag Steve
+  ]
+}
+
 // Sample data
 const CASES = [
   { id: 'BEEF-4760', status: 'live', plaintiff: 'Bitlover082', defendant: '0xCoha', round: 'Round 2 of 5', type: 'Beef Resolution' },
@@ -347,13 +375,15 @@ function App() {
         console.log(`Plaintiff arg received:`, pArg ? pArg.substring(0, 50) + '...' : 'FAILED')
         if (pArg) {
           plaintiffArgs.push(pArg)
+          const randomMeme = MEME_IMAGES.plaintiff[Math.floor(Math.random() * MEME_IMAGES.plaintiff.length)]
           await new Promise(resolve => {
             setMessages(prev => [...prev, {
               id: Date.now() + Math.random(),
               author: MOLTBOOK_AGENTS.plaintiff.name,
               content: pArg,
               role: 'plaintiff',
-              type: 'argument'
+              type: 'argument',
+              memeUrl: randomMeme
             }])
             setPlaintiffHealth(prev => Math.min(100, prev + 2))
             setTimeout(resolve, 100)
@@ -368,13 +398,15 @@ function App() {
         console.log(`Defendant arg received:`, dArg ? dArg.substring(0, 50) + '...' : 'FAILED')
         if (dArg) {
           defendantArgs.push(dArg)
+          const randomMeme = MEME_IMAGES.defendant[Math.floor(Math.random() * MEME_IMAGES.defendant.length)]
           await new Promise(resolve => {
             setMessages(prev => [...prev, {
               id: Date.now() + Math.random(),
               author: MOLTBOOK_AGENTS.defendant.name,
               content: dArg,
               role: 'defendant',
-              type: 'argument'
+              type: 'argument',
+              memeUrl: randomMeme
             }])
             setDefendantHealth(prev => Math.min(100, prev + 2))
             setTimeout(resolve, 100)
@@ -1223,6 +1255,12 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                       {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
                       {m.type === 'chain' && <span className="chain-badge">⛓️ ON-CHAIN</span>}
                       <div className="message-content">{m.content}</div>
+                      {/* Meme reaction for arguments */}
+                      {m.type === 'argument' && m.memeUrl && (
+                        <div className="meme-reaction">
+                          <img src={m.memeUrl} alt="Reaction" loading="lazy" />
+                        </div>
+                      )}
                       {m.type === 'evaluation' && m.criteria && (
                         <div className="criteria-scores">
                           <div className="criteria-side">
