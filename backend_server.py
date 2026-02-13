@@ -166,58 +166,88 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     args_list = DEFENDANT_ARGS
                     agent_name = 'NadCourt-Defender'
                 
-                # Get base argument for this round
-                base_arg = args_list[min(round_num - 1, len(args_list) - 1)]
-                
-                # Try to generate unique argument with OpenClaw
+                # Try to generate TRULY UNIQUE argument with OpenClaw
                 openclaw_cmd = find_openclaw()
                 if openclaw_cmd:
                     try:
+                        # Pick a random angle/template to ensure variety
+                        angles = [
+                            "focus on the timeline discrepancy",
+                            "emphasize the technical evidence", 
+                            "attack opponent's credibility",
+                            "highlight the financial damages",
+                            "stress the pattern of behavior",
+                            "question the coincidence probability"
+                        ]
+                        angle = random.choice(angles)
+                        
                         prompt = f"""You are {agent_name}, a passionate AI legal advocate in Agent Court.
 Case: {case_data.get('summary', 'Security vulnerability discovery dispute')}
 Your position: {role}
 Round: {round_num} of 6
+Angle to emphasize: {angle}
 
-Generate ONE short, punchy argument (1-2 sentences MAXIMUM, ~50-80 words).
-Use fiery language like "Your Honor", "theft", "proof".
-Be confrontational but CONCISE. Short and punchy beats long and detailed.
+Generate ONE completely unique, short argument (1-2 sentences, ~50-80 words).
+CRITICAL: Make this DIFFERENT from previous arguments. Use the angle above.
+Use fiery language. Be confrontational and CONCISE.
 
-Return ONLY the short argument:"""
+Return ONLY the argument:"""
                         
                         result = subprocess.run(
-                            [openclaw_cmd, "agent", "--local", "--session-id", f"court_{int(time.time())}_{random.randint(1000,9999)}", "-m", prompt],
+                            [openclaw_cmd, "agent", "--local", "--session-id", f"court_{int(time.time())}_{random.randint(1,100000)}", "-m", prompt],
                             capture_output=True,
                             text=True,
                             timeout=45
                         )
-                        if result.returncode == 0 and result.stdout.strip() and len(result.stdout.strip()) > 50:
+                        if result.returncode == 0 and result.stdout.strip() and len(result.stdout.strip()) > 30:
                             argument = result.stdout.strip()
-                            self.send_json({
-                                'success': True,
-                                'agent': agent_name,
-                                'role': role,
-                                'argument': argument,
-                                'round': round_num,
-                                'source': 'openclaw_ai'
-                            })
-                            return
+                            # Check if it's actually different (not just same text)
+                            if argument not in args_list:
+                                self.send_json({
+                                    'success': True,
+                                    'agent': agent_name,
+                                    'role': role,
+                                    'argument': argument,
+                                    'round': round_num,
+                                    'source': 'openclaw_ai'
+                                })
+                                return
                     except Exception as e:
                         print(f"OpenClaw failed: {e}, using dynamic fallback")
                 
-                # Dynamic fallback: shuffle sentences and add variations
-                sentences = base_arg.split('. ')
-                if len(sentences) > 2:
-                    random.shuffle(sentences[1:-1])  # Shuffle middle sentences
+                # TRULY RANDOM fallback - pick from ALL arguments with random variations
+                import random
                 
-                variations = [
-                    " Your Honor, the evidence speaks for itself.",
-                    " This is not mere coincidence—it is deliberate intellectual theft.",
-                    " The blockchain records are immutable and damning.",
-                    " My opponent's credibility crumbles under scrutiny.",
-                    " Justice demands we acknowledge the truth here."
+                # Pick a random argument from ANY round to ensure variety
+                random_base = random.choice(args_list)
+                
+                # Break into parts and randomly reassemble
+                parts = random_base.split('. ')
+                if len(parts) >= 2:
+                    # Randomly select 1-2 parts and shuffle
+                    selected = random.sample(parts, min(2, len(parts)))
+                    random.shuffle(selected)
+                    base = '. '.join(selected)
+                else:
+                    base = random_base
+                
+                # Add random opening and closing phrases for variety
+                openings = [
+                    "Your Honor, ",
+                    "The evidence shows ",
+                    "It is clear that ",
+                    "The record proves ",
+                    "Simply put, "
+                ]
+                closings = [
+                    " This cannot be ignored.",
+                    " Justice requires action.",
+                    " The proof is undeniable.",
+                    " This is the truth.",
+                    " Facts don't lie."
                 ]
                 
-                argument = '. '.join(sentences) + random.choice(variations)
+                argument = random.choice(openings) + base + random.choice(closings)
                 
                 self.send_json({
                     'success': True,
@@ -225,7 +255,7 @@ Return ONLY the short argument:"""
                     'role': role,
                     'argument': argument,
                     'round': round_num,
-                    'source': 'dynamic_fallback'
+                    'source': 'random_dynamic'
                 })
                 
             elif self.path == '/api/judge-evaluation':
