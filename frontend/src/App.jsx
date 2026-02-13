@@ -30,6 +30,7 @@ import jamesMeme from './assets/james-meme.jpg'
 import keoneMeme from './assets/keone-meme.jpg'
 import portdevMeme from './assets/portdev-meme.jpg'
 import mikewebMeme from './assets/mikeweb-meme.jpg'
+import anagoMeme from './assets/anago-meme.jpg'
 
 // Meme images for reactions (using reliable external URLs)
 const MEME_IMAGES = {
@@ -1293,6 +1294,11 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                       {m.type === 'evaluation' && m.author && m.author.includes('Keone') && (
                         <div className="judge-meme">
                           <img src={keoneMeme} alt="Keone reaction" loading="lazy" />
+                        </div>
+                      )}
+                      {m.type === 'evaluation' && m.author && m.author.includes('Anago') && (
+                        <div className="judge-meme">
+                          <img src={anagoMeme} alt="Anago reaction" loading="lazy" />
                         </div>
                       )}
                     </div>
