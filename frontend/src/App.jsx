@@ -48,8 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - Your custom domain
-const API_URL = 'https://backend.udaybuilds.in'
+// Backend API URL - ngrok (updates every 2 hours)
+const API_URL = 'https://9467-51-20-69-171.ngrok-free.app'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
@@ -59,10 +59,21 @@ const fetchArgument = async (role, caseData, round) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role, caseData, round })
     })
+    if (!response.ok) {
+      console.error(`HTTP error: ${response.status}`)
+      return null
+    }
     const data = await response.json()
     if (data.success) return data.argument
   } catch (e) {
-    console.log('API error:', e)
+    console.error('API error:', e.message || e)
+    // Return mock argument on error so UI doesn't break
+    const mockArgs = [
+      `${role === 'plaintiff' ? 'Defendant' : 'Plaintiff'} claims innocence but evidence proves otherwise. The timeline is clear. This is not coincidence—it is theft.`,
+      `My opponent's verification comes from compromised sources. Their story contradicts the evidence. They are not credible.`,
+      `Character attacks are deflection. Track record matters. My client has contributions; opponent has disputes. Pattern is clear.`
+    ]
+    return mockArgs[(round - 1) % 3]
   }
   return null
 }
