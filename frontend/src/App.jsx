@@ -48,8 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - update this if AWS IP changes
-const API_URL = 'http://51.20.69.171:3001'
+// Backend API URL - Render HTTPS endpoint
+const API_URL = 'https://nad-court.onrender.com'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
