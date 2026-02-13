@@ -337,10 +337,15 @@ function App() {
   // Auto-scroll to bottom when new messages arrive
   const messagesContainerRef = useRef(null)
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      const container = messagesContainerRef.current
-      container.scrollTop = container.scrollHeight
+    const scrollToBottom = () => {
+      if (messagesContainerRef.current) {
+        const container = messagesContainerRef.current
+        container.scrollTop = container.scrollHeight
+      }
     }
+    // Small delay to ensure content is rendered
+    const timeoutId = setTimeout(scrollToBottom, 100)
+    return () => clearTimeout(timeoutId)
   }, [messages])
 
   // Reset case state when entering live view (fresh start each time)
