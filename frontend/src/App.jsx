@@ -48,7 +48,8 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://51.20.69.171:3001'
+// Backend API URL - update this if AWS IP changes
+const API_URL = 'http://51.20.69.171:3001'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
@@ -327,46 +328,59 @@ function App() {
     const runLiveCase = async () => {
       // Generate 6 rounds (12 arguments) via API
       for (let round = 1; round <= 6; round++) {
-        // Update round display
+        // Update round display (skip for round 1)
         if (round > 1) {
           setCurrentRound(round)
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            author: 'COURT',
-            content: `═══════════════════ ROUND ${round} ═══════════════════`,
-            role: 'system',
-            type: 'round'
-          }])
+          await new Promise(resolve => {
+            setMessages(prev => [...prev, {
+              id: Date.now() + Math.random(),
+              author: 'COURT',
+              content: `═══════════════════ ROUND ${round} ═══════════════════`,
+              role: 'system',
+              type: 'round'
+            }])
+            setTimeout(resolve, 100)
+          })
         }
         
         // Plaintiff argument - CALL API
+        console.log(`Fetching plaintiff argument for round ${round}...`)
         const pArg = await fetchArgument('plaintiff', caseData, round)
+        console.log(`Plaintiff arg received:`, pArg ? pArg.substring(0, 50) + '...' : 'FAILED')
         if (pArg) {
           plaintiffArgs.push(pArg)
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            author: MOLTBOOK_AGENTS.plaintiff.name,
-            content: pArg,
-            role: 'plaintiff',
-            type: 'argument'
-          }])
-          setPlaintiffHealth(prev => Math.min(100, prev + 2))
+          await new Promise(resolve => {
+            setMessages(prev => [...prev, {
+              id: Date.now() + Math.random(),
+              author: MOLTBOOK_AGENTS.plaintiff.name,
+              content: pArg,
+              role: 'plaintiff',
+              type: 'argument'
+            }])
+            setPlaintiffHealth(prev => Math.min(100, prev + 2))
+            setTimeout(resolve, 100)
+          })
         }
         argCount++
         await new Promise(r => setTimeout(r, 3000))
         
         // Defendant argument - CALL API
+        console.log(`Fetching defendant argument for round ${round}...`)
         const dArg = await fetchArgument('defendant', caseData, round)
+        console.log(`Defendant arg received:`, dArg ? dArg.substring(0, 50) + '...' : 'FAILED')
         if (dArg) {
           defendantArgs.push(dArg)
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            author: MOLTBOOK_AGENTS.defendant.name,
-            content: dArg,
-            role: 'defendant',
-            type: 'argument'
-          }])
-          setDefendantHealth(prev => Math.min(100, prev + 2))
+          await new Promise(resolve => {
+            setMessages(prev => [...prev, {
+              id: Date.now() + Math.random(),
+              author: MOLTBOOK_AGENTS.defendant.name,
+              content: dArg,
+              role: 'defendant',
+              type: 'argument'
+            }])
+            setDefendantHealth(prev => Math.min(100, prev + 2))
+            setTimeout(resolve, 100)
+          })
         }
         argCount++
         await new Promise(r => setTimeout(r, 3000))
