@@ -139,8 +139,16 @@ Professional legal tone. No game references. Return ONLY the argument text."""
         pass
 
 if __name__ == '__main__':
-    with socketserver.TCPServer(("0.0.0.0", PORT), Handler) as httpd:
-        print(f"\n🤖 AGENT COURT API (OpenClaw)")
-        print(f"Running on http://0.0.0.0:{PORT}")
-        print(f"Press Ctrl+C to stop\n")
+    print(f"\n🤖 AGENT COURT API (OpenClaw)")
+    print(f"Starting server on port {PORT}...")
+    print(f"Environment PORT={os.environ.get('PORT', 'not set')}")
+    
+    # Use ThreadingTCPServer for better concurrent handling
+    class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+        allow_reuse_address = True
+        daemon_threads = True
+    
+    with ThreadedHTTPServer(("0.0.0.0", PORT), Handler) as httpd:
+        print(f"✅ Server running on http://0.0.0.0:{PORT}")
+        print(f"Health check: http://0.0.0.0:{PORT}/api/health\n")
         httpd.serve_forever()
