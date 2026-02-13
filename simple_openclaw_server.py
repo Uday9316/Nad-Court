@@ -139,16 +139,32 @@ Professional legal tone. No game references. Return ONLY the argument text."""
         pass
 
 if __name__ == '__main__':
-    print(f"\n🤖 AGENT COURT API (OpenClaw)")
-    print(f"Starting server on port {PORT}...")
-    print(f"Environment PORT={os.environ.get('PORT', 'not set')}")
+    import sys
+    print(f"\n🤖 AGENT COURT API (OpenClaw)", flush=True)
+    print(f"Python version: {sys.version}", flush=True)
+    print(f"Starting server on port {PORT}...", flush=True)
+    print(f"Environment PORT={os.environ.get('PORT', 'not set')}", flush=True)
+    
+    # Test OpenClaw availability
+    try:
+        result = subprocess.run(['which', 'openclaw'], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"✅ OpenClaw found at: {result.stdout.strip()}", flush=True)
+        else:
+            print(f"⚠️ OpenClaw not found in PATH. API will fail.", flush=True)
+    except Exception as e:
+        print(f"⚠️ Error checking OpenClaw: {e}", flush=True)
     
     # Use ThreadingTCPServer for better concurrent handling
     class ThreadedHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         allow_reuse_address = True
         daemon_threads = True
     
-    with ThreadedHTTPServer(("0.0.0.0", PORT), Handler) as httpd:
-        print(f"✅ Server running on http://0.0.0.0:{PORT}")
-        print(f"Health check: http://0.0.0.0:{PORT}/api/health\n")
+    try:
+        httpd = ThreadedHTTPServer(("0.0.0.0", PORT), Handler)
+        print(f"✅ Server bound to http://0.0.0.0:{PORT}", flush=True)
+        print(f"Health check: http://0.0.0.0:{PORT}/api/health\n", flush=True)
         httpd.serve_forever()
+    except Exception as e:
+        print(f"❌ Failed to start server: {e}", flush=True)
+        sys.exit(1)
