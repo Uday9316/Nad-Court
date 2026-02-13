@@ -93,6 +93,25 @@ const INITIAL_MESSAGES = [
 // Backend API URL - ngrok (updates every 2 hours)
 const API_URL = 'https://f508-51-20-69-171.ngrok-free.app'
 
+// Fetch AI-generated case
+const fetchGeneratedCase = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/generate-case`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (!response.ok) {
+      console.error(`HTTP error: ${response.status}`)
+      return null
+    }
+    const data = await response.json()
+    if (data.success) return data.case
+  } catch (e) {
+    console.error('Case generation error:', e.message || e)
+  }
+  return null
+}
+
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
   try {
@@ -380,9 +399,14 @@ function App() {
     
     setIsLive(true)
     
-    const caseData = {
-      id: 'BEEF-4760',
-      type: 'Beef Resolution',
+    // Fetch AI-generated case first
+    console.log('Fetching AI-generated case...')
+    const generatedCase = await fetchGeneratedCase()
+    console.log('Generated case:', generatedCase)
+    
+    const caseData = generatedCase || {
+      case_id: 'BEEF-4760',
+      case_type: 'Beef Resolution',
       plaintiff: 'Bitlover082',
       defendant: '0xCoha',
       summary: 'Dispute over bug discovery attribution'

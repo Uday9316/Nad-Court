@@ -356,6 +356,100 @@ Be fair but consider the evidence. Scores 60-95."""
                     },
                     'source': 'dynamic_fallback'
                 })
+            elif self.path == '/api/generate-case':
+                # Generate AI case using OpenClaw
+                openclaw_cmd = find_openclaw()
+                case_types = [
+                    'Security vulnerability discovery dispute',
+                    'Smart contract audit attribution conflict',
+                    'DeFi protocol exploit research theft',
+                    'NFT metadata manipulation accusation',
+                    'DAO governance proposal plagiarism',
+                    'Cross-chain bridge vulnerability claim',
+                    'MEV bot strategy theft allegation',
+                    'Validator slashing evidence dispute'
+                ]
+                case_type = random.choice(case_types)
+                
+                if openclaw_cmd:
+                    try:
+                        prompt = f"""Generate a unique blockchain dispute case for Agent Court.
+
+Case Type: {case_type}
+
+Create a JSON object with:
+- plaintiff: username/name of accuser
+- defendant: username/name of accused  
+- summary: 1-2 sentence description of the dispute
+- evidence_type: what evidence exists (timestamps, logs, contracts, etc.)
+- stakes: what's at stake (bounty amount, reputation, tokens)
+
+Return ONLY valid JSON:
+{{
+  "plaintiff": "CryptoResearcher",
+  "defendant": "BugHunterX",
+  "summary": "Dispute over who discovered critical vulnerability first",
+  "evidence_type": "blockchain timestamps, git commits",
+  "stakes": "$50,000 bug bounty"
+}}"""
+                        
+                        result = subprocess.run(
+                            [openclaw_cmd, "agent", "--local", "--session-id", f"case_{int(time.time())}", "-m", prompt],
+                            capture_output=True,
+                            text=True,
+                            timeout=30
+                        )
+                        if result.returncode == 0 and result.stdout.strip():
+                            import re
+                            json_match = re.search(r'\{.*\}', result.stdout.strip(), re.DOTALL)
+                            if json_match:
+                                case_data = json.loads(json_match.group())
+                                case_data['case_type'] = case_type
+                                case_data['case_id'] = f"CASE-{random.randint(1000, 9999)}"
+                                self.send_json({
+                                    'success': True,
+                                    'case': case_data,
+                                    'source': 'openclaw_ai'
+                                })
+                                return
+                    except Exception as e:
+                        print(f"OpenClaw case generation failed: {e}")
+                
+                # Fallback: Generate random case
+                fallback_cases = [
+                    {
+                        'case_id': f"CASE-{random.randint(1000, 9999)}",
+                        'case_type': 'Security vulnerability dispute',
+                        'plaintiff': 'SecurityResearcher_0x' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'defendant': 'BugBountyHunter_' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'summary': 'Dispute over discovery of critical smart contract vulnerability. Plaintiff claims defendant copied their research.',
+                        'evidence_type': 'blockchain timestamps, research logs',
+                        'stakes': f'${random.randint(10000, 100000)} bug bounty'
+                    },
+                    {
+                        'case_id': f"CASE-{random.randint(1000, 9999)}",
+                        'case_type': 'DeFi exploit attribution',
+                        'plaintiff': 'DeFiAnalyst_' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'defendant': 'WhiteHat_' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'summary': 'Attribution dispute for flash loan vulnerability discovery in major DeFi protocol.',
+                        'evidence_type': 'on-chain transactions, audit reports',
+                        'stakes': f'${random.randint(50000, 500000)} protocol reward'
+                    },
+                    {
+                        'case_id': f"CASE-{random.randint(1000, 9999)}",
+                        'case_type': 'MEV strategy theft',
+                        'plaintiff': 'MEVSearcher_' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'defendant': 'Validator_' + ''.join([random.choice('0123456789abcdef') for _ in range(4)]),
+                        'summary': 'Plaintiff accuses validator of copying their MEV extraction strategy.',
+                        'evidence_type': 'transaction patterns, mempool data',
+                        'stakes': f'{random.randint(50, 500)} ETH in profits'
+                    }
+                ]
+                self.send_json({
+                    'success': True,
+                    'case': random.choice(fallback_cases),
+                    'source': 'random_fallback'
+                })
             else:
                 self.send_error(404)
         except Exception as e:
