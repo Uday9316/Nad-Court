@@ -112,26 +112,15 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if round_num > 1:
             adversarial_hook = f"\nThe opposing counsel just claimed: '{previous_attacks[round_num-2]}'. DIRECTLY REBUT this in 2-3 sentences. Be punchy and aggressive."
         
-        prompt = f"""You are {agent_name}, an aggressive AI legal advocate in Agent Court.
-Generate ONE short, punchy {role} argument for this case.
+        prompt = f"""Generate ONE argument. NO headers. NO titles. NO "Your Honor". NO round numbers. Just 2-3 sentences of raw text.
 
-STRICT REQUIREMENTS:
-- EXACTLY 3-4 sentences maximum
-- MAXIMUM 80 words total (count carefully)
-- NO headers like "ARGUMENT" or "Your Honor"
-- NO signature lines
-- Just the raw argument text
+Case: {case_data.get('summary')}
+{role} side
 
-Case: {case_data.get('id')}
-Plaintiff: {case_data.get('plaintiff')}
-Defendant: {case_data.get('defendant')}
-Summary: {case_data.get('summary')}
-Round: {round_num}{adversarial_hook}
+Example format:
+{defendant} claims independent discovery but blockchain proves {plaintiff} was first. Seventeen witnesses confirm. This isn't coincidence—it's theft.
 
-Example of perfect length:
-"{defendant} claims independent discovery but blockchain records prove {plaintiff} published 48 hours prior. Seventeen witnesses confirm this timeline. This isn't coincidence—it's theft. The defense's own metadata contradicts their story."
-
-Write something similarly short and punchy:"""
+Keep it under 50 words. No labels. Just the argument:"""
         
         # Generate using OpenClaw
         session_id = f"court_{int(time.time())}"
@@ -221,28 +210,27 @@ Write something similarly short and punchy:"""
             })
     
     def generate_mock_argument(self, role, case_data, round_num):
-        """Generate short punchy arguments (3-4 sentences, ~60-80 words)"""
-        case_id = case_data.get('id', 'CASE')
+        """Generate short arguments (2-3 sentences max, ~40-50 words)"""
         plaintiff = case_data.get('plaintiff', 'Plaintiff')
         defendant = case_data.get('defendant', 'Defendant')
         
         if role == 'plaintiff':
             args = [
-                f"{defendant} claims 'independent discovery' but blockchain records prove {plaintiff} published 48 hours earlier. Seventeen witnesses confirm. This isn't coincidence—it's theft. Their 'discovery' appeared immediately after my client's work went public.",
-                f"My opponent's 'verified' timestamps come from a node THEY control. Exhibit P-2 shows {defendant} accessed my client's private repo 36 hours before going public. Are we ignoring the smoking gun? {defendant} is lying to this Court.",
-                f"{defendant} attacks my client's character? Classic deflection. {plaintiff} has three years of contributions; {defendant} has five ownership disputes. This pattern isn't coincidence—it's their MO.",
-                f"The defense claims 'no intent'—as if that excuses theft. My client's speaking invites were canceled, collaborations dried up. {defendant} stole the work and profited. Intent doesn't matter—impact does.",
-                f"Follow the money. Within 72 hours, {defendant} got a $50K grant and conference slots. Meanwhile {plaintiff} watched opportunities vanish. This isn't academic dispute—it's economic theft.",
-                f"{defendant} has no credible evidence. Timestamps are suspect, witnesses conflicted. The evidence shows calculated theft. Award full attribution to {plaintiff}. Justice demands we win."
+                f"{defendant} claims 'independent discovery' but blockchain records prove {plaintiff} was first by 48 hours. Seventeen witnesses confirm. This isn't coincidence—it's theft.",
+                f"My opponent's 'verified' timestamps come from a node THEY control. {defendant} accessed my private repo 36 hours before going public. {defendant} is lying to this Court.",
+                f"{defendant} attacks my character? Classic deflection. {plaintiff} has three years of contributions; {defendant} has five ownership disputes. This is their MO.",
+                f"The defense claims 'no intent' but my speaking invites were canceled. {defendant} stole the work and profited. Intent doesn't matter—impact does.",
+                f"Within 72 hours, {defendant} got a $50K grant. Meanwhile {plaintiff} watched opportunities vanish. This is economic theft, not academic dispute.",
+                f"{defendant} has no credible evidence. Timestamps are suspect. The evidence shows calculated theft. Award full attribution to {plaintiff}."
             ]
         else:
             args = [
-                f"{plaintiff}'s claims are character assassination without substance. Where's the proof? Not one document shows {defendant} knew of their 'discovery.' This is jealousy, not justice.",
-                f"My opponent calls my verification 'forgery'—show the proof! My timestamps come from four independent validators. {plaintiff} claims I accessed their repo—prove it. They can't.",
-                f"They dredge up my 'history'—let's discuss theirs. {plaintiff}: eleven disputes in two years. A professional victim. My disputes? All dismissed. They cherry-pick to paint false pictures.",
-                f"The plaintiff's 'damages' are fantasy. 'Canceled invitations'—name one. They can't because these losses are imaginary. {defendant} built reputation through documented excellence.",
-                f"{plaintiff}'s 'follow the money' theory is conspiracy nonsense. Meanwhile they seek $200K from this Court. Who's profiting? This is monetizing butthurt through judicial coercion.",
-                f"After six rounds, {plaintiff} has proven nothing. Zero chain of custody, zero logs, zero witnesses. Just jealousy. {defendant} provided independent verification. Dismiss these allegations."
+                f"{plaintiff}'s claims are character assassination without substance. Where's the proof? Not one document shows I knew of their 'discovery.' This is jealousy.",
+                f"My opponent calls my verification 'forgery'—show the proof! My timestamps come from four independent validators. {plaintiff} can't prove I accessed their repo.",
+                f"They dredge up my 'history'—let's discuss theirs. {plaintiff}: eleven disputes in two years. A professional victim. My disputes were all dismissed.",
+                f"The plaintiff's 'damages' are fantasy. 'Canceled invitations'—name one. These losses are imaginary. I built reputation through documented excellence.",
+                f"{plaintiff}'s 'follow the money' theory is conspiracy nonsense. Meanwhile they seek $200K from this Court. This is monetizing butthurt.",
+                f"After six rounds, {plaintiff} has proven nothing. Zero logs, zero witnesses. Just jealousy. I provided independent verification. Dismiss these allegations."
             ]
         
         return args[min(round_num - 1, 5)]
