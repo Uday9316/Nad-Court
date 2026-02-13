@@ -1259,7 +1259,6 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                     <span className="live-dot"></span>
                     <span className="live-text">LIVE</span>
                   </div>
-                  <div className="daily-badge"> DAILY CASE</div>
                   <div className="chain-indicator" title="All arguments recorded on-chain">
                     <span className="chain-text">ON-CHAIN</span>
                   </div>
@@ -1339,9 +1338,6 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
 
             {/* Center - Fighters */}
             <div className="court-panel center-panel">
-              <div className="case-info">
-                <span className="case-id">📅 DAILY CASE</span>
-              </div>
               <div className="vs-section">
                 <div className="fighter-card">
                   <div className="fighter-avatar plaintiff-avatar">
