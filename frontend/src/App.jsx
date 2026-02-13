@@ -28,6 +28,7 @@ import harpalImg from './assets/harpal.jpg'
 import anagoImg from './assets/anago.jpg'
 import jamesMeme from './assets/james-meme.jpg'
 import keoneMeme from './assets/keone-meme.jpg'
+import portdevMeme from './assets/portdev-meme.jpg'
 
 // Meme images for reactions (using reliable external URLs)
 const MEME_IMAGES = {
@@ -1273,6 +1274,11 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                         </div>
                       )}
                       {/* Judge memes */}
+                      {m.type === 'evaluation' && m.author && m.author.includes('PortDev') && (
+                        <div className="judge-meme">
+                          <img src={portdevMeme} alt="PortDev reaction" loading="lazy" />
+                        </div>
+                      )}
                       {m.type === 'evaluation' && m.author && m.author.includes('James') && (
                         <div className="judge-meme">
                           <img src={jamesMeme} alt="James reaction" loading="lazy" />
