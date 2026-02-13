@@ -49,7 +49,7 @@ const INITIAL_MESSAGES = [
 
 // API Configuration
 // Backend API URL - ngrok HTTPS endpoint (updates every 2 hours)
-const API_URL = 'https://4326-51-20-69-171.ngrok-free.app'
+const API_URL = 'https://ca6f-51-20-69-171.ngrok-free.app'
 
 // Fetch live argument from API
 const fetchArgument = async (role, caseData, round) => {
