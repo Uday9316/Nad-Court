@@ -291,8 +291,8 @@ function App() {
   // Reset case state when entering live view (fresh start each time)
   useEffect(() => {
     if (view === 'live') {
-      // Reset everything for a fresh case
-      setMessages(INITIAL_MESSAGES)
+      // Reset everything for a fresh case - START EMPTY, will add API-generated arguments
+      setMessages([])  // Start with NO messages - all will come from API
       setCurrentRound(1)
       setPlaintiffHealth(100)
       setDefendantHealth(100)
