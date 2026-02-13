@@ -4,8 +4,37 @@ import socketserver
 import json
 import traceback
 import random
+import subprocess
+import time
+import os
+import shutil
 
-PORT = 3000
+PORT = 3001
+
+# Find OpenClaw binary
+def find_openclaw():
+    """Find OpenClaw binary in common locations"""
+    # Check if in PATH
+    openclaw_path = shutil.which('openclaw')
+    if openclaw_path:
+        return openclaw_path
+    
+    # Check common npm global locations
+    possible_paths = [
+        '/opt/render/.npm-global/bin/openclaw',
+        '/root/.npm-global/bin/openclaw',
+        '/usr/local/bin/openclaw',
+        '/usr/bin/openclaw',
+        '/home/render/.npm-global/bin/openclaw',
+        os.path.expanduser('~/.npm-global/bin/openclaw'),
+        os.path.expanduser('~/.local/bin/openclaw'),
+    ]
+    
+    for path in possible_paths:
+        if os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+    
+    return None
 
 # Plaintiff arguments (Bitlover082) - accusing 0xCoha of theft
 PLAINTIFF_ARGS = [
@@ -127,6 +156,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             if self.path == '/api/generate-argument':
                 role = data.get('role', 'plaintiff')
                 round_num = data.get('round', 1)
+                case_data = data.get('caseData', {})
                 
                 # Select appropriate argument list
                 if role == 'plaintiff':
@@ -136,8 +166,59 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     args_list = DEFENDANT_ARGS
                     agent_name = 'NadCourt-Defender'
                 
-                # Get argument for this round (cycle if beyond length)
-                argument = args_list[min(round_num - 1, len(args_list) - 1)]
+                # Get base argument for this round
+                base_arg = args_list[min(round_num - 1, len(args_list) - 1)]
+                
+                # Try to generate unique argument with OpenClaw
+                openclaw_cmd = find_openclaw()
+                if openclaw_cmd:
+                    try:
+                        prompt = f"""You are {agent_name}, a passionate AI legal advocate in Agent Court.
+Case: {case_data.get('summary', 'Security vulnerability discovery dispute')}
+Your position: {role}
+Round: {round_num} of 6
+
+Generate ONE compelling argument (2-3 sentences) that feels fresh and unique.
+Use fiery language like "Your Honor", "indisputable proof", "calculated theft".
+Reference specific technical details, timestamps, or blockchain data.
+Be confrontational and passionate. Make it different from generic templates.
+
+Return ONLY the argument text:"""
+                        
+                        result = subprocess.run(
+                            [openclaw_cmd, "agent", "--local", "--session-id", f"court_{int(time.time())}_{random.randint(1000,9999)}", "-m", prompt],
+                            capture_output=True,
+                            text=True,
+                            timeout=45
+                        )
+                        if result.returncode == 0 and result.stdout.strip() and len(result.stdout.strip()) > 50:
+                            argument = result.stdout.strip()
+                            self.send_json({
+                                'success': True,
+                                'agent': agent_name,
+                                'role': role,
+                                'argument': argument,
+                                'round': round_num,
+                                'source': 'openclaw_ai'
+                            })
+                            return
+                    except Exception as e:
+                        print(f"OpenClaw failed: {e}, using dynamic fallback")
+                
+                # Dynamic fallback: shuffle sentences and add variations
+                sentences = base_arg.split('. ')
+                if len(sentences) > 2:
+                    random.shuffle(sentences[1:-1])  # Shuffle middle sentences
+                
+                variations = [
+                    " Your Honor, the evidence speaks for itself.",
+                    " This is not mere coincidence—it is deliberate intellectual theft.",
+                    " The blockchain records are immutable and damning.",
+                    " My opponent's credibility crumbles under scrutiny.",
+                    " Justice demands we acknowledge the truth here."
+                ]
+                
+                argument = '. '.join(sentences) + random.choice(variations)
                 
                 self.send_json({
                     'success': True,
@@ -145,7 +226,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     'role': role,
                     'argument': argument,
                     'round': round_num,
-                    'source': 'mock'
+                    'source': 'dynamic_fallback'
                 })
                 
             elif self.path == '/api/judge-evaluation':
