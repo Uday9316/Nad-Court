@@ -1244,7 +1244,6 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
             <div className="court-panel center-panel">
               <div className="case-info">
                 <span className="case-id">📅 DAILY CASE</span>
-                <span className="case-round">Round {currentRound} of 3</span>
               </div>
               <div className="vs-section">
                 <div className="fighter-card">
