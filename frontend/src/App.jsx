@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { ethers } from 'ethers'
 import './App.css'
-import './OpenClawCourt.css'
 
 // Contract config
 const CONTRACT_ADDRESS = '0xb64f18c9EcD475ECF3aac84B11B3774fccFe5458'
