@@ -335,9 +335,11 @@ function App() {
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
   // Auto-scroll to bottom when new messages arrive
+  const messagesContainerRef = useRef(null)
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current
+      container.scrollTop = container.scrollHeight
     }
   }, [messages])
 
@@ -1258,7 +1260,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                   </div>
                 </div>
               </div>
-              <div className="panel-content messages-scroll">
+              <div className="panel-content messages-scroll" ref={messagesContainerRef}>
                 {messages.map(m => (
                   <div key={m.id} className={`message ${m.type} ${m.role}`}>
                     <div className="message-header">
