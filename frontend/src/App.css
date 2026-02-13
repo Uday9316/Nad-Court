@@ -55,6 +55,13 @@ body {
   color: var(--color-text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100vh;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
 }
 
 /* App Container */
@@ -511,6 +518,7 @@ body {
   display: grid;
   grid-template-columns: 320px 1fr 280px;
   height: calc(100vh - 60px);
+  overflow: hidden;
 }
 
 .court-panel {
@@ -518,11 +526,33 @@ body {
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .court-panel:last-child {
   border-right: none;
   border-left: 1px solid var(--color-border);
+}
+
+/* Arguments panel - ONLY this scrolls */
+.court-panel.arguments-panel {
+  overflow: hidden;
+}
+
+.court-panel.arguments-panel .panel-content {
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Other panels - NO scroll */
+.court-panel.center-panel,
+.court-panel.judges-panel {
+  overflow: hidden;
+}
+
+.court-panel.center-panel .panel-content,
+.court-panel.judges-panel .panel-content {
+  overflow: hidden;
 }
 
 .panel-header {
@@ -531,6 +561,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .panel-title {
@@ -542,8 +573,6 @@ body {
 }
 
 .panel-content {
-  flex: 1;
-  overflow-y: auto;
   padding: var(--space-md);
 }
 
