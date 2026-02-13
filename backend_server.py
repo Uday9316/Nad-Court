@@ -4,7 +4,7 @@ import socketserver
 import json
 import traceback
 
-PORT = 3003
+PORT = 3000
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def log_message(self, format, *args):
