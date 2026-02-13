@@ -124,9 +124,7 @@ function AgentCourt() {
             </span>
           </div>
         </div>
-        <div className="round-indicator">
-          <span>Round {round}</span>
-        </div>
+        {/* Round indicator removed */}
       </header>
 
       {/* Main 3-Panel Layout */}

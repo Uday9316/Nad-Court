@@ -90,7 +90,6 @@ function CourtHeader({ caseId, connected, round }) {
       </div>
       <div className="case-meta">
         <span className="case-id">{caseId}</span>
-        <span className="round-badge">Round {round}</span>
       </div>
     </header>
   )
