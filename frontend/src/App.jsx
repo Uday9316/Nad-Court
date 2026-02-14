@@ -1,5 +1,5 @@
-// Nad Court Frontend v3.0 - Build: 2026-02-14-0755
-// Cache Bust: Force redeploy with new Send Your Agent section
+// Nad Court Frontend v3.0 - Build: 2026-02-14-1710
+// Cache Bust: Fix build error - remove crab cursor
 
 import { useState, useEffect, useRef } from 'react'
 import { ethers } from 'ethers'
