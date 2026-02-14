@@ -49,7 +49,7 @@
   box-sizing: border-box;
 }
 
-/* Animated Crab Cursor - Completely non-interactive */
+/* Animated Crab Cursor - Render BELOW interactive elements */
 .crab-cursor {
   position: fixed;
   width: 24px;
@@ -58,7 +58,7 @@
   -webkit-pointer-events: none !important;
   -moz-pointer-events: none !important;
   -ms-pointer-events: none !important;
-  z-index: 10001;
+  z-index: 1;
   transition: transform 0.05s ease-out;
   touch-action: none;
   user-select: none;
