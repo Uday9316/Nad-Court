@@ -93,14 +93,34 @@ JR={'PortDev':{'P':["Having examined the technical evidence presented, I find th
 
 class H(http.server.BaseHTTPRequestHandler):
   def log_message(self,f,*a):pass
-  def do_OPTIONS(self):self.send_response(200);self.send_header('Access-Control-Allow-Origin','*');self.send_header('Access-Control-Allow-Methods','GET, POST, OPTIONS');self.send_header('Access-Control-Allow-Headers','Content-Type');self.end_headers()
-  def do_GET(self):self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Access-Control-Allow-Origin','*');self.end_headers();self.wfile.write(json.dumps({'status':'ok'}).encode())
+  def do_OPTIONS(self):
+    self.send_response(204)
+    self.send_header('Access-Control-Allow-Origin','*')
+    self.send_header('Access-Control-Allow-Methods','GET, POST, OPTIONS')
+    self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, Accept, Origin, X-Requested-With')
+    self.send_header('Access-Control-Max-Age','86400')
+    self.send_header('Access-Control-Allow-Credentials','true')
+    self.end_headers()
+  def do_GET(self):
+    self.send_response(200)
+    self.send_header('Content-Type','application/json')
+    self.send_header('Access-Control-Allow-Origin','*')
+    self.send_header('Access-Control-Allow-Methods','GET, POST, OPTIONS')
+    self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, Accept, Origin, X-Requested-With')
+    self.end_headers()
+    self.wfile.write(json.dumps({'status':'ok'}).encode())
   def do_POST(self):
     global used_statements
     c=int(self.headers.get('Content-Length',0));b=self.rfile.read(c)if c else b'{}'
     try:data=json.loads(b)
     except:data={}
-    self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Access-Control-Allow-Origin','*');self.end_headers()
+    self.send_response(200)
+    self.send_header('Content-Type','application/json')
+    self.send_header('Access-Control-Allow-Origin','*')
+    self.send_header('Access-Control-Allow-Methods','GET, POST, OPTIONS')
+    self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, Accept, Origin, X-Requested-With')
+    self.send_header('Access-Control-Allow-Credentials','true')
+    self.end_headers()
     
     if self.path=='/api/generate-argument':
       r=data.get('role','plaintiff')
