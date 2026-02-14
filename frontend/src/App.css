@@ -58,7 +58,7 @@
   -webkit-pointer-events: none !important;
   -moz-pointer-events: none !important;
   -ms-pointer-events: none !important;
-  z-index: 9999;
+  z-index: 10001;
   transition: transform 0.05s ease-out;
   touch-action: none;
   user-select: none;
