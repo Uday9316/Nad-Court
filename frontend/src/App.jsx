@@ -1425,15 +1425,60 @@ function App() {
               <div className="panel-content messages-scroll" ref={messagesContainerRef}>
                 {messages.map(m => (
                   <div key={m.id} className={`message ${m.type} ${m.role}`}>
-                    <div className="message-header">
-                      <span className={`message-author ${m.role}`}>{m.author}</span>
-                      <span className="message-time">{m.time}</span>
-                    </div>
-                    <div className="message-body">
-                      {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
-                      {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
-                      {m.type === 'chain' && <span className="chain-badge">⛓️ ON-CHAIN</span>}
-                      <div className="message-content">{m.content}</div>
+                    <div className="message-avatar-row">
+                      {/* Agent Avatar for Arguments */}
+                      {m.type === 'argument' && m.role === 'plaintiff' && (
+                        <div className="message-avatar plaintiff-message-avatar" title="Plaintiff Agent: NadCourt-Advocate">
+                          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="4" width="32" height="32" rx="6" fill="#000000"/>
+                            <path d="M12 16c0-2.5 2.5-5 7.5-5s7.5 2.5 7.5 5v2.5H12V16z" fill="#333333"/>
+                            <circle cx="16.5" cy="14" r="1.5" fill="#666666"/>
+                            <circle cx="23.5" cy="14" r="1.5" fill="#666666"/>
+                            <path d="M18 22.5c2.5 1.25 5 1.25 7.5 0" stroke="#666666" strokeWidth="1.5" strokeLinecap="round"/>
+                            <path d="M10 27.5c0 0 5-2.5 10-2.5s10 2.5 10 2.5v7.5H10V27.5z" fill="#1a1a1a"/>
+                            <text x="20" y="34" fontSize="5" fill="#666666" textAnchor="middle" fontFamily="monospace">P</text>
+                          </svg>
+                          <span className="avatar-label">P</span>
+                        </div>
+                      )}
+                      {m.type === 'argument' && m.role === 'defendant' && (
+                        <div className="message-avatar defendant-message-avatar" title="Defendant Agent: NadCourt-Defender">
+                          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="4" width="32" height="32" rx="6" fill="#dc2626"/>
+                            <path d="M12 16c0-2.5 2.5-5 7.5-5s7.5 2.5 7.5 5v2.5H12V16z" fill="#991b1b"/>
+                            <circle cx="16.5" cy="14" r="1.5" fill="#fca5a5"/>
+                            <circle cx="23.5" cy="14" r="1.5" fill="#fca5a5"/>
+                            <path d="M18 22.5c2.5 1.25 5 1.25 7.5 0" stroke="#fca5a5" strokeWidth="1.5" strokeLinecap="round"/>
+                            <path d="M10 27.5c0 0 5-2.5 10-2.5s10 2.5 10 2.5v7.5H10V27.5z" fill="#b91c1c"/>
+                            <text x="20" y="34" fontSize="5" fill="#fca5a5" textAnchor="middle" fontFamily="monospace">D</text>
+                          </svg>
+                          <span className="avatar-label">D</span>
+                        </div>
+                      )}
+                      {/* Judge Avatar for Evaluations */}
+                      {m.type === 'evaluation' && (
+                        <div className="message-avatar judge-message-avatar" title={`Judge: ${m.author}`}>
+                          <div className="judge-avatar-circle">⚖️</div>
+                          <span className="avatar-label">J</span>
+                        </div>
+                      )}
+                      {/* System Avatar for Verdict/Chain */}
+                      {(m.type === 'verdict' || m.type === 'chain') && (
+                        <div className="message-avatar system-message-avatar" title="System">
+                          <div className="system-avatar-circle">⛓️</div>
+                          <span className="avatar-label">⚡</span>
+                        </div>
+                      )}
+                      <div className="message-content-wrapper">
+                        <div className="message-header">
+                          <span className={`message-author ${m.role}`}>{m.author}</span>
+                          <span className="message-time">{m.time}</span>
+                        </div>
+                        <div className="message-body">
+                          {m.type === 'evaluation' && <span className="eval-badge">JUDGE EVAL</span>}
+                          {m.type === 'verdict' && <span className="verdict-badge">🏆 VERDICT</span>}
+                          {m.type === 'chain' && <span className="chain-badge">⛓️ ON-CHAIN</span>}
+                          <div className="message-content">{m.content}</div>
                       {/* Meme reaction for arguments */}
                       {m.type === 'argument' && m.memeUrl && (
                         <div className="meme-reaction">
@@ -1486,6 +1531,8 @@ function App() {
                           <img src={verdictMeme} alt="Final verdict" loading="lazy" />
                         </div>
                       )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
