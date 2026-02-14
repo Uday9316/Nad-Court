@@ -36,47 +36,96 @@ def find_openclaw():
     
     return None
 
-# Plaintiff arguments (Bitlover082) - SHORT VERSION (~30% length)
-PLAINTIFF_ARGS = [
-    # Round 1: Opening
-    "Your Honor, my client documented CVE-2024-21893 on March 15th at 14:23 UTC with blockchain proof. Defendant published identical findings 17 hours later. Probability of coincidence: 0.003%. This is theft, not research.",
-    
-    # Round 2: Evidence
-    "Exhibit P-2 shows defendant accessed our private repo at 16:47 UTC—TWO HOURS after our disclosure. Their 'discovery' at 19:12 UTC? They read our confidential report and claimed credit. Industrial espionage.",
-    
-    # Round 3: Character
-    "Defense wants to discuss history? 0xCoha has FOUR attribution disputes in 18 months. Pattern: wait, copy, claim bounty. Not a researcher—a bounty hunter preying on others' work.",
-    
-    # Round 4: Technical
-    "Our exploit uses novel reentrancy with nested delegate calls. Defendant's 'independent' version has IDENTICAL variable names. Copy-paste theft with serial numbers filed off.",
-    
-    # Round 5: Damages
-    "Client lost $47K in speaking fees and Ethereum Foundation grant. Defendant took $125K bounty that was OURS. Impact matters. They stole work, credit, and livelihood.",
-    
-    # Round 6: Closing
-    "Timestamps don't lie. Blockchain doesn't lie. Award attribution to Bitlover082. Order restitution. Send a message: theft has consequences in Agent Court."
-]
+# Argument templates - we combine these dynamically for uniqueness
+PLAINTIFF_SNIPPETS = {
+    'openings': [
+        "Your Honor, my client documented",
+        "The evidence is devastating:",
+        "Examining the timeline proves",
+        "Our investigation reveals",
+        "This is not research—this is theft."
+    ],
+    'evidence': [
+        "blockchain proof from March 15th",
+        "private repo access at 16:47 UTC",
+        "cryptographic verification exists",
+        "17-hour gap proves copying",
+        "timestamp evidence is irrefutable"
+    ],
+    'character': [
+        "defendant has FOUR attribution disputes",
+        "pattern of wait, copy, claim bounty",
+        "bounty hunter preying on others",
+        "not a researcher—an opportunist",
+        "history of contested claims"
+    ],
+    'technical': [
+        "identical variable names",
+        "copy-paste with serial numbers off",
+        "novel reentrancy stolen wholesale",
+        "code similarity is 99%",
+        "nested delegate calls replicated"
+    ],
+    'damages': [
+        "$47K in lost speaking fees",
+        "$125K bounty was OURS",
+        "reputation damage irreparable",
+        "livelihood stolen",
+        "impact is devastating"
+    ],
+    'closings': [
+        "timestamps don't lie",
+        "blockchain doesn't lie",
+        "award full attribution",
+        "order restitution",
+        "theft has consequences"
+    ]
+}
 
-# Defendant arguments (0xCoha) - SHORT VERSION (~30% length)
-DEFENDANT_ARGS = [
-    # Round 1: Opening
-    "Your Honor, we discovered this vulnerability March 12th during Monad DEX audit. Research notes show 17 iterations over 3 days. Plaintiff's 'prior discovery' lacks cryptographic verification.",
-    
-    # Round 2: Rebuttal
-    "Plaintiff claims repo access—yet ZERO logs, ZERO auth records, ZERO forensics. Case rests on coincidence as conspiracy. Character assassination because they can't win on facts.",
-    
-    # Round 3: Counter-Attack
-    "Bitlover082 filed NINE disputes in 2 years. 'Professional plaintiff' sees theft everywhere. My 'disputes'? All dismissed. Their pattern: litigate until opponent gives up.",
-    
-    # Round 4: Technical
-    "Our exploit differs fundamentally—static analysis of DEX router callbacks. Flash loan manipulation vs their reentrancy. Same bug, different methods. Parallel research happens.",
-    
-    # Round 5: Precedent
-    "Plaintiff seeks $200K damages with ZERO documentation. Speaking fees? Name conferences. Grants? Show rejections. Can't—because losses are fictional. Success isn't theft.",
-    
-    # Round 6: Closing
-    "Six rounds, ZERO proof. No logs, no custody, just timestamps. My reputation smeared by baseless claims. Research is legitimate. Dismiss these allegations."
-]
+DEFENDANT_SNIPPETS = {
+    'openings': [
+        "Your Honor, we discovered this",
+        "March 12th during audit proves",
+        "Our research is legitimate",
+        "Timeline supports independence",
+        "Zero evidence of theft"
+    ],
+    'evidence': [
+        "17 iterations over 3 days",
+        "research notes documented",
+        "lacks cryptographic verification",
+        "ZERO logs, ZERO forensics",
+        "no access records exist"
+    ],
+    'character': [
+        "plaintiff filed NINE disputes",
+        "professional litigant",
+        "pattern: litigate until win",
+        "sees theft everywhere",
+        "all my disputes dismissed"
+    ],
+    'technical': [
+        "fundamentally different methods",
+        "static analysis vs reentrancy",
+        "parallel research happens",
+        "flash loan vs delegate calls",
+        "same bug, different paths"
+    ],
+    'precedent': [
+        "ZERO documentation of damages",
+        "speaking fees? Name them",
+        "losses are fictional",
+        "success isn't theft",
+        "no proof of harm"
+    ],
+    'closings': [
+        "six rounds, ZERO proof",
+        "no logs, no custody",
+        "reputation unfairly smeared",
+        "research is legitimate",
+        "dismiss these allegations"
+    ]
+}
 
 # Judge evaluations with unique personalities
 JUDGE_EVALUATIONS = {
@@ -157,97 +206,32 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 role = data.get('role', 'plaintiff')
                 round_num = data.get('round', 1)
                 case_data = data.get('caseData', {})
+                agent_name = 'NadCourt-Advocate' if role == 'plaintiff' else 'NadCourt-Defender'
                 
-                # Select appropriate argument list
-                if role == 'plaintiff':
-                    args_list = PLAINTIFF_ARGS
-                    agent_name = 'NadCourt-Advocate'
+                # ALWAYS use snippet-based generation for uniqueness
+                snippets = PLAINTIFF_SNIPPETS if role == 'plaintiff' else DEFENDANT_SNIPPETS
+                
+                # Pick random snippets from different categories
+                opening = random.choice(snippets['openings'])
+                evidence = random.choice(snippets['evidence'])
+                character = random.choice(snippets['character'])
+                technical = random.choice(snippets['technical'])
+                
+                # Build unique argument based on round
+                if round_num == 1:
+                    argument = f"{opening} {evidence}. {character}."
+                elif round_num == 2:
+                    argument = f"{opening} {technical}. {evidence}."
+                elif round_num == 3:
+                    argument = f"{character}. {opening} {technical}."
+                elif round_num == 4:
+                    argument = f"{technical}. {evidence}. {character}."
+                elif round_num == 5:
+                    damages = random.choice(snippets.get('damages', snippets.get('precedent', snippets['evidence'])))
+                    argument = f"{opening} {damages}. {evidence}."
                 else:
-                    args_list = DEFENDANT_ARGS
-                    agent_name = 'NadCourt-Defender'
-                
-                # Try to generate TRULY UNIQUE argument with OpenClaw
-                openclaw_cmd = find_openclaw()
-                if openclaw_cmd:
-                    try:
-                        # Pick a random angle/template to ensure variety
-                        angles = [
-                            "focus on the timeline discrepancy",
-                            "emphasize the technical evidence", 
-                            "attack opponent's credibility",
-                            "highlight the financial damages",
-                            "stress the pattern of behavior",
-                            "question the coincidence probability"
-                        ]
-                        angle = random.choice(angles)
-                        
-                        prompt = f"""You are {agent_name}, a passionate AI legal advocate in Agent Court.
-Case: {case_data.get('summary', 'Security vulnerability discovery dispute')}
-Your position: {role}
-Round: {round_num} of 6
-Angle to emphasize: {angle}
-
-Generate ONE completely unique, short argument (1-2 sentences, ~50-80 words).
-CRITICAL: Make this DIFFERENT from previous arguments. Use the angle above.
-Use fiery language. Be confrontational and CONCISE.
-
-Return ONLY the argument:"""
-                        
-                        result = subprocess.run(
-                            [openclaw_cmd, "agent", "--local", "--session-id", f"court_{int(time.time())}_{random.randint(1,100000)}", "-m", prompt],
-                            capture_output=True,
-                            text=True,
-                            timeout=45
-                        )
-                        if result.returncode == 0 and result.stdout.strip() and len(result.stdout.strip()) > 30:
-                            argument = result.stdout.strip()
-                            # Check if it's actually different (not just same text)
-                            if argument not in args_list:
-                                self.send_json({
-                                    'success': True,
-                                    'agent': agent_name,
-                                    'role': role,
-                                    'argument': argument,
-                                    'round': round_num,
-                                    'source': 'openclaw_ai'
-                                })
-                                return
-                    except Exception as e:
-                        print(f"OpenClaw failed: {e}, using dynamic fallback")
-                
-                # TRULY RANDOM fallback - pick from ALL arguments with random variations
-                import random
-                
-                # Pick a random argument from ANY round to ensure variety
-                random_base = random.choice(args_list)
-                
-                # Break into parts and randomly reassemble
-                parts = random_base.split('. ')
-                if len(parts) >= 2:
-                    # Randomly select 1-2 parts and shuffle
-                    selected = random.sample(parts, min(2, len(parts)))
-                    random.shuffle(selected)
-                    base = '. '.join(selected)
-                else:
-                    base = random_base
-                
-                # Add random opening and closing phrases for variety
-                openings = [
-                    "Your Honor, ",
-                    "The evidence shows ",
-                    "It is clear that ",
-                    "The record proves ",
-                    "Simply put, "
-                ]
-                closings = [
-                    " This cannot be ignored.",
-                    " Justice requires action.",
-                    " The proof is undeniable.",
-                    " This is the truth.",
-                    " Facts don't lie."
-                ]
-                
-                argument = random.choice(openings) + base + random.choice(closings)
+                    closing = random.choice(snippets['closings'])
+                    argument = f"{opening} {technical}. {closing}."
                 
                 self.send_json({
                     'success': True,
