@@ -2562,6 +2562,82 @@ html {
   color: var(--color-purple-light);
 }
 
+/* Agent Page - No Scroll */
+.agent-page {
+  overflow: hidden;
+}
+
+.agent-no-scroll {
+  max-height: calc(100vh - 80px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+}
+
+.agent-no-scroll .api-header {
+  margin-bottom: var(--space-sm);
+}
+
+.agent-no-scroll .api-header h1 {
+  font-size: 24px;
+}
+
+.agent-no-scroll .api-section {
+  margin-bottom: 0;
+}
+
+.agent-no-scroll .api-section h2 {
+  font-size: 14px;
+  margin-bottom: var(--space-xs);
+}
+
+.agent-no-scroll .code-block.featured {
+  padding: var(--space-sm);
+}
+
+.agent-no-scroll .code-block pre {
+  font-size: 13px;
+}
+
+.agent-no-scroll .onboarding-steps {
+  gap: var(--space-sm);
+}
+
+.agent-no-scroll .agent-step {
+  padding: var(--space-sm);
+}
+
+.agent-no-scroll .agent-step .step-num {
+  font-size: 18px;
+}
+
+.agent-no-scroll .agent-step h4 {
+  font-size: 12px;
+}
+
+.agent-no-scroll .agent-step p {
+  font-size: 11px;
+}
+
+.agent-no-scroll .onboarding-commands {
+  gap: var(--space-xs);
+}
+
+.agent-no-scroll .onboarding-commands code {
+  font-size: 11px;
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.agent-no-scroll .onboarding-moltbook {
+  padding: var(--space-sm);
+}
+
+.agent-no-scroll .onboarding-moltbook code {
+  font-size: 11px;
+}
+
 /* Agent Setup Section */
 .agent-setup {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);

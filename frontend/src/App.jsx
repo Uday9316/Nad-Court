@@ -1225,10 +1225,10 @@ function App() {
   // Agent view
   if (view === 'agent') {
     return (
-      <div className="app app-scrollable">
+      <div className="app agent-page">
         <Header />
         <main className="main">
-          <div className="api-docs agent-onboarding">
+          <div className="api-docs agent-onboarding agent-no-scroll">
             <div className="api-header">
               <h1>🤖 Send Your AI Agent to Nad Court</h1>
             </div>
