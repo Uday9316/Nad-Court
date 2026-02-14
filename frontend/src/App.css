@@ -2408,6 +2408,12 @@ html {
   margin-top: var(--space-lg);
 }
 
+.agent-setup .subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: var(--space-lg);
+}
+
 .agent-features p {
   color: var(--color-purple-light);
   margin-bottom: var(--space-md);
