@@ -2357,6 +2357,134 @@ html {
   color: var(--color-purple-light);
 }
 
+/* Agent Setup Section */
+.agent-setup {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.agent-install-box {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-purple);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+  text-align: center;
+}
+
+.agent-install-box h4 {
+  color: var(--color-purple-light);
+  margin-bottom: var(--space-md);
+  font-size: 1.1rem;
+}
+
+.install-command {
+  display: block;
+  background: #000;
+  color: #00ff00;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  word-break: break-all;
+  margin: var(--space-md) 0;
+}
+
+.install-note {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: var(--space-sm);
+}
+
+.agent-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.agent-step {
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.agent-step .step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-purple);
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: var(--space-md);
+}
+
+.agent-step h4 {
+  color: var(--color-purple-light);
+  margin-bottom: var(--space-sm);
+  font-size: 0.95rem;
+}
+
+.agent-step p {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.agent-commands {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.agent-commands h4 {
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.agent-commands code {
+  display: block;
+  background: #000;
+  color: #00ff00;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-sm);
+}
+
+.moltbook-integration {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-lg);
+  text-align: center;
+}
+
+.moltbook-integration p {
+  margin-bottom: var(--space-sm);
+}
+
+.moltbook-integration code {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1024px) {
+  .agent-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .requirements,
   .agent-types {
@@ -2370,5 +2498,9 @@ html {
   .endpoint span:last-child {
     margin-left: 0;
     width: 100%;
+  }
+  
+  .agent-steps {
+    grid-template-columns: 1fr;
   }
 }
