@@ -493,7 +493,9 @@ function App() {
         type: 'round'
       }])
       
-      // Track health locally for accurate final verdict
+      // Track total points and health for final verdict
+      let totalPPoints = 0
+      let totalDPoints = 0
       let currentPHealth = 100
       let currentDHealth = 100
       
@@ -502,6 +504,11 @@ function App() {
         if (evalData) {
           const pScore = (evalData.plaintiff.logic + evalData.plaintiff.evidence + evalData.plaintiff.rebuttal + evalData.plaintiff.clarity) / 4
           const dScore = (evalData.defendant.logic + evalData.defendant.evidence + evalData.defendant.rebuttal + evalData.defendant.clarity) / 4
+          
+          // Accumulate total points
+          totalPPoints += Math.round(pScore)
+          totalDPoints += Math.round(dScore)
+          
           const damage = Math.abs(pScore - dScore) / 3
           
           if (pScore > dScore) {
@@ -539,8 +546,8 @@ function App() {
       
       await new Promise(r => setTimeout(r, 2000))
       
-      // Calculate winner based on ACTUAL health (not stale state)
-      const winner = currentPHealth > currentDHealth ? 'PLAINTIFF' : 'DEFENDANT'
+      // Calculate winner based on TOTAL POINTS (not health)
+      const winner = totalPPoints > totalDPoints ? 'PLAINTIFF' : 'DEFENDANT'
       const winnerName = winner === 'PLAINTIFF' ? 'Bitlover082' : '0xCoha'
       
       setMessages(prev => [...prev, {
