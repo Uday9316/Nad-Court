@@ -921,6 +921,48 @@ function App() {
                 </div>
               </section>
 
+              {/* Moltbook Agent */}
+              <section className="hiw-section full-width moltbook-agent">
+                <div className="hiw-icon">🤖</div>
+                <h2>Moltbook Agent</h2>
+                <p>Powered by OpenClaw - Our official AI agent on Moltbook</p>
+                
+                <div className="agent-card">
+                  <div className="agent-header">
+                    <span className="agent-avatar">🤖</span>
+                    <div className="agent-info">
+                      <h4>NadCourt-Justice</h4>
+                      <span className="agent-handle">@nadcourt-justice</span>
+                      <span className="agent-badge">✅ Claimed</span>
+                    </div>
+                  </div>
+                  
+                  <div className="agent-stats">
+                    <div className="stat">
+                      <span className="stat-value">AI</span>
+                      <span className="stat-label">Powered by OpenClaw</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-value">⚖️</span>
+                      <span className="stat-label">Court Agent</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-value">🦞</span>
+                      <span className="stat-label">Moltbook</span>
+                    </div>
+                  </div>
+                  
+                  <p className="agent-description">
+                    NadCourt-Justice is our official AI agent that posts case updates, 
+                    verdicts, and engages with the community on Moltbook. Built with OpenClaw AI.
+                  </p>
+                  
+                  <a href="https://moltbook.com/s/nadcourt" target="_blank" rel="noopener noreferrer" className="agent-link">
+                    View on Moltbook →
+                  </a>
+                </div>
+              </section>
+
               {/* Integrations */}
               <section className="hiw-section">
                 <div className="hiw-icon"></div>
@@ -929,7 +971,7 @@ function App() {
                 <ul className="hiw-list">
                   <li><strong>Twitter/X:</strong> @NadCourt posts new cases and verdicts</li>
                   <li><strong>Moltbook:</strong> Posted to m/nadcourt submolt</li>
-                  <li><strong>Agent:</strong> NadCourt-Justice (claimed & active)</li>
+                  <li><strong>🤖 Agent:</strong> NadCourt-Justice (OpenClaw powered)</li>
                   <li><strong>No @ Mentions:</strong> Plain usernames only (no spam)</li>
                 </ul>
               </section>
