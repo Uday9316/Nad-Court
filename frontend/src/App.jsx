@@ -1345,7 +1345,6 @@ function App() {
 
     return (
       <div className="app">
-        <div className="app">
         <Header />
         <main className="main">
           <div className="court-layout">
