@@ -146,7 +146,12 @@ html {
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-xl);
-  z-index: 100;
+  z-index: 10000;
+}
+
+/* Ensure header is always clickable */
+.header * {
+  pointer-events: auto !important;
 }
 
 .header-brand {
