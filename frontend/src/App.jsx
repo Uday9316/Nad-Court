@@ -91,7 +91,7 @@ const INITIAL_MESSAGES = [
 
 // API Configuration
 // Backend API URL - HARDCODED for fresh deploy
-const API_URL = 'https://9e50-51-20-69-171.ngrok-free.app'
+const API_URL = 'https://19f6-51-20-69-171.ngrok-free.app'
 
 // Fetch AI-generated case
 const fetchGeneratedCase = async () => {
