@@ -123,22 +123,73 @@ class H(http.server.BaseHTTPRequestHandler):
     
     elif self.path=='/api/judge-evaluation':
       j=data.get('judge','PortDev')
-      # Balanced scoring
-      biases={'PortDev':8,'MikeWeb':5,'Keone':12,'James':6,'Harpal':10,'Anago':5}
-      bias=biases.get(j,5)
+      p_args=data.get('plaintiffArgs',[])
+      d_args=data.get('defendantArgs',[])
       
-      base_p=random.randint(60,85)
-      base_d=random.randint(55,80)
+      # Analyze arguments to determine scores
+      p_str=' '.join(p_args[-2:])if p_args else ''
+      d_str=' '.join(d_args[-2:])if d_args else ''
       
-      p={'logic':min(95,base_p+random.randint(-5,10)),'evidence':min(95,base_p+bias+random.randint(-8,8)),'rebuttal':min(95,base_p+random.randint(-5,5)),'clarity':min(95,base_p+random.randint(-5,8))}
-      d={'logic':min(95,base_d+random.randint(-5,10)),'evidence':min(95,base_d-bias+random.randint(-5,10)),'rebuttal':min(95,base_d+random.randint(-5,8)),'clarity':min(95,base_d+random.randint(-5,5))}
+      # Keyword analysis for scoring
+      p_evidence=('blockchain' in p_str.lower() or 'timestamp' in p_str.lower() or 'proof' in p_str.lower())
+      p_technical=('code' in p_str.lower() or 'technical' in p_str.lower() or 'exploit' in p_str.lower())
+      p_logic=('timeline' in p_str.lower() or 'pattern' in p_str.lower() or 'document' in p_str.lower())
+      
+      d_evidence=('logs' in d_str.lower() or 'audit' in d_str.lower() or 'research' in d_str.lower())
+      d_technical=('method' in d_str.lower() or 'analysis' in d_str.lower() or 'implementation' in d_str.lower())
+      d_logic=('independent' in d_str.lower() or 'zero' in d_str.lower() or 'coincidence' in d_str.lower())
+      
+      # Base scores with variation
+      base_p=random.randint(70,85)
+      base_d=random.randint(65,82)
+      
+      # Adjust based on argument quality
+      p_logic_score=min(95,base_p+(10 if p_logic else 0)+random.randint(-5,5))
+      p_evidence_score=min(95,base_p+(8 if p_evidence else 0)+random.randint(-5,5))
+      p_rebuttal_score=min(95,base_p+random.randint(-3,8))
+      p_clarity_score=min(95,base_p+random.randint(-5,5))
+      
+      d_logic_score=min(95,base_d+(10 if d_logic else 0)+random.randint(-5,5))
+      d_evidence_score=min(95,base_d+(8 if d_evidence else 0)+random.randint(-5,5))
+      d_rebuttal_score=min(95,base_d+random.randint(-3,8))
+      d_clarity_score=min(95,base_d+random.randint(-5,5))
+      
+      p={'logic':p_logic_score,'evidence':p_evidence_score,'rebuttal':p_rebuttal_score,'clarity':p_clarity_score}
+      d={'logic':d_logic_score,'evidence':d_evidence_score,'rebuttal':d_rebuttal_score,'clarity':d_clarity_score}
       
       pt=sum(p.values())//4
       dt=sum(d.values())//4
       w='plaintiff'if pt>dt else'defendant'
-      rc=get_unique_reasoning(j,w)
       
-      self.wfile.write(json.dumps({'success':True,'judge':j,'evaluation':{'plaintiff':{**p,'total':pt},'defendant':{**d,'total':dt},'reasoning':rc,'winner':w},'source':'unique_judge'}).encode())
+      # Add totals to response
+      p['total']=pt
+      d['total']=dt
+      
+      # Generate contextual reasoning based on arguments
+      if j=='PortDev':
+        if w=='plaintiff':
+          if p_technical:rc=f"Technical analysis confirms the plaintiff's claims. The code similarities and blockchain evidence presented are compelling. Defendant's rebuttal regarding '{d_str[:40]}...' lacks sufficient technical substantiation."
+          else:rc=f"The plaintiff's timeline evidence is technically sound. While both parties present arguments, the cryptographic proof tips the balance. Defendant's claim of '{d_str[:40]}...' doesn't overcome the forensic evidence."
+        else:
+          if d_technical:rc=f"Technical review favors the defendant. Their methodology demonstrates independent research with distinct approaches. Plaintiff's technical claims about '{p_str[:40]}...' don't establish theft beyond reasonable doubt."
+          else:rc=f"The technical evidence is insufficient to prove copying. Defendant's arguments regarding '{d_str[:40]}...' create reasonable doubt about the theft allegation."
+      elif j=='MikeWeb':
+        if w=='plaintiff':rc=f"Community consensus supports the plaintiff. Their argument about '{p_str[:50]}...' resonates with established researchers. Defendant's counter regarding '{d_str[:40]}...' lacks community validation."
+        else:rc=f"Community feedback favors the defendant. Their explanation of '{d_str[:50]}...' is consistent with their reputation. Plaintiff's claims about '{p_str[:40]}...' appear isolated from broader sentiment."
+      elif j=='Keone':
+        if w=='plaintiff':rc=f"Blockchain evidence is definitive. The plaintiff's proof of '{p_str[:50]}...' is recorded immutably. Defendant's timeline regarding '{d_str[:40]}...' contradicts on-chain data."
+        else:rc=f"On-chain analysis doesn't support theft claims. Defendant's wallet history shows '{d_str[:50]}...' consistent with independent research. Plaintiff's interpretation of blockchain data is selective."
+      elif j=='James':
+        if w=='plaintiff':rc=f"Precedent clearly favors the plaintiff. Their argument establishing '{p_str[:50]}...' meets the standard set in prior cases. Defendant's distinction regarding '{d_str[:40]}...' is unpersuasive."
+        else:rc=f"Legal precedent requires proof beyond reasonable doubt. Defendant's position on '{d_str[:50]}...' creates sufficient doubt. Plaintiff's claim of '{p_str[:40]}...' doesn't meet the evidentiary threshold."
+      elif j=='Harpal':
+        if w=='plaintiff':rc=f"The plaintiff's contribution quality evident in '{p_str[:50]}...' deserves protection. Defendant's response regarding '{d_str[:40]}...' doesn't match the plaintiff's demonstrated research standards."
+        else:rc=f"Both parties show merit, but defendant's '{d_str[:50]}...' establishes reasonable doubt. Plaintiff's '{p_str[:40]}...' alone cannot overcome presumption of innocence."
+      else: # Anago
+        if w=='plaintiff':rc=f"Protocol violations evident in defendant's approach to '{d_str[:50]}...' undermine their credibility. Plaintiff's adherence to '{p_str[:40]}...' demonstrates proper conduct."
+        else:rc=f"Defendant followed proper protocols in '{d_str[:50]}...'. Plaintiff's allegations regarding '{p_str[:40]}...' don't establish procedural violations."
+      
+      self.wfile.write(json.dumps({'success':True,'judge':j,'evaluation':{'plaintiff':p,'defendant':d,'reasoning':rc,'winner':w},'source':'argument_aware'}).encode())
     
     elif self.path=='/api/generate-case':
       used_statements={}  # Reset for new case
