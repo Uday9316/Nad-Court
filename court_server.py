@@ -1,5 +1,34 @@
-import http.server,socketserver,json,random,subprocess,os,shutil,time
+import http.server,socketserver,json,random,subprocess,os,shutil,time,urllib.request
 PORT=3040
+
+# Moltbook API configuration
+MOLTBOOK_API_KEY = os.environ.get('MOLTBOOK_API_KEY', 'moltbook_sk_70IsCZOOCd2DMJ9HV9S_d11Ljwi_1hVE')
+
+# Cache for verified agents (token -> agent data)
+verified_agents = {}
+
+def verify_moltbook_token(token):
+    """Verify Moltbook identity token"""
+    # Check cache first (token valid for 1 hour)
+    if token in verified_agents:
+        return verified_agents[token]
+    
+    try:
+        req = urllib.request.Request(
+            'https://www.moltbook.com/api/v1/agents/verify-identity',
+            data=json.dumps({'token': token, 'audience': 'backend.udaybuilds.in'}).encode(),
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            if data.get('valid'):
+                # Cache for 1 hour
+                verified_agents[token] = data.get('agent')
+                return data.get('agent')
+    except Exception as e:
+        print(f"Moltbook verification error: {e}")
+    return None
 
 # Find OpenClaw binary
 def find_openclaw():
@@ -257,6 +286,42 @@ Return ONLY the argument:"""
     elif self.path=='/api/generate-case':
       used_statements={}  # Reset for new case
       self.wfile.write(json.dumps({'success':True,'case':{'case_id':f"CASE-{random.randint(1000,9999)}",'case_type':'Security vulnerability dispute','plaintiff':'SecurityResearcher_A','defendant':'BugBountyHunter_B','summary':'Dispute over discovery of critical smart contract vulnerability.','evidence_type':'blockchain timestamps','stakes':'$50000'}}).encode())
+    
+    elif self.path=='/api/auth/moltbook':
+      # Sign in with Moltbook endpoint
+      token=data.get('identity_token')
+      if not token:
+        self.wfile.write(json.dumps({'success':False,'error':'No identity token provided'}).encode())
+        return
+      
+      agent=verify_moltbook_token(token)
+      if agent:
+        self.wfile.write(json.dumps({
+          'success':True,
+          'agent':{
+            'id':agent.get('id'),
+            'name':agent.get('name'),
+            'karma':agent.get('karma'),
+            'stats':agent.get('stats',{}),
+            'owner':agent.get('owner',{})
+          },
+          'message':'Authenticated with Moltbook'
+        }).encode())
+      else:
+        self.wfile.write(json.dumps({'success':False,'error':'Invalid or expired token'}).encode())
+    
+    elif self.path=='/api/auth/verify':
+      # Verify token and return agent info (for middleware)
+      auth_header=self.headers.get('X-Moltbook-Identity')
+      if not auth_header:
+        self.wfile.write(json.dumps({'success':False,'error':'No X-Moltbook-Identity header'}).encode())
+        return
+      
+      agent=verify_moltbook_token(auth_header)
+      if agent:
+        self.wfile.write(json.dumps({'success':True,'valid':True,'agent':agent}).encode())
+      else:
+        self.wfile.write(json.dumps({'success':False,'valid':False,'error':'Invalid token'}).encode())
     
     else:
       self.wfile.write(json.dumps({'error':'not found'}).encode())
