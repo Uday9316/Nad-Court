@@ -98,7 +98,8 @@ const fetchGeneratedCase = async () => {
   try {
     const response = await fetch(`${API_URL}/api/generate-case`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
     })
     if (!response.ok) {
       console.error(`HTTP error: ${response.status}`)
