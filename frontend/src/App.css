@@ -2384,6 +2384,131 @@ html {
   background: var(--color-purple-light) !important;
 }
 
+/* Agent Onboarding - New Section v4 */
+.agent-onboarding {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.agent-onboarding::-webkit-scrollbar {
+  width: 10px;
+}
+
+.agent-onboarding::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 5px;
+}
+
+.agent-onboarding::-webkit-scrollbar-thumb {
+  background: var(--color-purple);
+  border-radius: 5px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+}
+
+.agent-onboarding::-webkit-scrollbar-thumb:hover {
+  background: var(--color-purple-light);
+}
+
+.onboarding-box {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-purple);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+  text-align: left;
+}
+
+.onboarding-box h4 {
+  color: var(--color-purple-light);
+  margin-bottom: var(--space-md);
+  font-size: 1.1rem;
+}
+
+.onboarding-command {
+  display: block;
+  background: #000;
+  color: #00ff00;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  word-break: break-all;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.onboarding-note {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: var(--space-sm);
+}
+
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+@media (max-width: 1024px) {
+  .onboarding-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .onboarding-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.onboarding-commands {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.onboarding-commands h4 {
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.onboarding-commands code {
+  display: block;
+  background: #000;
+  color: #00ff00;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-sm);
+}
+
+.onboarding-moltbook {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-lg);
+  text-align: center;
+}
+
+.onboarding-moltbook p {
+  margin-bottom: var(--space-sm);
+}
+
+.onboarding-moltbook code {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
 .agent-install-box {
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-purple);
