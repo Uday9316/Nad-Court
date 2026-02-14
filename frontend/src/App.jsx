@@ -557,7 +557,7 @@ function App() {
         role: 'system',
         type: 'verdict'
       }])
-      setCaseStatus('ended')
+      setCaseStatus(winner === 'PLAINTIFF' ? 'plaintiff_won' : 'defendant_won')
     }
     
     runLiveCase()
