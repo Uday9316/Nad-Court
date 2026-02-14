@@ -1,10 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+interface IERC20 {
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+}
+
 /**
  * @title AgentCourt
- * @notice Decentralized AI governance system for agent behavior
- * @dev All decisions stored on-chain, minimal AI usage (only Judge)
+ * @notice Decentralized AI governance system for agent behavior with $JUSTICE staking
+ * @dev All decisions stored on-chain, $JUSTICE token for staking
  */
 contract AgentCourt {
     
@@ -124,15 +131,24 @@ contract AgentCourt {
     
     // ============ State Variables ============
     address public owner;
+    IERC20 public justiceToken;
     uint256 public caseCounter;
     uint256 public appealCounter;
     uint256 public lastCaseTime;
     
     uint256 public constant JURY_SIZE = 5;
-    uint256 public constant APPEAL_STAKE = 10 ether; // 10 MON
     uint256 public constant JURY_VOTING_PERIOD = 1 hours;
     uint256 public constant APPEAL_PERIOD = 3 days;
     uint256 public constant CASE_COOLDOWN = 1 minutes; // Temp: 1 min for testing
+    
+    // Court tier stakes in $JUSTICE
+    uint256 public constant LOCAL_COURT_STAKE = 5000 * 10**18;    // 5,000 $JUSTICE
+    uint256 public constant HIGH_COURT_STAKE = 15000 * 10**18;    // 15,000 $JUSTICE
+    uint256 public constant SUPREME_COURT_STAKE = 50000 * 10**18; // 50,000 $JUSTICE
+    
+    // Stake tracking
+    mapping(uint256 => uint256) public caseStakes; // caseId => stake amount
+    mapping(uint256 => address) public caseWinners; // caseId => winner address
     
     mapping(address => Agent) public agents;
     mapping(uint256 => Case) public cases;
@@ -172,8 +188,9 @@ contract AgentCourt {
     }
     
     // ============ Constructor ============
-    constructor() {
+    constructor(address _justiceToken) {
         owner = msg.sender;
+        justiceToken = IERC20(_justiceToken);
         caseCounter = 0;
         appealCounter = 0;
     }
@@ -208,18 +225,35 @@ contract AgentCourt {
     }
     
     // ============ Case Lifecycle ============
+    enum CourtTier { Local, High, Supreme }
+    
     function reportCase(
         address _defendant,
         string calldata _evidenceHash,
-        string calldata _evidenceDescription
+        string calldata _evidenceDescription,
+        CourtTier _tier
     ) external onlyLevel(AgentLevel.Reporter) returns (uint256) {
         require(agents[_defendant].agentAddress != address(0), "Defendant not registered");
         require(_defendant != msg.sender, "Cannot report yourself");
         require(block.timestamp >= lastCaseTime + CASE_COOLDOWN, "Only 1 case per 24 hours allowed");
         
+        // Determine stake amount based on court tier
+        uint256 stakeAmount;
+        if (_tier == CourtTier.Local) {
+            stakeAmount = LOCAL_COURT_STAKE;
+        } else if (_tier == CourtTier.High) {
+            stakeAmount = HIGH_COURT_STAKE;
+        } else {
+            stakeAmount = SUPREME_COURT_STAKE;
+        }
+        
+        // Transfer $JUSTICE stake from reporter
+        require(justiceToken.transferFrom(msg.sender, address(this), stakeAmount), "Stake transfer failed");
+        
         caseCounter++;
         uint256 caseId = caseCounter;
         lastCaseTime = block.timestamp;
+        caseStakes[caseId] = stakeAmount;
         
         Case storage newCase = cases[caseId];
         newCase.id = caseId;
@@ -393,20 +427,32 @@ contract AgentCourt {
         uint8 confidence = courtCase.judgment.confidence;
         
         PunishmentType punishment;
+        address winner;
         
         if (verdict == VerdictType.Spam) {
             punishment = confidence > 80 ? PunishmentType.TempBan : PunishmentType.Warning;
+            winner = courtCase.reporter; // Reporter wins on spam
         } else if (verdict == VerdictType.Abuse) {
             punishment = confidence > 80 ? PunishmentType.Isolation : PunishmentType.RateLimit;
+            winner = courtCase.reporter; // Reporter wins on abuse
         } else if (verdict == VerdictType.Malicious) {
             punishment = PunishmentType.RepReduction;
+            winner = courtCase.reporter; // Reporter wins on malicious
         } else {
             punishment = PunishmentType.None;
+            winner = courtCase.defendant; // Defendant wins if safe
         }
         
         courtCase.punishment = punishment;
         courtCase.executedAt = block.timestamp;
         courtCase.appealDeadline = block.timestamp + APPEAL_PERIOD;
+        caseWinners[_caseId] = winner;
+        
+        // Distribute $JUSTICE stake to winner
+        uint256 stakeAmount = caseStakes[_caseId];
+        if (stakeAmount > 0) {
+            require(justiceToken.transfer(winner, stakeAmount), "Stake payout failed");
+        }
         
         // Apply reputation reduction
         if (punishment == PunishmentType.RepReduction) {
@@ -417,6 +463,21 @@ contract AgentCourt {
         
         emit CaseExecuted(_caseId, punishment);
         emit PunishmentApplied(courtCase.defendant, punishment, _caseId);
+    }
+    
+    // ============ $JUSTICE Token Functions ============
+    function getStakeAmount(CourtTier _tier) external pure returns (uint256) {
+        if (_tier == CourtTier.Local) return LOCAL_COURT_STAKE;
+        if (_tier == CourtTier.High) return HIGH_COURT_STAKE;
+        return SUPREME_COURT_STAKE;
+    }
+    
+    function getCaseStake(uint256 _caseId) external view returns (uint256) {
+        return caseStakes[_caseId];
+    }
+    
+    function getCaseWinner(uint256 _caseId) external view returns (address) {
+        return caseWinners[_caseId];
     }
     
     // ============ Appeals ============
