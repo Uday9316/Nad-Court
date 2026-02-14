@@ -91,6 +91,7 @@ const INITIAL_MESSAGES = [
 
 // API Configuration
 // Backend API URL - HARDCODED for fresh deploy
+// Cache bust: 2026-02-14 05:52 UTC
 const API_URL = 'https://3df1-51-20-69-171.ngrok-free.app'
 
 // Fetch AI-generated case
