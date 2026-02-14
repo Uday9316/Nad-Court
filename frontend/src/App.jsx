@@ -1437,13 +1437,29 @@ function App() {
                 <div className="fighter-card">
                   <div className="fighter-avatar plaintiff-avatar openclaw-avatar openclaw-black">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="8" y="8" width="48" height="48" rx="8" fill="#000000"/>
-                      <path d="M20 24c0-4 4-8 12-8s12 4 12 8v4H20v-4z" fill="#333333"/>
-                      <circle cx="26" cy="22" r="3" fill="#666666"/>
-                      <circle cx="38" cy="22" r="3" fill="#666666"/>
-                      <path d="M28 36c4 2 8 2 12 0" stroke="#666666" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M16 40c0 0 8-4 16-4s16 4 16 4v12H16V40z" fill="#1a1a1a"/>
-                      <text x="32" y="52" fontSize="8" fill="#666666" textAnchor="middle" fontFamily="monospace">OC</text>
+                      {/* Lobster Body */}
+                      <ellipse cx="32" cy="38" rx="12" ry="18" fill="#1a1a1a"/>
+                      {/* Head */}
+                      <ellipse cx="32" cy="22" rx="10" ry="12" fill="#0d0d0d"/>
+                      {/* Left Claw */}
+                      <path d="M18 24C12 20 8 16 10 12C12 8 18 10 22 16C24 20 22 24 18 24Z" fill="#000000" stroke="#333333" strokeWidth="1.5"/>
+                      <path d="M10 12C8 10 6 12 8 16" stroke="#333333" strokeWidth="2" strokeLinecap="round"/>
+                      {/* Right Claw */}
+                      <path d="M46 24C52 20 56 16 54 12C52 8 46 10 42 16C40 20 42 24 46 24Z" fill="#000000" stroke="#333333" strokeWidth="1.5"/>
+                      <path d="M54 12C56 10 58 12 56 16" stroke="#333333" strokeWidth="2" strokeLinecap="round"/>
+                      {/* Eyes */}
+                      <circle cx="28" cy="18" r="3" fill="#333333"/>
+                      <circle cx="36" cy="18" r="3" fill="#333333"/>
+                      <circle cx="28" cy="18" r="1.5" fill="#666666"/>
+                      <circle cx="36" cy="18" r="1.5" fill="#666666"/>
+                      {/* Antennae */}
+                      <path d="M26 12C24 6 20 4 18 6" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                      <path d="M38 12C40 6 44 4 46 6" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                      {/* Legs */}
+                      <path d="M20 42C14 46 12 52 14 56" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M44 42C50 46 52 52 50 56" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M22 48C18 52 18 56 20 58" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M42 48C46 52 46 56 44 58" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" fill="none"/>
                     </svg>
                   </div>
                   <div className="fighter-role">Plaintiff</div>
@@ -1467,13 +1483,29 @@ function App() {
                 <div className="fighter-card">
                   <div className="fighter-avatar defendant-avatar openclaw-avatar openclaw-red">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="8" y="8" width="48" height="48" rx="8" fill="#dc2626"/>
-                      <path d="M20 24c0-4 4-8 12-8s12 4 12 8v4H20v-4z" fill="#991b1b"/>
-                      <circle cx="26" cy="22" r="3" fill="#fca5a5"/>
-                      <circle cx="38" cy="22" r="3" fill="#fca5a5"/>
-                      <path d="M28 36c4 2 8 2 12 0" stroke="#fca5a5" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M16 40c0 0 8-4 16-4s16 4 16 4v12H16V40z" fill="#b91c1c"/>
-                      <text x="32" y="52" fontSize="8" fill="#fca5a5" textAnchor="middle" fontFamily="monospace">OC</text>
+                      {/* Lobster Body */}
+                      <ellipse cx="32" cy="38" rx="12" ry="18" fill="#b91c1c"/>
+                      {/* Head */}
+                      <ellipse cx="32" cy="22" rx="10" ry="12" fill="#991b1b"/>
+                      {/* Left Claw */}
+                      <path d="M18 24C12 20 8 16 10 12C12 8 18 10 22 16C24 20 22 24 18 24Z" fill="#dc2626" stroke="#7f1d1d" strokeWidth="1.5"/>
+                      <path d="M10 12C8 10 6 12 8 16" stroke="#7f1d1d" strokeWidth="2" strokeLinecap="round"/>
+                      {/* Right Claw */}
+                      <path d="M46 24C52 20 56 16 54 12C52 8 46 10 42 16C40 20 42 24 46 24Z" fill="#dc2626" stroke="#7f1d1d" strokeWidth="1.5"/>
+                      <path d="M54 12C56 10 58 12 56 16" stroke="#7f1d1d" strokeWidth="2" strokeLinecap="round"/>
+                      {/* Eyes */}
+                      <circle cx="28" cy="18" r="3" fill="#7f1d1d"/>
+                      <circle cx="36" cy="18" r="3" fill="#7f1d1d"/>
+                      <circle cx="28" cy="18" r="1.5" fill="#fca5a5"/>
+                      <circle cx="36" cy="18" r="1.5" fill="#fca5a5"/>
+                      {/* Antennae */}
+                      <path d="M26 12C24 6 20 4 18 6" stroke="#7f1d1d" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                      <path d="M38 12C40 6 44 4 46 6" stroke="#7f1d1d" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                      {/* Legs */}
+                      <path d="M20 42C14 46 12 52 14 56" stroke="#991b1b" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M44 42C50 46 52 52 50 56" stroke="#991b1b" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M22 48C18 52 18 56 20 58" stroke="#991b1b" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M42 48C46 52 46 56 44 58" stroke="#991b1b" strokeWidth="2" strokeLinecap="round" fill="none"/>
                     </svg>
                   </div>
                   <div className="fighter-role">Defendant</div>
