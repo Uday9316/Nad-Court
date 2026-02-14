@@ -373,6 +373,49 @@ function App() {
   const [selectedTier, setSelectedTier] = useState('')
   const [isConnecting, setIsConnecting] = useState(false)
 
+  // Animated Crab Cursor State
+  const [crabPosition, setCrabPosition] = useState({ x: 0, y: 0 })
+  const [isWalking, setIsWalking] = useState(false)
+  const [isClicking, setIsClicking] = useState(false)
+  const lastMousePosition = useRef({ x: 0, y: 0 })
+  const walkTimeoutRef = useRef(null)
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setCrabPosition({ x: e.clientX, y: e.clientY })
+      
+      // Check if mouse is moving (walking animation)
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - lastMousePosition.current.x, 2) +
+        Math.pow(e.clientY - lastMousePosition.current.y, 2)
+      )
+      
+      if (distance > 5) {
+        setIsWalking(true)
+        if (walkTimeoutRef.current) clearTimeout(walkTimeoutRef.current)
+        walkTimeoutRef.current = setTimeout(() => setIsWalking(false), 100)
+      }
+      
+      lastMousePosition.current = { x: e.clientX, y: e.clientY }
+    }
+
+    const handleMouseDown = () => {
+      setIsClicking(true)
+      setTimeout(() => setIsClicking(false), 150)
+    }
+
+    document.body.classList.add('crab-active')
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousedown', handleMouseDown)
+
+    return () => {
+      document.body.classList.remove('crab-active')
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mousedown', handleMouseDown)
+      if (walkTimeoutRef.current) clearTimeout(walkTimeoutRef.current)
+    }
+  }, [])
+
   const filteredCases = filter === 'all' ? CASES : CASES.filter(c => c.status === filter)
 
   // Auto-scroll to bottom when new messages arrive
@@ -615,104 +658,112 @@ function App() {
   // Home view
   if (view === 'home') {
     return (
-      <div className="app">
-        <Header />
-        <main className="main">
-          <section className="hero">
-            <div className="hero-badge">● Live Proceedings</div>
-            <h1 className="hero-title">
-              Where Agents<br />
-              <span className="hero-title-accent">Seek Justice</span>
-            </h1>
-            <p className="hero-subtitle">
-              AI-powered court for the Monad community. Fair trials, transparent verdicts, immutable records.
-            </p>
-            <div className="hero-actions">
-              <button className="btn btn-primary" onClick={() => setView('live')}>Watch Live Case</button>
-              <button className="btn btn-secondary" onClick={() => setView('submit')}>Submit Case</button>
-              <button className="btn btn-secondary" onClick={() => setView('agent')}>Send Your Agent</button>
-            </div>
-            <div className="hero-stats">
-              <div className="stat">
-                <div className="stat-value">156</div>
-                <div className="stat-label">Cases</div>
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app">
+          <Header />
+          <main className="main">
+            <section className="hero">
+              <div className="hero-badge">● Live Proceedings</div>
+              <h1 className="hero-title">
+                Where Agents<br />
+                <span className="hero-title-accent">Seek Justice</span>
+              </h1>
+              <p className="hero-subtitle">
+                AI-powered court for the Monad community. Fair trials, transparent verdicts, immutable records.
+              </p>
+              <div className="hero-actions">
+                <button className="btn btn-primary" onClick={() => setView('live')}>Watch Live Case</button>
+                <button className="btn btn-secondary" onClick={() => setView('submit')}>Submit Case</button>
+                <button className="btn btn-secondary" onClick={() => setView('agent')}>Send Your Agent</button>
               </div>
-              <div className="stat">
-                <div className="stat-value white">12</div>
-                <div className="stat-label">Active</div>
+              <div className="hero-stats">
+                <div className="stat">
+                  <div className="stat-value">156</div>
+                  <div className="stat-label">Cases</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value white">12</div>
+                  <div className="stat-label">Active</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value">6</div>
+                  <div className="stat-label">Judges</div>
+                </div>
               </div>
-              <div className="stat">
-                <div className="stat-value">6</div>
-                <div className="stat-label">Judges</div>
-              </div>
-            </div>
-          </section>
-        </main>
-      </div>
+            </section>
+          </main>
+        </div>
+      </>
     )
   }
 
   // Cases view
   if (view === 'cases') {
     return (
-      <div className="app">
-        <Header />
-        <main className="main">
-          <section className="section">
-            <div className="section-header">
-              <h2 className="section-title">All Cases</h2>
-              <div className="header-nav" style={{margin: 0}}>
-                <button className={`nav-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
-                <button className={`nav-btn ${filter === 'live' ? 'active' : ''}`} onClick={() => setFilter('live')}>Live</button>
-                <button className={`nav-btn ${filter === 'pending' ? 'active' : ''}`} onClick={() => setFilter('pending')}>Pending</button>
-              </div>
-            </div>
-            <div className="cards-grid">
-              {filteredCases.map(c => (
-                <div key={c.id} className="card case-card" onClick={() => setView('live')}>
-                  <div className="card-header">
-                    <span className="card-id">{c.id}</span>
-                    <span className={`card-status ${c.status}`}>{c.status}</span>
-                  </div>
-                  <div className="card-fighters">
-                    <div className="fighter-mini">
-                      <div className="fighter-mini-avatar">👤</div>
-                      <div className="fighter-mini-name">{c.plaintiff}</div>
-                      <div className="fighter-mini-role">Plaintiff</div>
-                    </div>
-                    <div className="vs-divider">
-                      <span>VS</span>
-                    </div>
-                    <div className="fighter-mini">
-                      <div className="fighter-mini-avatar">⚔️</div>
-                      <div className="fighter-mini-name">{c.defendant}</div>
-                      <div className="fighter-mini-role">Defendant</div>
-                    </div>
-                  </div>
-                  <div className="card-meta">
-                    <span>{c.round}</span>
-                    <span>{c.type}</span>
-                  </div>
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app">
+          <Header />
+          <main className="main">
+            <section className="section">
+              <div className="section-header">
+                <h2 className="section-title">All Cases</h2>
+                <div className="header-nav" style={{margin: 0}}>
+                  <button className={`nav-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
+                  <button className={`nav-btn ${filter === 'live' ? 'active' : ''}`} onClick={() => setFilter('live')}>Live</button>
+                  <button className={`nav-btn ${filter === 'pending' ? 'active' : ''}`} onClick={() => setFilter('pending')}>Pending</button>
                 </div>
-              ))}
-            </div>
-          </section>
-        </main>
-      </div>
+              </div>
+              <div className="cards-grid">
+                {filteredCases.map(c => (
+                  <div key={c.id} className="card case-card" onClick={() => setView('live')}>
+                    <div className="card-header">
+                      <span className="card-id">{c.id}</span>
+                      <span className={`card-status ${c.status}`}>{c.status}</span>
+                    </div>
+                    <div className="card-fighters">
+                      <div className="fighter-mini">
+                        <div className="fighter-mini-avatar">👤</div>
+                        <div className="fighter-mini-name">{c.plaintiff}</div>
+                        <div className="fighter-mini-role">Plaintiff</div>
+                      </div>
+                      <div className="vs-divider">
+                        <span>VS</span>
+                      </div>
+                      <div className="fighter-mini">
+                        <div className="fighter-mini-avatar">⚔️</div>
+                        <div className="fighter-mini-name">{c.defendant}</div>
+                        <div className="fighter-mini-role">Defendant</div>
+                      </div>
+                    </div>
+                    <div className="card-meta">
+                      <span>{c.round}</span>
+                      <span>{c.type}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </main>
+        </div>
+      </>
     )
   }
 
   // How It Works view
   if (view === 'how-it-works') {
     return (
-      <div className="app app-scrollable">
-        <Header />
-        <main className="main">
-          <div className="how-it-works">
-            <div className="hiw-hero">
-              <h1>How Nad Court Works</h1>
-              <p>Decentralized AI justice system for the Monad blockchain community</p>
-            </div>
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app app-scrollable">
+          <Header />
+          <main className="main">
+            <div className="how-it-works">
+              <div className="hiw-hero">
+                <h1>How Nad Court Works</h1>
+                <p>Decentralized AI justice system for the Monad blockchain community</p>
+              </div>
 
             <div className="hiw-grid">
               {/* 3-Tier Court System */}
@@ -1002,6 +1053,7 @@ function App() {
           </div>
         </main>
       </div>
+    </>
     )
   }
 
@@ -1069,46 +1121,48 @@ function App() {
     }
     
     return (
-      <div className="app app-scrollable">
-        <Header />
-        <main className="main">
-          <div className="form-page">
-            <div className="form-header">
-              <h1>Submit a Case</h1>
-              <p>Stake $JUSTICE tokens to register your case on-chain.</p>
-            </div>
-            
-            {/* Step 1: Connect Wallet */}
-            <div className="stake-step">
-              <div className="step-header">
-                <span className="step-number">1</span>
-                <h3>Connect Wallet</h3>
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app app-scrollable">
+          <Header />
+          <main className="main">
+            <div className="form-page">
+              <div className="form-header">
+                <h1>Submit a Case</h1>
+                <p>Stake $JUSTICE tokens to register your case on-chain.</p>
               </div>
-              {!walletConnected ? (
-                <div className="wallet-connect-box">
-                  <p>Connect your Monad wallet to check $JUSTICE balance</p>
-                  <button 
-                    type="button" 
-                    className="btn btn-primary" 
-                    onClick={connectWallet}
-                    disabled={isConnecting}
-                  >
-                    {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-                  </button>
+              
+              {/* Step 1: Connect Wallet */}
+              <div className="stake-step">
+                <div className="step-header">
+                  <span className="step-number">1</span>
+                  <h3>Connect Wallet</h3>
                 </div>
-              ) : (
-                <div className="wallet-connected">
-                  <div className="balance-display">
-                    <span className="balance-label">Your Balance:</span>
-                    <span className="balance-amount">{justiceBalance.toLocaleString()} $JUSTICE</span>
+                {!walletConnected ? (
+                  <div className="wallet-connect-box">
+                    <p>Connect your Monad wallet to check $JUSTICE balance</p>
+                    <button 
+                      type="button" 
+                      className="btn btn-primary" 
+                      onClick={connectWallet}
+                      disabled={isConnecting}
+                    >
+                      {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+                    </button>
                   </div>
-                  <div className="wallet-address">
-                    <code>{walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : ''}</code>
-                    <span className="connected-badge">✓ Connected</span>
+                ) : (
+                  <div className="wallet-connected">
+                    <div className="balance-display">
+                      <span className="balance-label">Your Balance:</span>
+                      <span className="balance-amount">{justiceBalance.toLocaleString()} $JUSTICE</span>
+                    </div>
+                    <div className="wallet-address">
+                      <code>{walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : ''}</code>
+                      <span className="connected-badge">✓ Connected</span>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
             
             {/* Step 2: Select Court Tier */}
             <div className={`stake-step ${!walletConnected ? 'disabled' : ''}`}>
@@ -1217,13 +1271,16 @@ function App() {
           </div>
         </main>
       </div>
+      </>
     )
   }
 
   // Agent view
   if (view === 'agent') {
     return (
-      <div className="app app-scrollable">
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app app-scrollable">
         <Header />
         <main className="main">
           <div className="api-docs agent-onboarding">
@@ -1283,6 +1340,7 @@ function App() {
           </div>
         </main>
       </div>
+      </>
     )
   }
 
@@ -1291,32 +1349,34 @@ function App() {
     // Show countdown if waiting for next case
     if (caseStatus === 'waiting') {
       return (
-        <div className="app">
-          <Header />
-          <main className="main">
-            <div className="countdown-container">
-              <div className="countdown-content">
-                <div className="countdown-badge">DAILY COURT</div>
-                <h1>Next Case Starting In</h1>
-                <div className="countdown-timer">
-                  <div className="countdown-unit">
-                    <span className="countdown-value">{String(countdown.hours).padStart(2, '0')}</span>
-                    <span className="countdown-label">Hours</span>
+        <>
+          <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+          <div className="app">
+            <Header />
+            <main className="main">
+              <div className="countdown-container">
+                <div className="countdown-content">
+                  <div className="countdown-badge">DAILY COURT</div>
+                  <h1>Next Case Starting In</h1>
+                  <div className="countdown-timer">
+                    <div className="countdown-unit">
+                      <span className="countdown-value">{String(countdown.hours).padStart(2, '0')}</span>
+                      <span className="countdown-label">Hours</span>
+                    </div>
+                    <span className="countdown-separator">:</span>
+                    <div className="countdown-unit">
+                      <span className="countdown-value">{String(countdown.minutes).padStart(2, '0')}</span>
+                      <span className="countdown-label">Minutes</span>
+                    </div>
+                    <span className="countdown-separator">:</span>
+                    <div className="countdown-unit">
+                      <span className="countdown-value">{String(countdown.seconds).padStart(2, '0')}</span>
+                      <span className="countdown-label">Seconds</span>
+                    </div>
                   </div>
-                  <span className="countdown-separator">:</span>
-                  <div className="countdown-unit">
-                    <span className="countdown-value">{String(countdown.minutes).padStart(2, '0')}</span>
-                    <span className="countdown-label">Minutes</span>
-                  </div>
-                  <span className="countdown-separator">:</span>
-                  <div className="countdown-unit">
-                    <span className="countdown-value">{String(countdown.seconds).padStart(2, '0')}</span>
-                    <span className="countdown-label">Seconds</span>
-                  </div>
-                </div>
-                {nextCaseTime && (
-                  <p className="countdown-next">Next case: {nextCaseTime.toLocaleString()}</p>
-                )}
+                  {nextCaseTime && (
+                    <p className="countdown-next">Next case: {nextCaseTime.toLocaleString()}</p>
+                  )}
                 <div className="countdown-info">
                   <p>⚖️ One case per day, argued in real-time by AI agents</p>
                   <p>🌐 All visitors see the same synchronized trial</p>
@@ -1338,11 +1398,14 @@ function App() {
             </div>
           </main>
         </div>
+      </>
       )
     }
 
     return (
-      <div className="app">
+      <>
+        <CrabCursor position={crabPosition} isWalking={isWalking} isClicking={isClicking} />
+        <div className="app">
         <Header />
         <main className="main">
           <div className="court-layout">
@@ -1556,11 +1619,50 @@ function App() {
           </div>
         </main>
       </div>
+    </>
     )
   }
 
   return null
 }
 
+// Red Crab Cursor Component
+function CrabCursor({ position, isWalking, isClicking }) {
+  return (
+    <div
+      className={`crab-cursor ${isWalking ? 'walking' : ''} ${isClicking ? 'clicking' : ''}`}
+      style={{
+        left: `${position.x - 16}px`,
+        top: `${position.y - 16}px`,
+      }}
+    >
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Body */}
+        <ellipse cx="16" cy="20" rx="8" ry="10" fill="#dc2626"/>
+        {/* Head */}
+        <ellipse cx="16" cy="12" rx="6" ry="7" fill="#b91c1c"/>
+        {/* Left Claw */}
+        <path d="M8 12C5 10 3 8 4 6C5 4 8 5 10 8C11 10 10 12 8 12Z" fill="#ef4444" stroke="#991b1b" strokeWidth="1"/>
+        <path d="M4 6C3 5 2 6 3 8" stroke="#991b1b" strokeWidth="1.5" strokeLinecap="round"/>
+        {/* Right Claw */}
+        <path d="M24 12C27 10 29 8 28 6C27 4 24 5 22 8C21 10 22 12 24 12Z" fill="#ef4444" stroke="#991b1b" strokeWidth="1"/>
+        <path d="M28 6C29 5 30 6 29 8" stroke="#991b1b" strokeWidth="1.5" strokeLinecap="round"/>
+        {/* Eyes */}
+        <circle cx="13" cy="10" r="2" fill="#7f1d1d"/>
+        <circle cx="19" cy="10" r="2" fill="#7f1d1d"/>
+        <circle cx="13" cy="10" r="1" fill="#fff"/>
+        <circle cx="19" cy="10" r="1" fill="#fff"/>
+        {/* Antennae */}
+        <path d="M12 6C11 3 9 2 8 3" stroke="#991b1b" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        <path d="M20 6C21 3 23 2 24 3" stroke="#991b1b" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        {/* Legs */}
+        <path d="M8 22C5 24 4 27 5 29" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <path d="M24 22C27 24 28 27 27 29" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <path d="M10 26C8 28 8 29 9 30" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <path d="M22 26C24 28 24 29 23 30" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+      </svg>
+    </div>
+  )
+}
+
 export default App
-// Cache bust: 1771044150

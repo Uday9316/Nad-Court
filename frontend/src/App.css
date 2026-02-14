@@ -49,6 +49,56 @@
   box-sizing: border-box;
 }
 
+/* Animated Crab Cursor */
+.crab-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease-out;
+}
+
+.crab-cursor svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(220, 38, 38, 0.5));
+}
+
+/* Walking animation for crab */
+@keyframes crabWalk {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  25% { transform: translateY(-2px) rotate(2deg); }
+  50% { transform: translateY(0) rotate(-2deg); }
+  75% { transform: translateY(-2px) rotate(2deg); }
+}
+
+.crab-cursor.walking {
+  animation: crabWalk 0.3s infinite;
+}
+
+/* Click animation */
+@keyframes crabClick {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+.crab-cursor.clicking {
+  animation: crabClick 0.15s ease-out;
+}
+
+/* Hide default cursor when crab is active */
+body.crab-active {
+  cursor: none;
+}
+
+body.crab-active a,
+body.crab-active button,
+body.crab-active [role="button"] {
+  cursor: none;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--color-bg);
