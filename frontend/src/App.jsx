@@ -162,12 +162,12 @@ const fetchEvaluation = async (judge, caseData, plaintiffArgs, defendantArgs) =>
 }
 
 const JUDGES = [
-  { id: 'portdev', name: 'PortDev', role: 'Technical', status: 'done', image: portdevImg, bias: 'Evidence-based' },
-  { id: 'mikeweb', name: 'MikeWeb', role: 'Community', status: 'done', image: mikewebImg, bias: 'Reputation-focused' },
-  { id: 'keone', name: 'Keone', role: 'On-Chain', status: 'done', image: keoneImg, bias: 'Data-driven' },
+  { id: 'portdev', name: 'PortDev', role: 'Technical', status: 'evaluating', image: portdevImg, bias: 'Evidence-based' },
+  { id: 'mikeweb', name: 'MikeWeb', role: 'Community', status: 'evaluating', image: mikewebImg, bias: 'Reputation-focused' },
+  { id: 'keone', name: 'Keone', role: 'On-Chain', status: 'evaluating', image: keoneImg, bias: 'Data-driven' },
   { id: 'james', name: 'James', role: 'Governance', status: 'evaluating', image: jamesImg, bias: 'Precedent-based' },
-  { id: 'harpal', name: 'Harpal', role: 'Merit', status: 'waiting', image: harpalImg, bias: 'Contribution-weighted' },
-  { id: 'anago', name: 'Anago', role: 'Protocol', status: 'waiting', image: anagoImg, bias: 'Rules-focused' },
+  { id: 'harpal', name: 'Harpal', role: 'Merit', status: 'evaluating', image: harpalImg, bias: 'Contribution-weighted' },
+  { id: 'anago', name: 'Anago', role: 'Protocol', status: 'evaluating', image: anagoImg, bias: 'Rules-focused' },
 ]
 
 // Realistic community dispute arguments
