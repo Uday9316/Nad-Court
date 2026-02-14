@@ -91,7 +91,8 @@ const INITIAL_MESSAGES = [
 
 // API Configuration
 // Backend API URL - AWS with custom domain
-// Cache bust: 2026-02-14 06:40 UTC
+// Updated: 2026-02-14 06:45 UTC
+// FORCE DEPLOY: v2-cache-bust
 const API_URL = 'https://backend.udaybuilds.in'
 
 // Fetch AI-generated case
