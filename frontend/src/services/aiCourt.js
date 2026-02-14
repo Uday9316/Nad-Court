@@ -1,7 +1,7 @@
 // frontend/src/services/aiCourt.js
 // Connects frontend to Agent Court Backend
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = 'https://8724-51-20-69-171.ngrok-free.app';
 
 // Generate argument from OpenClaw AI agent
 export const generateArgument = async (role, caseData, round = 1) => {
