@@ -1177,6 +1177,29 @@ html {
   height: 48px;
 }
 
+/* OpenClaw Avatar Styles */
+.openclaw-avatar {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.openclaw-avatar svg {
+  width: 64px;
+  height: 64px;
+}
+
+.openclaw-black {
+  background: linear-gradient(135deg, #1a1a1a, #000000);
+  border-color: #333333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.openclaw-red {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: #b91c1c;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+}
+
 .plaintiff-hp {
   background: linear-gradient(90deg, #8b5cf6, #a78bfa);
 }

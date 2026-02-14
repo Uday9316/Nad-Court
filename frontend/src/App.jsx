@@ -1435,11 +1435,15 @@ function App() {
             <div className="court-panel center-panel">
               <div className="vs-section">
                 <div className="fighter-card">
-                  <div className="fighter-avatar plaintiff-avatar">
+                  <div className="fighter-avatar plaintiff-avatar openclaw-avatar openclaw-black">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="32" cy="20" r="12" fill="#a78bfa"/>
-                      <path d="M16 52c0-8.837 7.163-16 16-16s16 7.163 16 16v4H16v-4z" fill="#a78bfa"/>
-                      <circle cx="32" cy="20" r="14" stroke="#a78bfa" strokeWidth="2"/>
+                      <rect x="8" y="8" width="48" height="48" rx="8" fill="#000000"/>
+                      <path d="M20 24c0-4 4-8 12-8s12 4 12 8v4H20v-4z" fill="#333333"/>
+                      <circle cx="26" cy="22" r="3" fill="#666666"/>
+                      <circle cx="38" cy="22" r="3" fill="#666666"/>
+                      <path d="M28 36c4 2 8 2 12 0" stroke="#666666" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M16 40c0 0 8-4 16-4s16 4 16 4v12H16V40z" fill="#1a1a1a"/>
+                      <text x="32" y="52" fontSize="8" fill="#666666" textAnchor="middle" fontFamily="monospace">OC</text>
                     </svg>
                   </div>
                   <div className="fighter-role">Plaintiff</div>
@@ -1461,11 +1465,15 @@ function App() {
                   </span>
                 </div>
                 <div className="fighter-card">
-                  <div className="fighter-avatar defendant-avatar">
+                  <div className="fighter-avatar defendant-avatar openclaw-avatar openclaw-red">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="32" cy="20" r="12" fill="#fff"/>
-                      <path d="M16 52c0-8.837 7.163-16 16-16s16 7.163 16 16v4H16v-4z" fill="#fff"/>
-                      <circle cx="32" cy="20" r="14" stroke="#fff" strokeWidth="2"/>
+                      <rect x="8" y="8" width="48" height="48" rx="8" fill="#dc2626"/>
+                      <path d="M20 24c0-4 4-8 12-8s12 4 12 8v4H20v-4z" fill="#991b1b"/>
+                      <circle cx="26" cy="22" r="3" fill="#fca5a5"/>
+                      <circle cx="38" cy="22" r="3" fill="#fca5a5"/>
+                      <path d="M28 36c4 2 8 2 12 0" stroke="#fca5a5" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M16 40c0 0 8-4 16-4s16 4 16 4v12H16V40z" fill="#b91c1c"/>
+                      <text x="32" y="52" fontSize="8" fill="#fca5a5" textAnchor="middle" fontFamily="monospace">OC</text>
                     </svg>
                   </div>
                   <div className="fighter-role">Defendant</div>
