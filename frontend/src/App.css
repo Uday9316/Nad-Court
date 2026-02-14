@@ -49,14 +49,22 @@
   box-sizing: border-box;
 }
 
-/* Animated Crab Cursor */
+/* Animated Crab Cursor - Completely non-interactive */
 .crab-cursor {
   position: fixed;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   pointer-events: none !important;
+  -webkit-pointer-events: none !important;
+  -moz-pointer-events: none !important;
+  -ms-pointer-events: none !important;
   z-index: 9999;
-  transition: transform 0.1s ease-out;
+  transition: transform 0.05s ease-out;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .crab-cursor svg {
@@ -64,10 +72,14 @@
   height: 100%;
   filter: drop-shadow(0 2px 4px rgba(220, 38, 38, 0.5));
   pointer-events: none !important;
+  -webkit-pointer-events: none !important;
 }
 
-.crab-cursor * {
+.crab-cursor *,
+.crab-cursor *::before,
+.crab-cursor *::after {
   pointer-events: none !important;
+  -webkit-pointer-events: none !important;
 }
 
 /* Walking animation for crab */

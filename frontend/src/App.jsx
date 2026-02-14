@@ -1675,38 +1675,42 @@ function App() {
 
 // Red Crab Cursor Component
 function CrabCursor({ position, isWalking, isClicking }) {
+  // Offset crab to bottom-right of actual cursor so it doesn't block clicks
+  const offsetX = 8
+  const offsetY = 8
+  
   return (
     <div
       className={`crab-cursor ${isWalking ? 'walking' : ''} ${isClicking ? 'clicking' : ''}`}
       style={{
-        left: `${position.x - 16}px`,
-        top: `${position.y - 16}px`,
+        left: `${position.x + offsetX}px`,
+        top: `${position.y + offsetY}px`,
       }}
     >
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Body */}
-        <ellipse cx="16" cy="20" rx="8" ry="10" fill="#dc2626"/>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Smaller Body */}
+        <ellipse cx="12" cy="15" rx="6" ry="7.5" fill="#dc2626"/>
         {/* Head */}
-        <ellipse cx="16" cy="12" rx="6" ry="7" fill="#b91c1c"/>
+        <ellipse cx="12" cy="9" rx="4.5" ry="5" fill="#b91c1c"/>
         {/* Left Claw */}
-        <path d="M8 12C5 10 3 8 4 6C5 4 8 5 10 8C11 10 10 12 8 12Z" fill="#ef4444" stroke="#991b1b" strokeWidth="1"/>
-        <path d="M4 6C3 5 2 6 3 8" stroke="#991b1b" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M6 9C4 7.5 2.5 6 3 4.5C3.5 3 6 3.5 7.5 6C8.5 7.5 7.5 9 6 9Z" fill="#ef4444" stroke="#991b1b" strokeWidth="0.75"/>
+        <path d="M3 4.5C2 3.5 1 4.5 1.5 6" stroke="#991b1b" strokeWidth="1" strokeLinecap="round"/>
         {/* Right Claw */}
-        <path d="M24 12C27 10 29 8 28 6C27 4 24 5 22 8C21 10 22 12 24 12Z" fill="#ef4444" stroke="#991b1b" strokeWidth="1"/>
-        <path d="M28 6C29 5 30 6 29 8" stroke="#991b1b" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M18 9C20 7.5 21.5 6 21 4.5C20.5 3 18 3.5 16.5 6C15.5 7.5 16.5 9 18 9Z" fill="#ef4444" stroke="#991b1b" strokeWidth="0.75"/>
+        <path d="M21 4.5C22 3.5 23 4.5 22.5 6" stroke="#991b1b" strokeWidth="1" strokeLinecap="round"/>
         {/* Eyes */}
-        <circle cx="13" cy="10" r="2" fill="#7f1d1d"/>
-        <circle cx="19" cy="10" r="2" fill="#7f1d1d"/>
-        <circle cx="13" cy="10" r="1" fill="#fff"/>
-        <circle cx="19" cy="10" r="1" fill="#fff"/>
+        <circle cx="10" cy="7.5" r="1.5" fill="#7f1d1d"/>
+        <circle cx="14" cy="7.5" r="1.5" fill="#7f1d1d"/>
+        <circle cx="10" cy="7.5" r="0.75" fill="#fff"/>
+        <circle cx="14" cy="7.5" r="0.75" fill="#fff"/>
         {/* Antennae */}
-        <path d="M12 6C11 3 9 2 8 3" stroke="#991b1b" strokeWidth="1" strokeLinecap="round" fill="none"/>
-        <path d="M20 6C21 3 23 2 24 3" stroke="#991b1b" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        <path d="M9 4.5C8 2 6.5 1.5 6 2" stroke="#991b1b" strokeWidth="0.75" strokeLinecap="round" fill="none"/>
+        <path d="M15 4.5C16 2 17.5 1.5 18 2" stroke="#991b1b" strokeWidth="0.75" strokeLinecap="round" fill="none"/>
         {/* Legs */}
-        <path d="M8 22C5 24 4 27 5 29" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        <path d="M24 22C27 24 28 27 27 29" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        <path d="M10 26C8 28 8 29 9 30" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        <path d="M22 26C24 28 24 29 23 30" stroke="#b91c1c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <path d="M6 16.5C3.5 18 2.5 20 3 22" stroke="#b91c1c" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        <path d="M18 16.5C20.5 18 21.5 20 21 22" stroke="#b91c1c" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        <path d="M7.5 19.5C5.5 21 5.5 22 6 22.5" stroke="#b91c1c" strokeWidth="1" strokeLinecap="round" fill="none"/>
+        <path d="M16.5 19.5C18.5 21 18.5 22 18 22.5" stroke="#b91c1c" strokeWidth="1" strokeLinecap="round" fill="none"/>
       </svg>
     </div>
   )
