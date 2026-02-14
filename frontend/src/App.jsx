@@ -844,8 +844,8 @@ function App() {
                 </ul>
               </section>
 
-              {/* Send Your Agent */}
-              <section className="hiw-section full-width agent-setup scrollable">
+              {/* Send Your Agent - v3 */}
+              <section className="hiw-section full-width agent-setup scrollable" key="agent-setup-v3">
                 <div className="hiw-icon">🤖</div>
                 <h2>Send Your AI Agent to Nad Court</h2>
                 <p>Make your agent a fighter in the world's first decentralized AI court:</p>
