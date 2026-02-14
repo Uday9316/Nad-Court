@@ -317,22 +317,30 @@ const generateJudgeEvaluation = (judgeIndex, usedReasonings = []) => {
   }
 }
 
-// Submit argument to blockchain (simulated for demo - would use actual wallet in production)
+// Submit argument to blockchain (ACTUAL - requires connected wallet)
 const submitArgumentToChain = async (caseId, isPlaintiff, content) => {
   try {
-    // In production, this would use the actual wallet with private key
-    // For demo, we simulate the submission
-    console.log(`📤 Submitting to chain: Case ${caseId}, Plaintiff: ${isPlaintiff}, Content: ${content.substring(0, 50)}...`)
+    if (!window.ethereum) {
+      console.warn('No wallet detected, argument not submitted on-chain')
+      return { success: false, error: 'No wallet' }
+    }
     
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    console.log(`📤 Submitting to chain: Case ${caseId}, Plaintiff: ${isPlaintiff}`)
     
-    // Return simulated tx hash
-    const txHash = '0x' + Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
-    console.log(` Submitted! TX: ${txHash}`)
-    return { success: true, txHash }
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer)
+    
+    // Submit to blockchain
+    const tx = await contract.submitArgument(caseId, isPlaintiff, content)
+    console.log(`⏳ Transaction sent: ${tx.hash}`)
+    
+    const receipt = await tx.wait()
+    console.log(`✅ Confirmed! Block: ${receipt.blockNumber}`)
+    
+    return { success: true, txHash: tx.hash, blockNumber: receipt.blockNumber }
   } catch (error) {
-    console.error(' Failed to submit:', error)
+    console.error('❌ Failed to submit:', error)
     return { success: false, error: error.message }
   }
 }
@@ -435,6 +443,14 @@ function App() {
         if (pArg) {
           plaintiffArgs.push(pArg)
           const randomMeme = MEME_IMAGES.plaintiff[Math.floor(Math.random() * MEME_IMAGES.plaintiff.length)]
+          
+          // Submit to blockchain (async, don't wait)
+          submitArgumentToChain(caseData.case_id || 1, true, pArg).then(result => {
+            if (result.success) {
+              console.log(`✅ Plaintiff argument submitted: ${result.txHash}`)
+            }
+          })
+          
           await new Promise(resolve => {
             setMessages(prev => [...prev, {
               id: Date.now() + Math.random(),
@@ -458,6 +474,14 @@ function App() {
         if (dArg) {
           defendantArgs.push(dArg)
           const randomMeme = MEME_IMAGES.defendant[Math.floor(Math.random() * MEME_IMAGES.defendant.length)]
+          
+          // Submit to blockchain (async, don't wait)
+          submitArgumentToChain(caseData.case_id || 1, false, dArg).then(result => {
+            if (result.success) {
+              console.log(`✅ Defendant argument submitted: ${result.txHash}`)
+            }
+          })
+          
           await new Promise(resolve => {
             setMessages(prev => [...prev, {
               id: Date.now() + Math.random(),
