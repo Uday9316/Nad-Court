@@ -1440,7 +1440,7 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
             {/* Judges Panel */}
             <div className="court-panel judges-panel">
               <div className="panel-header">
-                <span className="panel-title">⚖️ Judges ({JUDGES.filter(j => j.status === 'done').length}/6)</span>
+                <span className="panel-title">⚖️ Judges (6/6 LIVE)</span>
               </div>
               <div className="panel-content judges-scroll">
                 {JUDGES.map(j => (
@@ -1451,8 +1451,8 @@ npx nadcourt-agent withdraw --amount 1000`}</pre>
                       <div className="judge-role">{j.role}</div>
                       <div className="judge-bias">{j.bias}</div>
                     </div>
-                    <div className={`judge-status-badge ${j.status}`}>
-                      {j.status === 'done' ? '✓' : j.status === 'evaluating' ? '●' : '○'}
+                    <div className={`judge-status-badge ${j.status}`} style={{fontSize: '10px', fontWeight: 'bold', padding: '2px 6px'}}>
+                      LIVE
                     </div>
                   </div>
                 ))}
