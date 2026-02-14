@@ -1,7 +1,7 @@
 // frontend/src/services/aiCourt.js
 // Connects frontend to Agent Court Backend
 
-const API_URL = 'https://4d82-51-20-69-171.ngrok-free.app';
+const API_URL = 'https://backend.udaybuilds.in';
 
 // Generate argument from OpenClaw AI agent
 export const generateArgument = async (role, caseData, round = 1) => {

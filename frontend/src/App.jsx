@@ -90,9 +90,9 @@ const INITIAL_MESSAGES = [
 ]
 
 // API Configuration
-// Backend API URL - HARDCODED for fresh deploy
-// Cache bust: 2026-02-14 05:58 UTC
-const API_URL = 'https://4d82-51-20-69-171.ngrok-free.app'
+// Backend API URL - AWS with custom domain
+// Cache bust: 2026-02-14 06:40 UTC
+const API_URL = 'https://backend.udaybuilds.in'
 
 // Fetch AI-generated case
 const fetchGeneratedCase = async () => {
