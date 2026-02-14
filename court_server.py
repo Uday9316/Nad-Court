@@ -1,5 +1,25 @@
-import http.server,socketserver,json,random
+import http.server,socketserver,json,random,subprocess,os,shutil,time
 PORT=3040
+
+# Find OpenClaw binary
+def find_openclaw():
+    """Find OpenClaw binary in common locations"""
+    openclaw_path = shutil.which('openclaw')
+    if openclaw_path:
+        return openclaw_path
+    possible_paths = [
+        '/opt/render/.npm-global/bin/openclaw',
+        '/root/.npm-global/bin/openclaw',
+        '/usr/local/bin/openclaw',
+        '/usr/bin/openclaw',
+        '/home/render/.npm-global/bin/openclaw',
+        os.path.expanduser('~/.npm-global/bin/openclaw'),
+        os.path.expanduser('~/.local/bin/openclaw'),
+    ]
+    for path in possible_paths:
+        if os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+    return None
 
 # Track used statements per session to avoid repeats
 used_statements = {}
@@ -113,12 +133,47 @@ class H(http.server.BaseHTTPRequestHandler):
     if self.path=='/api/generate-argument':
       r=data.get('role','plaintiff')
       n=data.get('round',1)
+      case_data=data.get('caseData',{})
       a='NadCourt-Advocate'if r=='plaintiff'else'NadCourt-Defender'
       
-      # Get logical argument for this round
-      args = PLAINTIFF_ARGUMENTS if r=='plaintiff' else DEFENDANT_ARGUMENTS
-      round_args = args.get(n, args[1])  # Fallback to round 1 if invalid
-      argument = random.choice(round_args)
+      # Try OpenClaw AI first for unique argument generation
+      openclaw_cmd=find_openclaw()
+      argument=None
+      
+      if openclaw_cmd:
+        try:
+          # Create prompt for OpenClaw
+          angles=['timeline discrepancy','technical evidence','opponent credibility','financial damages','pattern of behavior','coincidence probability']
+          angle=random.choice(angles)
+          
+          prompt=f"""You are {a}, a passionate AI legal advocate in Agent Court.
+Case: {case_data.get('summary','Security vulnerability discovery dispute')}
+Your position: {r}
+Round: {n} of 6
+Angle to emphasize: {angle}
+
+Generate ONE completely unique, short legal argument (2-3 sentences, ~80-120 words).
+Be fiery, confrontational, and concise. Use specific technical details.
+
+Return ONLY the argument:"""
+          
+          result=subprocess.run(
+            [openclaw_cmd,'agent','--local','--session-id',f'court_{int(time.time())}_{random.randint(1,100000)}','-m',prompt],
+            capture_output=True,
+            text=True,
+            timeout=30
+          )
+          if result.returncode==0 and result.stdout.strip() and len(result.stdout.strip())>30:
+            argument=result.stdout.strip()
+            print(f"OpenClaw generated argument for {r} round {n}")
+        except Exception as e:
+          print(f"OpenClaw failed: {e}, using template fallback")
+      
+      # Fallback to template-based arguments
+      if not argument:
+        args=PLAINTIFF_ARGUMENTS if r=='plaintiff' else DEFENDANT_ARGUMENTS
+        round_args=args.get(n,args[1])
+        argument=random.choice(round_args)
       
       self.wfile.write(json.dumps({
         'success':True,
@@ -126,7 +181,7 @@ class H(http.server.BaseHTTPRequestHandler):
         'role':r,
         'argument':argument,
         'round':n,
-        'source':'logical_narrative'
+        'source':'openclaw_ai' if openclaw_cmd and argument else 'template_fallback'
       }).encode())
     
     elif self.path=='/api/judge-evaluation':
