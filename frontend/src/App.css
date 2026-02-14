@@ -2562,9 +2562,197 @@ html {
   color: var(--color-purple-light);
 }
 
-/* Agent Page - Full Content with Scroll */
+/* Agent Page - Full Height, No Scroll */
 .agent-onboarding {
-  padding-bottom: var(--space-2xl);
+  min-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+}
+
+.agent-onboarding .api-header {
+  flex-shrink: 0;
+}
+
+.agent-onboarding .api-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0;
+  min-height: 0;
+}
+
+.agent-onboarding .api-section h2 {
+  margin-bottom: var(--space-sm);
+  font-size: 16px;
+}
+
+/* Compact sections to fit on one screen */
+.agent-onboarding .one-command .code-block.featured {
+  padding: var(--space-md);
+}
+
+.agent-onboarding .onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.agent-onboarding .agent-step {
+  padding: var(--space-md);
+}
+
+.agent-onboarding .agent-step .step-num {
+  font-size: 24px;
+}
+
+.agent-onboarding .agent-step h4 {
+  font-size: 13px;
+}
+
+.agent-onboarding .agent-step p {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Compact command grid */
+.agent-onboarding .command-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+}
+
+.agent-onboarding .command-item {
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.agent-onboarding .command-item code {
+  font-size: 11px;
+}
+
+.agent-onboarding .command-item span {
+  font-size: 11px;
+}
+
+/* Compact judge grid */
+.agent-onboarding .judge-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+}
+
+.agent-onboarding .judge-card-small {
+  padding: var(--space-sm);
+}
+
+.agent-onboarding .judge-card-small strong {
+  font-size: 12px;
+}
+
+.agent-onboarding .judge-card-small span {
+  font-size: 11px;
+}
+
+/* Compact tier list */
+.agent-onboarding .tier-list {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-sm);
+}
+
+.agent-onboarding .tier-card-small {
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-sm);
+}
+
+.agent-onboarding .tier-card-small strong {
+  font-size: 12px;
+}
+
+.agent-onboarding .tier-card-small span {
+  font-size: 11px;
+}
+
+.agent-onboarding .tier-note {
+  margin-top: var(--space-sm);
+  font-size: 11px;
+}
+
+/* Compact endpoint list */
+.agent-onboarding .endpoint-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+}
+
+.agent-onboarding .endpoint-item {
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.agent-onboarding .endpoint-item .method {
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.agent-onboarding .endpoint-item code {
+  font-size: 11px;
+}
+
+.agent-onboarding .endpoint-item span {
+  font-size: 11px;
+}
+
+/* Compact FAQ */
+.agent-onboarding .faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+}
+
+.agent-onboarding .faq-item {
+  padding: var(--space-sm);
+}
+
+.agent-onboarding .faq-item strong {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.agent-onboarding .faq-item p {
+  font-size: 11px;
+}
+
+/* Compact Moltbook */
+.agent-onboarding .onboarding-moltbook {
+  padding: var(--space-sm);
+}
+
+.agent-onboarding .onboarding-moltbook code {
+  font-size: 11px;
+}
+
+.agent-onboarding .moltbook-note {
+  font-size: 11px;
+}
+
+/* Compact footer */
+.agent-onboarding .api-footer-section {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding: var(--space-md) var(--space-xl);
+}
+
+.agent-onboarding .api-footer-section .code-block {
+  max-width: 400px;
+}
+
+.agent-onboarding .footer-links {
+  font-size: 12px;
 }
 
 .agent-onboarding .api-header p {
