@@ -493,6 +493,10 @@ function App() {
         type: 'round'
       }])
       
+      // Track health locally for accurate final verdict
+      let currentPHealth = 100
+      let currentDHealth = 100
+      
       for (const judge of JUDGES) {
         const evalData = await fetchEvaluation(judge.name, caseData, plaintiffArgs, defendantArgs)
         if (evalData) {
@@ -501,9 +505,11 @@ function App() {
           const damage = Math.abs(pScore - dScore) / 3
           
           if (pScore > dScore) {
-            setDefendantHealth(prev => Math.max(10, prev - damage))
+            currentDHealth = Math.max(10, currentDHealth - damage)
+            setDefendantHealth(currentDHealth)
           } else {
-            setPlaintiffHealth(prev => Math.max(10, prev - damage))
+            currentPHealth = Math.max(10, currentPHealth - damage)
+            setPlaintiffHealth(currentPHealth)
           }
           
           setMessages(prev => [...prev, {
@@ -533,8 +539,8 @@ function App() {
       
       await new Promise(r => setTimeout(r, 2000))
       
-      // Calculate winner based on health
-      const winner = plaintiffHealth > defendantHealth ? 'PLAINTIFF' : 'DEFENDANT'
+      // Calculate winner based on ACTUAL health (not stale state)
+      const winner = currentPHealth > currentDHealth ? 'PLAINTIFF' : 'DEFENDANT'
       const winnerName = winner === 'PLAINTIFF' ? 'Bitlover082' : '0xCoha'
       
       setMessages(prev => [...prev, {
