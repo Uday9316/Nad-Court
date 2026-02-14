@@ -315,19 +315,40 @@ Be fair but consider the evidence. Scores 60-95."""
                 p_total = sum(p_scores.values()) // 4
                 d_total = sum(d_scores.values()) // 4
                 
-                # Dynamic reasoning based on who won
+                # UNIQUE reasoning per judge based on their personality
+                judge_reasonings = {
+                    'PortDev': {
+                        'plaintiff': ["Technical evidence is overwhelming. Timestamps don't lie.", "Code analysis confirms plagiarism. Variable names match exactly.", "On-chain data proves the timeline. Case closed."],
+                        'defendant': ["Technical methods differ significantly. Independent discovery plausible.", "Code similarity insufficient for theft claim.", "No forensic evidence of unauthorized access."]
+                    },
+                    'MikeWeb': {
+                        'plaintiff': ["Community reputation supports plaintiff. Multiple witnesses confirm.", "Social proof validates original discovery claim.", "Network effects favor the original finder."],
+                        'defendant': ["Community vouches for defendant's integrity. Good standing.", "Reputation metrics don't suggest copycat behavior.", "Peers confirm independent research capability."]
+                    },
+                    'Keone': {
+                        'plaintiff': ["Blockchain timestamps are immutable. 17-hour gap is damning.", "Transaction history proves early discovery.", "On-chain evidence outweighs all other claims."],
+                        'defendant': ["Block explorer shows no suspicious transactions.", "Wallet history consistent with claimed timeline.", "Smart contract interactions support defense."]
+                    },
+                    'James': {
+                        'plaintiff': ["Case BEEF-2023-001 established precedent. Finder keeps rights.", "Historical rulings favor original discoverers.", "Court precedent is clear on attribution theft."],
+                        'defendant': ["Case DEF-2022-015 supports independent discovery defense.", "Precedent requires proof beyond reasonable doubt.", "Previous similar cases dismissed for lack of evidence."]
+                    },
+                    'Harpal': {
+                        'plaintiff': ["Quality of research deserves protection. Meritocracy demands justice.", "Contributor track record speaks volumes.", "Genuine work must be rewarded, not stolen."],
+                        'defendant': ["Defendant's contribution history is equally valid.", "Both parties show merit. Doubt goes to accused.", "Quality defense evidence creates reasonable doubt."]
+                    },
+                    'Anago': {
+                        'plaintiff': ["Protocol disclosure rules clearly violated.", "Standard procedures not followed by defendant.", "Violation of responsible disclosure norms."],
+                        'defendant': ["All protocol requirements were met properly.", "Disclosure followed standard procedures.", "No violations of ethical guidelines found."]
+                    }
+                }
+                
+                # Get reasonings for this specific judge
+                judge_specific = judge_reasonings.get(judge, judge_reasonings['PortDev'])
                 if p_total > d_total:
-                    reasonings = [
-                        f"{judge}: Plaintiff's evidence is compelling. Technical documentation supports their timeline.",
-                        f"{judge}: Blockchain records don't lie. Plaintiff has the stronger case.",
-                        f"{judge}: Precedent favors the original discoverer. Plaintiff wins on merit."
-                    ]
+                    reasoning = random.choice(judge_specific['plaintiff'])
                 else:
-                    reasonings = [
-                        f"{judge}: Defendant provided credible independent research documentation.",
-                        f"{judge}: Insufficient proof of access. Defendant's timeline holds up.",
-                        f"{judge}: Burden of proof not met by plaintiff. Defendant is more credible."
-                    ]
+                    reasoning = random.choice(judge_specific['defendant'])
                 
                 self.send_json({
                     'success': True,
@@ -335,7 +356,7 @@ Be fair but consider the evidence. Scores 60-95."""
                     'evaluation': {
                         'plaintiff': {**p_scores, 'total': p_total},
                         'defendant': {**d_scores, 'total': d_total},
-                        'reasoning': random.choice(reasonings),
+                        'reasoning': reasoning,
                         'winner': 'plaintiff' if p_total > d_total else 'defendant'
                     },
                     'source': 'dynamic_fallback'
