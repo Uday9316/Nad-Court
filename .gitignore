@@ -27,3 +27,6 @@ npm-debug.log*
 *.tmp
 *.temp
 .vercel
+
+# Backup/Archive directories
+AGENT_COURT_COMPLETE/
