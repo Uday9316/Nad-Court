@@ -2,7 +2,7 @@ import http.server,socketserver,json,random,subprocess,os,shutil,time,urllib.req
 PORT=3040
 
 # Moltbook API configuration
-MOLTBOOK_API_KEY = os.environ.get('MOLTBOOK_API_KEY', 'moltbook_sk_70IsCZOOCd2DMJ9HV9S_d11Ljwi_1hVE')
+MOLTBOOK_API_KEY = os.environ.get('MOLTBOOK_API_KEY', '')
 
 # Cache for verified agents (token -> agent data)
 verified_agents = {}
